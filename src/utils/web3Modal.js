@@ -81,6 +81,7 @@ export const deriveSelectedAddress = provider => {
   if (provider.safe) {
     return provider.safe.safeAddress;
   }
+
   // else if (provider.isPortis) {
   //   return provider._portis._selectedAddress;
   // }

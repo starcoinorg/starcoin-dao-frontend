@@ -15,6 +15,8 @@
     "@gnosis.pm/zodiac": "^1.0.3",
     "@self.id/core": "0.4.0",
     "@self.id/web": "0.4.0",
+    "@starcoin/starcoin": "^2.1.6",
+    "@starcoin/starmask-onboarding": "^1.2.0",
     "@uiw/react-md-editor": "^3.9.4",
     "@walletconnect/web3-provider": "^1.6.5",
     "abi-decoder": "^2.4.0",

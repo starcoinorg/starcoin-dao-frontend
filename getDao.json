@@ -1,0 +1,32 @@
+
+
+{
+    "logoUrl": "string",
+    "moreTags": "string"
+}
+
+{
+  "links": {
+    "website": "string",
+      "twitter": "string",
+      "discord": "string",
+      "telegram": "string",
+      "medium": "string",
+  },
+  "daoId": "string",
+  "daoVotingResources": [
+    {
+      "resourceStructTag": "string",
+      "sequenceId": "string",
+      "votingPowerBcsPath": "string"
+    }
+  ],
+  "description": "string",
+  "longDescription": "string",
+  "name": "string",
+  "purposeId": "string",
+  {
+    "logoUrl": "string",
+    "moreTags": "string"
+}
+}

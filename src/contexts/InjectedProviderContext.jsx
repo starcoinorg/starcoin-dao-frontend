@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import Web3 from 'web3';
 import { SafeAppWeb3Modal } from '@gnosis.pm/safe-apps-web3modal';
+import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 
 import { OverlayContext } from './OverlayContext';
 import {
@@ -35,7 +36,6 @@ export const InjectedProvider = ({ children }) => {
 
   const connectProvider = async () => {
     const providerOptions = getProviderOptions();
-
     if (!providerOptions) {
       setInjectedProvider(null);
       setAddress(null);
@@ -68,56 +68,139 @@ export const InjectedProvider = ({ children }) => {
     }
   };
 
+  const initialStarCoin = () => {
+    const currentUrl = new URL(window.location.href);
+    const forwarderOrigin =
+      currentUrl.hostname === 'localhost' ? 'http://localhost:9032' : undefined;
+
+    const isStarMaskInstalled = StarMaskOnboarding.isStarMaskInstalled();
+    const isStarMaskConnected = false;
+    const accounts = [];
+
+    let onboarding;
+    try {
+      onboarding = new StarMaskOnboarding({ forwarderOrigin });
+    } catch (error) {
+      console.error(error);
+    }
+
+    let chainInfo = {
+      chain: '',
+      network: '',
+      accounts: '',
+    };
+
+    return {
+      isStarMaskInstalled,
+      isStarMaskConnected,
+      accounts,
+      onboarding,
+      chainInfo,
+    };
+  };
+
   useEffect(() => {
-    const attemptSafeConnection = async () => {
-      const provider = await defaultModal.requestProvider();
-      if (provider?.safe) {
-        connectProvider();
-      } else if (window.localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER')) {
-        connectProvider();
+    // const attemptSafeConnection = async () => {
+    //   const provider = await defaultModal.requestProvider();
+    //   if (provider?.safe) {
+    //     connectProvider();
+    //   } else if (window.localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER')) {
+    //     connectProvider();
+    //   }
+    // };
+    // attemptSafeConnection();
+
+    const initialData = initialStarCoin();
+    const status = () => {
+      if (!initialData.isStarMaskInstalled) {
+        return 0;
+      } else if (initialData.isStarMaskConnected) {
+        initialData.onboarding?.stopOnboarding();
+        return 2;
+      } else {
+        return 1;
       }
     };
-    attemptSafeConnection();
+
+    const initial = async () => {
+      const _status = status();
+      if (_status === 0) {
+        initialData.onboarding.startOnboarding();
+      } else if (_status === 1) {
+        try {
+          const newAccounts = await window.starcoin.request({
+            method: 'stc_requestAccounts',
+          });
+          const chainInfo = await window.starcoin.request({
+            method: 'chain.id',
+          });
+
+          setAddress(newAccounts[0]);
+          setInjectedChain(chainInfo.id);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    initial();
   }, []);
 
   // This useEffect handles the initialization of EIP-1193 listeners
   // https://eips.ethereum.org/EIPS/eip-1193
 
   useEffect(() => {
-    const handleChainChange = () => {
-      console.log('CHAIN CHANGE');
-      connectProvider();
-    };
-    const accountsChanged = () => {
-      console.log('ACCOUNT CHANGE');
-      connectProvider();
-    };
+    // const handleChainChange = () => {
+    //   console.log('CHAIN CHANGE');
+    //   connectProvider();
+    // };
+    // const accountsChanged = () => {
+    //   console.log('ACCOUNT CHANGE');
+    //   connectProvider();
+    // };
 
-    const unsub = () => {
-      if (injectedProvider?.currentProvider) {
-        injectedProvider.currentProvider.removeListener(
-          'accountsChanged',
-          handleChainChange,
-        );
-        injectedProvider.currentProvider.removeListener(
-          'chainChanged',
-          accountsChanged,
-        );
+    // const unsub = () => {
+    //   if (injectedProvider?.currentProvider) {
+    //     injectedProvider.currentProvider.removeListener(
+    //       'accountsChanged',
+    //       handleChainChange,
+    //     );
+    //     injectedProvider.currentProvider.removeListener(
+    //       'chainChanged',
+    //       accountsChanged,
+    //     );
+    //   }
+    // };
+
+    // if (
+    //   injectedProvider?.currentProvider &&
+    //   !hasListeners.current &&
+    //   !injectedProvider?.currentProvider?.safe
+    // ) {
+    //   injectedProvider.currentProvider
+    //     .on('accountsChanged', accountsChanged)
+    //     .on('chainChanged', handleChainChange);
+    //   hasListeners.current = true;
+    // }
+    // return () => unsub();
+
+    const onStarcoinEvent = () => {
+      const initialData = initialStarCoin();
+      if (initialData.isStarMaskInstalled) {
+        const handleNewChain = chain => {
+          setInjectedChain(chain);
+        };
+        const handleNewAccounts = accounts => {
+          setAddress(accounts[0]);
+        };
+        // 钱包网络切换
+        window.starcoin.on('chainChanged', handleNewChain);
+        // 钱包帐号切换
+        window.starcoin.on('accountsChanged', handleNewAccounts);
       }
     };
-
-    if (
-      injectedProvider?.currentProvider &&
-      !hasListeners.current &&
-      !injectedProvider?.currentProvider?.safe
-    ) {
-      injectedProvider.currentProvider
-        .on('accountsChanged', accountsChanged)
-        .on('chainChanged', handleChainChange);
-      hasListeners.current = true;
-    }
-    return () => unsub();
-  }, [injectedProvider]);
+    onStarcoinEvent();
+  }, []);
 
   const requestWallet = async () => {
     connectProvider();
@@ -159,6 +242,14 @@ export const useInjectedProvider = () => {
     address,
     web3Modal,
   } = useContext(InjectedProviderContext);
+  console.log({
+    injectedProvider,
+    requestWallet,
+    disconnectDapp,
+    injectedChain,
+    address,
+    web3Modal,
+  });
   return {
     injectedProvider,
     requestWallet,

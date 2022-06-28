@@ -1,0 +1,23 @@
+{
+  "proposalType": "string",
+  "link": "string",
+  "submittedBy": {
+    "logoUrl": "string",
+    "address": "string",
+    "link": "string"
+  },
+  "recipient": {
+    "logoUrl": "string",
+    "address": "string",
+    "link": "string"
+  },
+  "endText": "string",
+  // /dev/v1/accountVotes
+  "activities": [
+    {
+      "title": "string",
+      "daysAgo": "number",
+      "avatorUrl": "string"
+    }
+  ]
+}
