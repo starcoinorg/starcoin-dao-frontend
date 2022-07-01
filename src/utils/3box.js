@@ -50,15 +50,14 @@ export const setBasicProfile = async (client, did, values) => {
 
 const get3boxProfile = async address => {
   try {
-    const response = await fetch(
-      `https://ipfs.3box.io/profile?address=${address}`,
-    );
-    if (response.status === 'error') {
-      console.warn('Profile does not exist');
-    }
-
-    const boxProfile = response.json();
-    return boxProfile;
+    // const response = await fetch(
+    //   `https://ipfs.3box.io/profile?address=${address}`,
+    // );
+    // if (response.status === 'error') {
+    //   console.warn('Profile does not exist');
+    // }
+    // const boxProfile = response.json();
+    // return boxProfile;
   } catch (error) {
     console.warn(error);
   }

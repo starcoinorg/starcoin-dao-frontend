@@ -66,15 +66,15 @@ const SummonPartyFavor = () => {
 
   const getnewDaoAddress = async (summoner, now) => {
     try {
-      const res = await graphQuery({
-        endpoint: getGraphEndpoint(injectedChain.chain_id, 'subgraph_url'),
-        query: DAO_POLL,
-        variables: {
-          summoner,
-          createdAt: now,
-        },
-      });
-      setSuccess(res.moloches[0].id);
+      // const res = await graphQuery({
+      //   endpoint: getGraphEndpoint(injectedChain.chain_id, 'subgraph_url'),
+      //   query: DAO_POLL,
+      //   variables: {
+      //     summoner,
+      //     createdAt: now,
+      //   },
+      // });
+      // setSuccess(res.moloches[0].id);
     } catch (error) {
       console.error(error);
       setSuccess();

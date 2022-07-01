@@ -17,6 +17,7 @@ import { contractByProposalType } from '../utils/txHelpers';
 import { MINION_ACTION_FUNCTION_NAMES } from '../utils/proposalUtils';
 import { fetchSingleProposal } from '../utils/theGraph';
 import { proposalResolver } from '../utils/resolvers';
+import axios from 'axios';
 
 const Proposal = ({
   activities,
@@ -104,6 +105,22 @@ const Proposal = ({
     if (currentProposal && currentProposal.minion) {
       getMinionAction(currentProposal);
     }
+
+    const getDaos = async () => {
+      const res = await axios.get(
+        'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com:80/dev/v1//dev/v1/proposals',
+        {
+          params: {
+            daoid,
+            page: '1',
+            size: '1',
+          },
+        },
+      );
+
+      getDaos();
+      console.log(res.data, 'sssss');
+    };
   }, [currentProposal, daochain]);
 
   return (
@@ -133,12 +150,12 @@ const Proposal = ({
                 </TextBox>
               </Flex>
             </Link>
-            <ProposalDetails
+            {/* <ProposalDetails
               proposal={currentProposal}
               overview={overview}
               hideMinionExecuteButton={hideMinionExecuteButton}
               minionAction={minionAction}
-            />
+            /> */}
           </Flex>
           <Flex
             direction='column'

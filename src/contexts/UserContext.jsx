@@ -35,26 +35,26 @@ export const UserContextProvider = ({ children }) => {
   const prevAddress = useRef(null);
 
   useEffect(() => {
-    const bigQuery = () => {
-      hubChainQuery({
-        query: HUB_MEMBERSHIPS,
-        supportedChains,
-        endpointType: 'subgraph_url',
-        apiFetcher: getApiMetadata,
-        reactSetter: setUserHubDaos,
-        setApiData,
-        variables: {
-          memberAddress: address,
-        },
-      });
-    };
-    if (!userHubDaos.length && address && prevAddress.current === null) {
-      bigQuery();
-      prevAddress.current = address;
-    } else if (prevAddress.current !== address && address) {
-      setUserHubDaos([]);
-      prevAddress.current = null;
-    }
+    // const bigQuery = () => {
+    //   hubChainQuery({
+    //     query: HUB_MEMBERSHIPS,
+    //     supportedChains,
+    //     endpointType: 'subgraph_url',
+    //     apiFetcher: getApiMetadata,
+    //     reactSetter: setUserHubDaos,
+    //     setApiData,
+    //     variables: {
+    //       memberAddress: address,
+    //     },
+    //   });
+    // };
+    // if (!userHubDaos.length && address && prevAddress.current === null) {
+    //   bigQuery();
+    //   prevAddress.current = address;
+    // } else if (prevAddress.current !== address && address) {
+    //   setUserHubDaos([]);
+    //   prevAddress.current = null;
+    // }
   }, [address, userHubDaos, setUserHubDaos]);
 
   const resolvePoll = txHash => {

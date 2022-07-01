@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Avatar, Box, Flex, Button, Badge, Link, Text } from '@chakra-ui/react';
 import makeBlockie from 'ethereum-blockies-base64';
@@ -11,6 +11,22 @@ import { pokemolUrlExplore, themeImagePath } from '../utils/metadata';
 
 const ExploreCard = ({ dao }) => {
   const { state, dispatch } = useContext(ExploreContext);
+  const [daoData, setDaoData] = useState({});
+
+  useEffect(() => {
+    let _dao = {
+      meta: {
+        tags: dao?.tags?.split(',') || '',
+        avatarImg: dao?.logoUrl || '',
+        description: dao?.description || '',
+        network: 'MAIN',
+        name: dao?.name || '',
+      },
+      id: dao?.daoId || '',
+    };
+
+    setDaoData(_dao);
+  }, [dao]);
 
   const handleTagSelect = tag => {
     if (!state.tags.includes(tag)) {
@@ -20,10 +36,10 @@ const ExploreCard = ({ dao }) => {
   };
 
   const renderTags = () => {
-    if (dao.meta?.tags) {
+    if (daoData.meta?.moreTags) {
       return (
         <Flex direction='row' wrap='wrap'>
-          {dao.meta.tags.map(tag => {
+          {daoData.meta.tags.map(tag => {
             return (
               <Badge
                 key={tag}
@@ -50,13 +66,9 @@ const ExploreCard = ({ dao }) => {
 
   return (
     <ContentBox
-      as={dao.meta.version === '1' ? Link : RouterLink}
-      to={
-        dao.meta.version === '1'
-          ? null
-          : `/dao/${chainByNetworkId(dao.networkId).chain_id}/${dao.id}`
-      }
-      href={dao.meta.version === '1' ? pokemolUrlExplore(dao) : null}
+      as={daoData?.meta?.version === '1' ? Link : RouterLink}
+      to={daoData?.meta?.version === '1' ? null : `/dao/1/${daoData.id}`}
+      href={daoData?.meta?.version === '1' ? pokemolUrlExplore(daoData) : null}
       w={['100%', '100%', '100%', '340px', '340px']}
       h='340px'
       mt={5}
@@ -66,9 +78,9 @@ const ExploreCard = ({ dao }) => {
       <Flex direction='row' align='center' w='100%'>
         <Avatar
           src={
-            dao.meta?.avatarImg
-              ? themeImagePath(dao.meta.avatarImg)
-              : makeBlockie(dao.id)
+            daoData.meta?.avatarImg
+              ? themeImagePath(daoData.meta.avatarImg)
+              : null
           }
           mr='10px'
           bg='primary'
@@ -79,7 +91,7 @@ const ExploreCard = ({ dao }) => {
           fontFamily='heading'
           lineHeight='1.125'
         >
-          {dao.meta?.name}
+          {daoData.meta?.name}
         </Box>
       </Flex>
       <Text
@@ -95,35 +107,37 @@ const ExploreCard = ({ dao }) => {
           maxWidth: '100%',
         }}
       >
-        {dao.meta?.description}
+        {daoData.meta?.description}
       </Text>
 
       <Box fontSize='md' mt={2} fontFamily='heading'>
-        ${numberWithCommas(dao.guildBankValue.toFixed(2))}
+        {/* ${numberWithCommas(dao.guildBankValue.toFixed(2))} */}
       </Box>
       <Flex direction='row' align='center'>
         <Box fontSize='sm' mr={3}>
-          {`${
-            dao.members.length === 100
-              ? `${dao.members.length}+`
-              : `${dao.members.length}`
-          }
-          Members`}
+          {daoData?.members
+            ? `${
+                daoData.members.length === 100
+                  ? `${daoData.members.length}+`
+                  : `${daoData.members.length}`
+              }
+          Members`
+            : null}
         </Box>
         <Box fontSize='sm' mr={3}>
           |
         </Box>
         <Box fontSize='sm'>
-          {dao.tokens.length} Token
-          {dao.tokens.length > 1 && 's'}
+          {daoData?.tokens?.length} Token
+          {daoData?.tokens?.length > 1 && 's'}
         </Box>
       </Flex>
       <Flex direction='row' align='center' mt={3}>
         <Badge colorScheme='secondary' variant='outline' m='3px 5px 3px 0px'>
-          {dao.meta?.purpose}
+          {daoData.meta?.purpose}
         </Badge>
         <Badge colorScheme='primary' variant='outline' m='3px 5px 3px 0px'>
-          {dao.meta?.network}
+          {daoData.meta?.network}
         </Badge>
       </Flex>
 

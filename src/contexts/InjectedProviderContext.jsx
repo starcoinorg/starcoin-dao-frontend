@@ -242,14 +242,14 @@ export const useInjectedProvider = () => {
     address,
     web3Modal,
   } = useContext(InjectedProviderContext);
-  console.log({
-    injectedProvider,
-    requestWallet,
-    disconnectDapp,
-    injectedChain,
-    address,
-    web3Modal,
-  });
+  // console.log({
+  //   injectedProvider,
+  //   requestWallet,
+  //   disconnectDapp,
+  //   injectedChain,
+  //   address,
+  //   web3Modal,
+  // });
   return {
     injectedProvider,
     requestWallet,

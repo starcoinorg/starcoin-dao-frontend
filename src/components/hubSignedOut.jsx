@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
@@ -7,8 +7,15 @@ import ContentBox from './ContentBox';
 import Bauhaus from '../assets/img/bauhaus__raw.png';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 
+import { arrayify } from '@ethersproject/bytes';
+import { utils } from '@starcoin/starcoin';
+
 const HubSignedOut = () => {
   const { requestWallet } = useInjectedProvider();
+  const {
+    encodeSignedMessage,
+    recoverSignedMessageAddress,
+  } = utils.signedMessage;
 
   const initialClick = async () => {
     const initialStarCoin = () => {
@@ -70,6 +77,37 @@ const HubSignedOut = () => {
         console.error(error);
       }
     }
+  };
+
+  const testClick = async () => {
+    const chainId = 254;
+    const exampleMessage = JSON.stringify({
+      daoId: 'test_dao_id',
+      proposalNumber: '1',
+      accountAddress: '0x01',
+      votingPower: 1111111,
+      choiceSequenceId: 1,
+    });
+    const publicKey =
+      '0x32ed52d319694aebc5b52e00836e2f7c7d2c7c7791270ede450d21dbc90cbfa1';
+    const privateKey =
+      '0x587737ebefb4961d377a3ab2f9ceb37b1fa96eb862dfaf954a4a1a99535dfec0';
+    const address = '0xd7f20befd34b9f1ab8aeae98b82a5a51';
+    const privateKeyBytes = arrayify(privateKey);
+    const signedMessageHex = await utils.signedMessage.encodeSignedMessage(
+      exampleMessage,
+      privateKeyBytes,
+      chainId,
+    );
+
+    console.log({
+      chainId,
+      exampleMessage,
+      privateKey,
+      publicKey,
+      address,
+      signedMessageHex,
+    });
   };
 
   return (
