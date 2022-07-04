@@ -5,7 +5,7 @@ import { Avatar } from '@chakra-ui/react';
 import { useCustomTheme } from '../contexts/CustomThemeContext';
 import { themeImagePath } from '../utils/metadata';
 
-import BrandImg from '../assets/img/Daohaus__Castle--Dark.svg';
+import BrandImg from '../assets/img/logo.svg';
 
 const Brand = React.memo(({ dao }) => {
   const brandImg = dao?.daoMetaData?.avatarImg

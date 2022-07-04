@@ -37,6 +37,7 @@ const Layout = ({ children, dao }) => {
         zIndex='-1'
         top={0}
         right='0'
+        bgColor='#03051b'
         w={['100%', null, null, 'calc(100% - 100px)']}
         _before={{
           display: 'block',

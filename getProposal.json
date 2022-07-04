@@ -21,3 +21,63 @@
     }
   ]
 }
+
+
+aborted: false
+actions: []
+applicant: "0xe39405b5d7849a1572382fb02e5e39db7a42410b"
+cancelled: false
+cancelledAt: null
+createdAt: "1646987361"
+createdBy: "0xe4376e143c9d7466be6d35c1d470c1376d0e04db"
+description: ""
+details: "{\"title\":\"炜杰加入member\",\"proposalType\":\"Member Proposal\"}"
+didPass: false
+escrow: null
+executed: false
+gracePeriodEnds: "0"
+guildkick: false
+hash: ""
+id: "0x26edf55480c50a2fab52d0d7bdf1dbbf2f4bb14f-proposal-37"
+isMinion: false
+link: ""
+lootRequested: "0"
+memberAddress: "0x0000000000000000000000000000000000000000"
+minion: null
+minionAddress: null
+minionExecuteActionTx: null
+moloch: {gracePeriodLength: '10', periodDuration: '60', version: '2.1', votingPeriodLength: '120', __typename: 'Moloch'}
+molochAddress: "0x26edf55480c50a2fab52d0d7bdf1dbbf2f4bb14f"
+molochVersion: "2"
+newMember: true
+noShares: "0"
+noVotes: "0"
+paymentRequested: "0"
+paymentTokenDecimals: null
+paymentTokenSymbol: null
+processed: false
+processedAt: null
+processor: "0x0000000000000000000000000000000000000000"
+proposalId: "37"
+proposalIndex: null
+proposalType: "Member Proposal"
+proposer: "0xe39405b5d7849a1572382fb02e5e39db7a42410b"
+sharesRequested: "1"
+sponsor: "0x0000000000000000000000000000000000000000"
+sponsored: false
+sponsoredAt: null
+startingPeriod: "0"
+status: "Unsponsored"
+title: "炜杰加入member"
+trade: false
+tributeOffered: "0"
+tributeToken: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+tributeTokenDecimals: null
+tributeTokenSymbol: null
+votes: []
+votingPeriodEnds: "0"
+votingPeriodStarts: "0"
+whitelist: false
+yesShares: "0"
+yesVotes: "0"
+__typename: "Proposal"

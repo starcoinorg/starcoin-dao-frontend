@@ -67,7 +67,7 @@ const ExploreCard = ({ dao }) => {
   return (
     <ContentBox
       as={daoData?.meta?.version === '1' ? Link : RouterLink}
-      to={daoData?.meta?.version === '1' ? null : `/dao/1/${daoData.id}`}
+      to={daoData?.meta?.version === '1' ? null : `/dao/0x1/${daoData.id}`}
       href={daoData?.meta?.version === '1' ? pokemolUrlExplore(daoData) : null}
       w={['100%', '100%', '100%', '340px', '340px']}
       h='340px'

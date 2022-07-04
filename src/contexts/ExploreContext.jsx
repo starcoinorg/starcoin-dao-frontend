@@ -77,18 +77,17 @@ export const ExploreContextProvider = ({ children }) => {
   });
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const hasLoadedExploreData =
-    exploreDaos.chains.length === Object.keys(supportedChains).length;
+  const hasLoadedExploreData = true;
 
   useEffect(() => {
     if (!exploreDaos.chains.length) {
-      exploreChainQuery({
-        query: EXPLORER_DAOS,
-        supportedChains,
-        endpointType: 'subgraph_url',
-        apiFetcher: getApiMetadata,
-        reactSetter: setExploreDaos,
-      });
+      // exploreChainQuery({
+      //   query: EXPLORER_DAOS,
+      //   supportedChains,
+      //   endpointType: 'subgraph_url',
+      //   apiFetcher: getApiMetadata,
+      //   reactSetter: setExploreDaos,
+      // });
     }
   }, [exploreDaos, setExploreDaos]);
 

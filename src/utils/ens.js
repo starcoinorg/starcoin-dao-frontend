@@ -40,31 +40,32 @@ const ensReverseRecordRequest = async address => {
 };
 
 const fetchENS = async address => {
-  try {
-    const result = await graphQuery({
-      endpoint: ensClient,
-      query: REVERSE_RESOLVER_QUERY,
-      variables: {
-        user: address.toLowerCase(),
-      },
-    });
-    if (result.reverseRegistrations.length) {
-      // look into dealing with multiple. get most recent
-      return result.reverseRegistrations.sort((a, b) => b.block - a.block)[0]
-        .name;
-    }
-    const recordRequest = await ensReverseRecordRequest(address.toLowerCase());
-    if (recordRequest.length) {
-      const name = recordRequest[0];
-      if (normalize(name) === name) {
-        return name;
-      }
-    }
-    return false;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+  return false;
+  // try {
+  //   const result = await graphQuery({
+  //     endpoint: ensClient,
+  //     query: REVERSE_RESOLVER_QUERY,
+  //     variables: {
+  //       user: address.toLowerCase(),
+  //     },
+  //   });
+  //   if (result.reverseRegistrations.length) {
+  //     // look into dealing with multiple. get most recent
+  //     return result.reverseRegistrations.sort((a, b) => b.block - a.block)[0]
+  //       .name;
+  //   }
+  //   const recordRequest = await ensReverseRecordRequest(address.toLowerCase());
+  //   if (recordRequest.length) {
+  //     const name = recordRequest[0];
+  //     if (normalize(name) === name) {
+  //       return name;
+  //     }
+  //   }
+  //   return false;
+  // } catch (error) {
+  //   console.error(error);
+  //   return null;
+  // }
 };
 
 export const getCachedENS = address => {

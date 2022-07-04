@@ -7,6 +7,7 @@ import MainViewLayout from '../components/mainViewLayout';
 import ProposalsList from '../components/proposalList';
 import { getTerm, getTitle } from '../utils/metadata';
 import useCanInteract from '../hooks/useCanInteract';
+import { useRequest } from '../hooks/useRequest';
 
 const Proposals = React.memo(({ proposals, customTerms }) => {
   const { setProposalSelector } = useOverlay();

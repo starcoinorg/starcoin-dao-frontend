@@ -1,6 +1,6 @@
 import { rgba } from 'polished';
 
-import BrandImg from '../assets/img/Daohaus__Castle--Dark.svg';
+import BrandImg from '../assets/img/logo.svg';
 import BgImg from '../assets/img/daohaus__hero--falling.jpg';
 
 export const defaultTheme = {
@@ -8,15 +8,15 @@ export const defaultTheme = {
   primaryAlpha: rgba('#10153d', 0.9),
   secondary500: '#EB8A23',
   secondaryAlpha: rgba('#10153d', 0.75),
-  bg500: '#03061B',
+  bg500: '#03051b',
   bgAlpha: '#03061B',
   bgOverlayOpacity: 0.75,
   modeAlpha500: '#FFFFFF',
   headingFont: 'Mulish',
   bodyFont: 'Mulish',
   monoFont: 'Space Mono',
-  avatarImg: BrandImg,
-  bgImg: BgImg,
+  avatarImg: '',
+  bgImg: '',
   daoMeta: {
     proposals: 'Proposals',
     proposal: 'Proposal',

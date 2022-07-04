@@ -18,6 +18,7 @@ import { POST_LOCATIONS } from '../utils/poster';
 const OverviewCard = ({ daoOverview, members, daoVaults }) => {
   const { daochain, daoid } = useParams();
   const { daoMetaData, customTerms } = useMetaData();
+  console.log(daoMetaData, 'ddddddddd');
   const [activeMembers, setActiveMembers] = useState(null);
   const totalShares = utils.commify(daoOverview?.totalShares || 0);
   const totalLoot = utils.commify(daoOverview?.totalLoot || 0);
@@ -58,16 +59,16 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             {daoMetaData?.description ? daoMetaData.description : '--'}
           </Box>
         </Skeleton>
-        <Flex direction='row' w='100%' justify='space-between' mt={6}>
+        {/* <Flex direction='row' w='100%' justify='space-between' mt={6}>
           <Box>
             <TextBox size='xs' title={getTitle(customTerms, 'Members')}>
               {`Active ${getTerm(customTerms, 'members')}`}
             </TextBox>
-            {/* <Skeleton isLoaded={members}> */}
-            <TextBox size='lg' variant='value'>
-              {activeMembers ? activeMembers.length : <Spinner size='sm' />}
-            </TextBox>
-            {/* </Skeleton> */}
+            <Skeleton isLoaded={members}>
+              <TextBox size='lg' variant='value'>
+                {activeMembers ? activeMembers.length : <Spinner size='sm' />}
+              </TextBox>
+            </Skeleton>
           </Box>
           <Box>
             <TextBox size='xs'>Shares</TextBox>
@@ -85,8 +86,8 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
               </TextBox>
             </Skeleton>
           </Box>
-        </Flex>
-        <Box mt={6}>
+        </Flex> */}
+        {/* <Box mt={6}>
           {daoVaults && (
             <>
               <TextBox size='sm' title={getTitle(customTerms, 'Bank')}>
@@ -95,10 +96,10 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
               <VaultTotal vaults={daoVaults} />
             </>
           )}
-        </Box>
+        </Box> */}
         <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} />
         <Flex mt={6}>
-          <Button
+          {/* <Button
             variant='outline'
             mr={6}
             onClick={() => history.push(`/dao/${daochain}/${daoid}/vaults`)}
@@ -106,7 +107,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             title={getTitle(customTerms, 'Bank')}
           >
             {`View ${getTerm(customTerms, 'bank')}`}
-          </Button>
+          </Button> */}
           <Button
             mr={6}
             onClick={() => history.push(`/dao/${daochain}/${daoid}/proposals`)}
@@ -115,7 +116,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
           >
             {`View ${getTerm(customTerms, 'proposals')}`}
           </Button>
-          {isActive('SNAPSHOT') && (
+          {/* {isActive('SNAPSHOT') && (
             <Button
               onClick={() =>
                 history.push(`/dao/${daochain}/${daoid}/boost/snapshot`)
@@ -125,7 +126,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             >
               {`View ${getTerm(customTerms, 'snapshots')}`}
             </Button>
-          )}
+          )} */}
         </Flex>
       </ContentBox>
     </Box>

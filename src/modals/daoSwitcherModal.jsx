@@ -26,7 +26,7 @@ import { useUser } from '../contexts/UserContext';
 import { getDaosByNetwork, filterDAOsByName } from '../utils/dao';
 import { themeImagePath } from '../utils/metadata';
 
-import BrandImg from '../assets/img/Daohaus__Castle--Dark.svg';
+import BrandImg from '../assets/img/logo.svg';
 
 const DaoSwitcherModal = () => {
   const { daoSwitcherModal, setDaoSwitcherModal } = useOverlay();

@@ -7,11 +7,10 @@ import ExploreList from '../components/exploreList';
 import Layout from '../components/layout';
 import Loading from '../components/loading';
 import MainViewLayout from '../components/mainViewLayout';
+import { useRequest } from '../hooks/useRequest';
 
 const Explore = () => {
   const { theme, resetTheme } = useContext(CustomThemeContext);
-  const { hasLoadedExploreData } = useContext(ExploreContext);
-  const [daoCount, setDaoCount] = useState(0);
 
   useEffect(() => {
     if (theme.active) {
@@ -19,13 +18,21 @@ const Explore = () => {
     }
   }, [theme, resetTheme]);
 
+  const { data: daos, loading } = useRequest('daos', {
+    method: 'get',
+    params: {
+      page: '1',
+      size: '1',
+    },
+  });
+
   return (
     <Layout>
       <MainViewLayout header='Explore DAOs'>
-        {hasLoadedExploreData ? (
+        {!loading ? (
           <>
-            <ExploreFilters daoCount={daoCount} />
-            <ExploreList handleDaoCalculate={setDaoCount} />
+            <ExploreFilters daoCount={daos?.length || 0} />
+            <ExploreList daoList={daos} />
           </>
         ) : (
           <Loading message='Fetching DAOs...' />

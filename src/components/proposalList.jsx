@@ -27,6 +27,7 @@ import {
 import ProposalCardV2 from '../proposalBuilder/proposalCard';
 import SpamFilterListNotification from './spamFilterListNotification';
 import useCanInteract from '../hooks/useCanInteract';
+import { useRequest } from '../hooks/useRequest';
 
 const ProposalsList = ({ proposals, customTerms }) => {
   const { daoMember } = useDaoMember();
@@ -45,6 +46,15 @@ const ProposalsList = ({ proposals, customTerms }) => {
 
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
+
+  const { data, loading } = useRequest('proposals', {
+    method: 'get',
+    params: {
+      daoId: daoid,
+      page: 1,
+      size: 1,
+    },
+  });
 
   useEffect(() => {
     const initializeFilters = (initFilter, initSort) => {

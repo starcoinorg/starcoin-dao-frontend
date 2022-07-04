@@ -62,7 +62,7 @@ export const MetaDataProvider = ({ children }) => {
   useEffect(() => {
     const getApiMetadata = async () => {
       try {
-        const [data] = await fetchMetaData(daoid);
+        const data = await fetchMetaData(daoid);
         if (shouldUpdateTheme.current && !daoMetaData) {
           if (data.customThemeConfig) {
             updateTheme(data.customThemeConfig);
@@ -87,7 +87,7 @@ export const MetaDataProvider = ({ children }) => {
 
   const fetchApiMetadata = async () => {
     try {
-      const [data] = await fetchMetaData(daoid);
+      const data = await fetchMetaData(daoid);
       if (shouldUpdateTheme.current && !daoMetaData) {
         if (data.customThemeConfig) {
           updateTheme(data.customThemeConfig);

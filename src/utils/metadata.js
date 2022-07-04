@@ -7,10 +7,11 @@ import {
   hasPlaylist,
 } from '../data/playlists';
 
-const metadataApiUrl = 'https://data.daohaus.club';
+const metadataApiUrl =
+  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com:80/dev/v1';
 
 export const fetchMetaData = async endpoint => {
-  const url = `${metadataApiUrl}/dao/${endpoint}`;
+  const url = `${metadataApiUrl}/daos/${endpoint}`;
 
   try {
     const response = await fetch(url);
