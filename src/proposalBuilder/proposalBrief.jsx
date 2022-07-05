@@ -44,7 +44,7 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
           justifyContent='space-between'
           w='100%'
         >
-          <CardLabel>{proposal.proposalType}</CardLabel>
+          <CardLabel>{proposal.votingType}</CardLabel>
         </Flex>
         <ParaMd
           fontWeight='700'
@@ -75,12 +75,12 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
         >
           <PropCardDate
             label='Submitted'
-            dateTimeMillis={proposal?.createdAt}
+            dateTimeMillis={proposal?.submittedAt}
           />
           <Button
             as={Link}
             fontWeight='bold'
-            to={`/dao/${daochain}/${daoid}/proposals/${proposal.proposalId}`}
+            to={`/dao/${daochain}/${daoid}/proposals/${proposal.proposalId.proposalNumber}`}
             variant='outline'
             size='sm'
             width='8rem'

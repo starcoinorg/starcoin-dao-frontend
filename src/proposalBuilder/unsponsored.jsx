@@ -26,106 +26,106 @@ const Unsponsored = props => {
   const [isLoadingTx, setLoadingTx] = useState(false);
   const { submitTransaction } = useTX();
 
-  const depositData = useMemo(() => {
-    const { depositToken, proposalDeposit } = daoOverview || {};
+  // const depositData = useMemo(() => {
+  //   const { depositToken = '', proposalDeposit = '' } = daoOverview || {};
 
-    if (
-      !daoMember.depositTokenData ||
-      !depositToken?.decimals ||
-      !depositToken.symbol ||
-      !proposalDeposit
-    )
-      return;
-    const { decimals, symbol, tokenAddress } = depositToken;
-    const { allowance, balance } = daoMember.depositTokenData || {};
-    const canSpend =
-      Number(allowance) >= Number(proposalDeposit) ||
-      Number(proposalDeposit) === 0;
+  //   // if (
+  //   //   !daoMember.depositTokenData ||
+  //   //   !depositToken?.decimals ||
+  //   //   !depositToken.symbol ||
+  //   //   !proposalDeposit
+  //   // )
+  //   //   return;
+  //   const { decimals = 0, symbol = '', tokenAddress = '' } = depositToken;
+  //   const { allowance = 0, balance = 0 } = daoMember.depositTokenData || {};
+  //   const canSpend =
+  //     Number(allowance) >= Number(proposalDeposit) ||
+  //     Number(proposalDeposit) === 0;
 
-    const hasBalance =
-      Number(balance) >= Number(proposalDeposit) ||
-      Number(proposalDeposit) === 0;
+  //   const hasBalance =
+  //     Number(balance) >= Number(proposalDeposit) ||
+  //     Number(proposalDeposit) === 0;
 
-    return {
-      deposit: readableTokenBalance({
-        balance: proposalDeposit,
-        decimals,
-        symbol,
-      }),
-      userAllowance: Number(allowance),
-      userBalance: Number(balance),
-      decimals,
-      address: tokenAddress,
-      symbol,
-      canSpend,
-      hasBalance,
-    };
-  }, [daoOverview, daoMember, isMember, address]);
+  //   return {
+  //     deposit: readableTokenBalance({
+  //       balance: proposalDeposit,
+  //       decimals,
+  //       symbol,
+  //     }),
+  //     userAllowance: Number(allowance),
+  //     userBalance: Number(balance),
+  //     decimals,
+  //     address: tokenAddress,
+  //     symbol,
+  //     canSpend,
+  //     hasBalance,
+  //   };
+  // }, [daoOverview, daoMember, isMember, address]);
 
-  const sponsorProposal = async () => {
-    setLoadingTx(true);
-    await submitTransaction({
-      args: [proposal.proposalId],
-      tx: TX.SPONSOR_PROPOSAL,
-    });
-    setLoadingTx(false);
-  };
-  const cancelProposal = async () => {
-    setLoadingTx(true);
-    await submitTransaction({
-      args: [proposal.proposalId],
-      tx: TX.CANCEL_PROPOSAL,
-    });
-    setLoadingTx(false);
-  };
-  const cancelMinion = async () => {
-    setLoadingTx(true);
-    if (proposal.escrow) {
-      await submitTransaction({
-        tx: TX.ESCROW_MINION_CANCEL,
-        args: [proposal.proposalId, proposal.molochAddress],
-      });
-    } else {
-      await submitTransaction({
-        tx: TX.MINION_CANCEL,
-        args: [proposal.proposalId],
-        localValues: {
-          minionAddress: proposal.minionAddress,
-        },
-      });
-    }
-    setLoadingTx(false);
-  };
+  // const sponsorProposal = async () => {
+  //   setLoadingTx(true);
+  //   await submitTransaction({
+  //     args: [proposal.proposalId],
+  //     tx: TX.SPONSOR_PROPOSAL,
+  //   });
+  //   setLoadingTx(false);
+  // };
+  // const cancelProposal = async () => {
+  //   setLoadingTx(true);
+  //   await submitTransaction({
+  //     args: [proposal.proposalId],
+  //     tx: TX.CANCEL_PROPOSAL,
+  //   });
+  //   setLoadingTx(false);
+  // };
+  // const cancelMinion = async () => {
+  //   setLoadingTx(true);
+  //   if (proposal.escrow) {
+  //     await submitTransaction({
+  //       tx: TX.ESCROW_MINION_CANCEL,
+  //       args: [proposal.proposalId, proposal.molochAddress],
+  //     });
+  //   } else {
+  //     await submitTransaction({
+  //       tx: TX.MINION_CANCEL,
+  //       args: [proposal.proposalId],
+  //       localValues: {
+  //         minionAddress: proposal.minionAddress,
+  //       },
+  //     });
+  //   }
+  //   setLoadingTx(false);
+  // };
   const approveToken = async () => {
     setLoadingTx(true);
     const unlockAmount = MaxUint256.toString();
-    await submitTransaction({
-      args: [daoid, unlockAmount],
-      tx: TX.UNLOCK_TOKEN,
-      values: { tokenAddress: depositData.address, unlockAmount },
-    });
+    // await submitTransaction({
+    //   args: [daoid, unlockAmount],
+    //   tx: TX.UNLOCK_TOKEN,
+    //   values: { tokenAddress: '', unlockAmount },
+    // });
     setLoadingTx(false);
   };
 
-  if (isMember === null || !daoOverview) {
-    return <SkeletonActionCard />;
-  }
-  if ((isMember === true && depositData?.canSpend) || isMember === false) {
-    return (
-      <SponsorCard
-        isLoadingTx={isLoadingTx}
-        cancelProposal={cancelProposal}
-        cancelMinion={cancelMinion}
-        sponsorProposal={sponsorProposal}
-        address={address}
-        depositData={depositData}
-        {...props}
-      />
-    );
-  }
+  // if (isMember === null || !daoOverview) {
+  //   return <SkeletonActionCard />;
+  // }
+  // if ((isMember === true && depositData?.canSpend) || isMember === false) {
+  //   return (
+  //     <SponsorCard
+  //       isLoadingTx={isLoadingTx}
+  //       cancelProposal={cancelProposal}
+  //       cancelMinion={cancelMinion}
+  //       sponsorProposal={sponsorProposal}
+  //       address={address}
+  //       depositData={depositData}
+  //       {...props}
+  //     />
+  //   );
+  // }
   return (
     <UnlockTokenCard
-      depositData={depositData}
+      depositData={{}}
       isLoadingTx={isLoadingTx}
       approveToken={approveToken}
       {...props}
@@ -146,9 +146,7 @@ const UnlockTokenCard = ({
         status='Unsponsored | Approve Deposit Token'
         circleColor='green'
         helperText={
-          depositData?.hasBalance
-            ? propStatusText.approve(depositData?.symbol)
-            : propStatusText.noFunds(depositData?.symbol)
+          "You don't have enough deposit token to sponsor this proposal"
         }
       />
       <Flex>
@@ -168,66 +166,66 @@ const UnlockTokenCard = ({
   );
 };
 
-const SponsorCard = ({
-  isLoadingTx,
-  cancelProposal,
-  cancelMinion,
-  sponsorProposal,
-  depositData,
-  proposal,
-  canInteract,
-  isMember,
-  address,
-}) => {
-  return (
-    <PropActionBox>
-      <TopStatusBox
-        status='Unsponsored'
-        circleColor='green'
-        helperText={
-          depositData?.hasBalance
-            ? propStatusText.Unsponsored
-            : propStatusText.noFunds(depositData?.symbol)
-        }
-      />
-      <Flex>
-        <Button
-          size='sm'
-          minW='4rem'
-          fontWeight='700'
-          mr={['2', '2', 'auto']}
-          disabled={!canInteract || !isMember || !depositData.hasBalance}
-          onClick={sponsorProposal}
-          isLoading={isLoadingTx}
-        >
-          Sponsor {depositData?.deposit && `(${depositData.deposit})`}
-        </Button>
-        {proposal?.minionAddress &&
-          proposal.proposer === proposal.minionAddress && (
-            <Button
-              size='sm'
-              fontWeight='700'
-              minW='4rem'
-              variant='outline'
-              onClick={cancelMinion}
-              isLoading={isLoadingTx}
-            >
-              Cancel Minion
-            </Button>
-          )}
-        {address?.toLowerCase() === proposal?.proposer?.toLowerCase() && (
-          <Button
-            size='sm'
-            fontWeight='700'
-            minW='4rem'
-            variant='outline'
-            onClick={cancelProposal}
-            isLoading={isLoadingTx}
-          >
-            Cancel
-          </Button>
-        )}
-      </Flex>
-    </PropActionBox>
-  );
-};
+// const SponsorCard = ({
+//   isLoadingTx,
+//   cancelProposal,
+//   cancelMinion,
+//   sponsorProposal,
+//   depositData,
+//   proposal,
+//   canInteract,
+//   isMember,
+//   address,
+// }) => {
+//   return (
+//     <PropActionBox>
+//       <TopStatusBox
+//         status='Unsponsored'
+//         circleColor='green'
+//         helperText={
+//           depositData?.hasBalance
+//             ? propStatusText.Unsponsored
+//             : propStatusText.noFunds(depositData?.symbol)
+//         }
+//       />
+//       <Flex>
+//         <Button
+//           size='sm'
+//           minW='4rem'
+//           fontWeight='700'
+//           mr={['2', '2', 'auto']}
+//           disabled={!canInteract || !isMember || !depositData.hasBalance}
+//           onClick={sponsorProposal}
+//           isLoading={isLoadingTx}
+//         >
+//           Sponsor {depositData?.deposit && `(${depositData.deposit})`}
+//         </Button>
+//         {proposal?.minionAddress &&
+//           proposal.proposer === proposal.minionAddress && (
+//             <Button
+//               size='sm'
+//               fontWeight='700'
+//               minW='4rem'
+//               variant='outline'
+//               onClick={cancelMinion}
+//               isLoading={isLoadingTx}
+//             >
+//               Cancel Minion
+//             </Button>
+//           )}
+//         {address?.toLowerCase() === proposal?.proposer?.toLowerCase() && (
+//           <Button
+//             size='sm'
+//             fontWeight='700'
+//             minW='4rem'
+//             variant='outline'
+//             onClick={cancelProposal}
+//             isLoading={isLoadingTx}
+//           >
+//             Cancel
+//           </Button>
+//         )}
+//       </Flex>
+//     </PropActionBox>
+//   );
+// };

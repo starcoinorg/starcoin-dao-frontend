@@ -22,6 +22,19 @@
   ]
 }
 
+blockHeight: 6545885
+blockStateRoot: "0xffa6e0c0d4aa79020ee0f799ff4919637237e153accc30d782f652fc56f1a005"
+categoryId: "category2"
+description: "description2"
+discussion: "https://github.com/starcoinorg/discussion2"
+proposalId: {daoId: 'test_dao_id', proposalNumber: '2'}
+submittedAt: null
+submittedBy: null
+title: "title2"
+votingPeriodEnd: 1655728732815
+votingPeriodStart: 1956583272720
+votingType: "YES_NO"
+
 
 aborted: false
 actions: []

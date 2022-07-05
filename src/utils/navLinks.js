@@ -19,16 +19,16 @@ import { FaDiscourse } from 'react-icons/fa';
 // no slash on the path
 export const defaultDaoData = [
   { icon: RiBookMarkLine, label: 'Proposals', path: 'proposals' },
-  { icon: RiBankLine, label: 'Vaults', path: 'vaults' },
-  { icon: RiTeamLine, label: 'Members', path: 'members' },
-  {
-    icon: RiImage2Line,
-    label: 'Gallery',
-    path: 'gallery',
-  },
-  { icon: RiFileList2Line, label: 'Documents', path: 'docs' },
-  { icon: RiSettings3Line, label: 'Settings', path: 'settings' },
-  { icon: RiRocket2Line, label: 'Boosts', path: 'settings/boosts' },
+  // { icon: RiBankLine, label: 'Vaults', path: 'vaults' },
+  // { icon: RiTeamLine, label: 'Members', path: 'members' },
+  // {
+  //   icon: RiImage2Line,
+  //   label: 'Gallery',
+  //   path: 'gallery',
+  // },
+  // { icon: RiFileList2Line, label: 'Documents', path: 'docs' },
+  // { icon: RiSettings3Line, label: 'Settings', path: 'settings' },
+  // { icon: RiRocket2Line, label: 'Boosts', path: 'settings/boosts' },
 ];
 export const defaultHubData = [
   { icon: RiSearch2Line, label: 'Explore', path: '/explore' },

@@ -133,14 +133,17 @@ export const removeExecutionCheat = (proposalId, daoid) => {
 };
 
 export const getVoteData = (proposal, address, daoMember) => {
-  const hasVoted = memberVote(proposal, address);
-  const votedYes = hasVoted === 1;
-  const votedNo = hasVoted === 2;
+  // const hasVoted = memberVote(proposal, address);
+  const hasVoted = null;
+  const votedYes = hasVoted === 0;
+  const votedNo = hasVoted === 1;
   const userYes = votedYes && Number(daoMember?.shares);
   const userNo = votedNo && Number(daoMember?.shares);
-  const totalYes = Number(proposal?.yesShares);
-  const totalNo = Number(proposal?.noShares);
-  const totalVotes = Number(proposal?.yesShares) + Number(proposal?.noShares);
+  const totalYes = Number(proposal?.proposalVotingChoices[0]?.sequenceId || 0);
+  const totalNo = Number(proposal?.proposalVotingChoices[1]?.sequenceId || 0);
+  const totalVotes =
+    Number(proposal?.proposalVotingChoices[0]?.sequenceId || 0) +
+    Number(proposal?.proposalVotingChoices[1]?.sequenceId || 0);
   const isPassing = totalYes > totalNo;
   const isFailing = totalNo > totalYes;
 

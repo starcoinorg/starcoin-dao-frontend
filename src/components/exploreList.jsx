@@ -15,7 +15,7 @@ const ExploreList = ({ daoList }) => {
   return (
     <>
       {daos.length ? (
-        <Flex wrap='wrap' align='start' justify='space-around' w='100%'>
+        <Flex wrap='wrap' align='start' justify='flex-start' w='100%' ml={5}>
           {daoListRender}
         </Flex>
       ) : null}

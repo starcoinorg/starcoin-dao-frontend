@@ -22,37 +22,35 @@ import { ProposalStatus } from '../utils/proposalUtils';
 // };
 
 const PropActions = props => {
-  if (!props?.proposal?.status) return;
-  const {
-    proposal: { status },
-  } = props;
-  if (status === ProposalStatus.Unsponsored) {
+  if (!props.votingPeriodStart) {
     return <Unsponsored {...props} />;
   }
-  if (status === ProposalStatus.Cancelled) {
-    return <Cancelled {...props} />;
-  }
-  if (status === ProposalStatus.VotingPeriod) {
+  // if (status === ProposalStatus.Cancelled) {
+  //   return <Cancelled {...props} />;
+  // }
+  if (props.votingPeriodStart >= props.VotingPeriodEnd) {
     return <VotingPeriod {...props} />;
   }
   if (status === ProposalStatus.InQueue) {
     return <InQueue {...props} />;
   }
-  if (status === ProposalStatus.GracePeriod) {
-    return <GracePeriod {...props} />;
-  }
-  if (status === ProposalStatus.ReadyForProcessing) {
-    return <ReadyForProcessing {...props} />;
-  }
+  // if (status === ProposalStatus.GracePeriod) {
+  //   return <GracePeriod {...props} />;
+  // }
+  // if (status === ProposalStatus.ReadyForProcessing) {
+  //   return <ReadyForProcessing {...props} />;
+  // }
 
-  if (
-    status === ProposalStatus.Passed ||
-    status === ProposalStatus.Failed ||
-    status === ProposalStatus.NeedsExecution
-  ) {
-    return <Processed {...props} />;
-  }
-  return null;
+  // if (
+  //   status === ProposalStatus.Passed ||
+  //   status === ProposalStatus.Failed ||
+  //   status === ProposalStatus.NeedsExecution
+  // ) {
+  //   return <Processed {...props} />;
+  // }
+  return <VotingPeriod {...props} />;
+
+  // return null;
 };
 
 export default PropActions;

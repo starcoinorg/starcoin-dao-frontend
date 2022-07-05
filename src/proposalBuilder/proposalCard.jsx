@@ -19,7 +19,7 @@ const ProposalCardV2 = ({ proposal, interaction }) => {
 
   const { canInteract } = interaction || {};
 
-  const voteData = getVoteData(proposal, address, daoMember);
+  // const voteData = getVoteData(proposal, address, daoMember);
 
   return (
     <ContentBox p='1' mb={4} minHeight='10rem'>
@@ -34,7 +34,6 @@ const ProposalCardV2 = ({ proposal, interaction }) => {
           <PropActions
             proposal={proposal}
             canInteract={canInteract}
-            voteData={voteData}
             isMember={isMember}
             minionAction={minionAction}
             executeTX={executeTX}

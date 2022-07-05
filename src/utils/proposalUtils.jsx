@@ -564,11 +564,11 @@ export const getProposalDetailStatus = (proposal, status) => {
 // return boolean as to whether user voted on a given proposal
 export const memberVote = (proposal, userAddress = '0') => {
   const vote = proposal
-    ? proposal?.votes?.find(
-        vote => vote.memberAddress === userAddress?.toLowerCase(),
-      )
+    ? proposal?.accountVoteSummaries.length
+      ? proposal
+      : null
     : null;
-  return vote ? vote.uintVote : null;
+  return vote ? vote.accountVoteSummaries.choiceSequenceId[0] : null;
 };
 
 export const handleListFilter = (proposals, filter, daoMember, daoid) => {

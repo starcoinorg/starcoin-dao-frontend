@@ -13,7 +13,8 @@ const useBoost = () => {
 
   return {
     isActive(boostKey) {
-      return daoMetaData?.boosts[boostKey]?.active;
+      return true;
+      // daoMetaData?.boosts[boostKey]?.active;
     },
     isLaunched(boostKey) {
       return daoMetaData?.boosts[boostKey] !== undefined;

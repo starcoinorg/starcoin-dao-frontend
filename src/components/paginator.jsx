@@ -24,8 +24,9 @@ const Paginator = ({ perPage, setRecords, allRecords, reset }) => {
 
   const filterVisibleRecords = (acts, page) => {
     const start = (page - 1) * perPage;
+    console.log(acts, '////////////');
     const end = start + perPage;
-    return acts.slice(start, end);
+    return acts?.slice(start, end);
   };
 
   const handlePageChange = page => {

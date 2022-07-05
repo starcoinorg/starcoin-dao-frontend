@@ -29,7 +29,7 @@ import SpamFilterListNotification from './spamFilterListNotification';
 import useCanInteract from '../hooks/useCanInteract';
 import { useRequest } from '../hooks/useRequest';
 
-const ProposalsList = ({ proposals, customTerms }) => {
+const ProposalsList = ({ customTerms }) => {
   const { daoMember } = useDaoMember();
   const { address } = useInjectedProvider();
   const { isActive } = useBoost();
@@ -47,14 +47,16 @@ const ProposalsList = ({ proposals, customTerms }) => {
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
 
-  const { data, loading } = useRequest('proposals', {
+  const { data: proposals, loading } = useRequest('proposals', {
     method: 'get',
     params: {
-      daoId: daoid,
-      page: 1,
-      size: 1,
+      daoId: 'test_dao_id' || daoid,
+      page: '1',
+      size: '1',
     },
   });
+
+  console.log(proposals, '?????');
 
   useEffect(() => {
     const initializeFilters = (initFilter, initSort) => {
@@ -63,9 +65,11 @@ const ProposalsList = ({ proposals, customTerms }) => {
     };
     const sameUser = prevMember.current === address;
     if (!proposals || sameUser) return;
-    const activeProposals = proposals.filter(proposal =>
-      isProposalActive(proposal),
-    );
+    // const activeProposals = proposals.filter(proposal =>
+    //   isProposalActive(proposal),
+    // );
+
+    const activeProposals = proposals;
 
     const filters = getFilters(activeProposals);
     setFilterOptions(filters);
@@ -140,7 +144,7 @@ const ProposalsList = ({ proposals, customTerms }) => {
           options={filterOptions}
           handleSelect={handleFilter}
           label='Filter By'
-          count={listProposals?.length}
+          count={proposals?.length}
         />
         <ListSelect
           label='Sort By'
@@ -159,7 +163,7 @@ const ProposalsList = ({ proposals, customTerms }) => {
           performSearch={performSearch}
           resetSearch={resetSearch}
         />
-        <CsvDownloadButton entityList={listProposals} typename='Proposals' />
+        {/* <CsvDownloadButton entityList={listProposals} typename='Proposals' /> */}
       </Flex>
 
       {isLoaded && isActive('SPAM_FILTER') && <SpamFilterListNotification />}
@@ -168,7 +172,7 @@ const ProposalsList = ({ proposals, customTerms }) => {
         {isLoaded &&
           paginatedProposals?.map(proposal => (
             <ProposalCardV2
-              key={proposal.id}
+              key={proposal.categoryId}
               proposal={proposal}
               customTerms={customTerms}
               interaction={interaction}
@@ -180,7 +184,7 @@ const ProposalsList = ({ proposals, customTerms }) => {
         <Paginator
           perPage={5}
           setRecords={setPageProposals}
-          allRecords={listProposals}
+          allRecords={proposals}
         />
       ) : (
         <Flex w='100%' h='150px' align='center' justify='center'>
@@ -194,7 +198,7 @@ const ProposalsList = ({ proposals, customTerms }) => {
           />
         </Flex>
       )}
-      {listProposals && !listProposals.length && (
+      {proposals && !proposals.length && (
         <Box mt={6}>
           <NoListItem>
             <TextBox>No Proposals Here yet</TextBox>
