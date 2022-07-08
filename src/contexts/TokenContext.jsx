@@ -26,21 +26,19 @@ export const TokenProvider = ({ children }) => {
 
   // first fetch API USD values to get fast bank balance
   useEffect(() => {
-    const initDaoTokens = async () => {
-      const newDaoData = await initTokenData(
-        daochain,
-        daoOverview.tokenBalances,
-        setTokenPrices,
-      );
-
-      console.log('newDaoData', newDaoData);
-
-      setCurrentDaoTokens(newDaoData);
-      shouldFetchInit.current = false;
-    };
-    if (daoOverview?.tokenBalances && daochain && shouldFetchInit.current) {
-      initDaoTokens();
-    }
+    // const initDaoTokens = async () => {
+    //   const newDaoData = await initTokenData(
+    //     daochain,
+    //     daoOverview.tokenBalances,
+    //     setTokenPrices,
+    //   );
+    //   console.log('newDaoData', newDaoData);
+    //   setCurrentDaoTokens(newDaoData);
+    //   shouldFetchInit.current = false;
+    // };
+    // if (daoOverview?.tokenBalances && daochain && shouldFetchInit.current) {
+    //   initDaoTokens();
+    // }
   }, [daoOverview, daochain]);
 
   // then fetch contract values for more exact amount.

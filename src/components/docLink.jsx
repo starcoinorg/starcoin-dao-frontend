@@ -34,13 +34,13 @@ const DocLink = ({ locationName }) => {
 
   useEffect(() => {
     let shouldUpdate = true;
-    recentDocByLocationName({
-      locationName,
-      daoid,
-      daochain,
-      setDoc,
-      shouldUpdate,
-    });
+    // recentDocByLocationName({
+    //   locationName,
+    //   daoid,
+    //   daochain,
+    //   setDoc,
+    //   shouldUpdate,
+    // });
     return () => (shouldUpdate = false);
   }, []);
 

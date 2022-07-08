@@ -72,7 +72,7 @@ export const DaoProvider = ({ children }) => {
       ],
     };
 
-    bigGraphQuery(bigQueryOptions);
+    // bigGraphQuery(bigQueryOptions);
     hasPerformedBatchQuery.current = true;
   }, [
     daoid,
@@ -107,7 +107,7 @@ export const DaoProvider = ({ children }) => {
       ],
     };
     currentDao.current = null;
-    bigGraphQuery(bigQueryOptions);
+    // bigGraphQuery(bigQueryOptions);
   };
 
   const refreshAllDaoVaults = async () => {

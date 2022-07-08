@@ -19,13 +19,13 @@ import { MINION_ACTION_FUNCTION_NAMES } from '../utils/minionUtils';
 import { TX_HASH_POSTER } from '../graphQL/postQueries';
 
 export const pollTXHash = async ({ chainID, txHash }) => {
-  return graphQuery({
-    endpoint: getGraphEndpoint(chainID, 'subgraph_url'),
-    query: TX_HASH,
-    variables: {
-      id: txHash,
-    },
-  });
+  // return graphQuery({
+  //   endpoint: getGraphEndpoint(chainID, 'subgraph_url'),
+  //   query: TX_HASH,
+  //   variables: {
+  //     id: txHash,
+  //   },
+  // });
 };
 
 export const pollPosterTXHash = async ({ chainID, txHash }) => {

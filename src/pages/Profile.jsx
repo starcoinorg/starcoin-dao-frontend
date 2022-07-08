@@ -55,7 +55,7 @@ const Profile = ({ members, overview, daoTokens, activities }) => {
         token => +token.tokenBalance > 0,
       );
       if (tokensWithBalance?.length) {
-        initMemberTokens(tokensWithBalance);
+        // initMemberTokens(tokensWithBalance);
       } else {
         setTokensReceivable([]);
       }
