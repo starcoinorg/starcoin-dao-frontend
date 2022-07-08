@@ -90,6 +90,10 @@ const ActivityCard = ({ activity, displayAvatar, isLink = true }) => {
       ? `/dao/${chain}/${daoAddress}/proposals/${activity.proposalId}`
       : null;
 
+  const getChoiceSequenceId = choiceSequenceId => {
+    return choiceSequenceId === 0 ? 'Yes' : 'No';
+  };
+
   return (
     <ContentBox mt={3}>
       <Skeleton isLoaded={activity}>
@@ -105,9 +109,13 @@ const ActivityCard = ({ activity, displayAvatar, isLink = true }) => {
         )}
         <Flex direction='row' justifyContent='space-between'>
           <Flex direction='column'>
-            {activity?.title && (
+            {activity?.title ? (
               <Heading as='h4' size='sm'>
                 {`${name} ${activity.title}`}
+              </Heading>
+            ) : (
+              <Heading as='h4' size='sm'>
+                {`${name} ${getChoiceSequenceId(activity.choiceSequenceId)}`}
               </Heading>
             )}
             <Flex direction='row' align='center' mt={3}>
@@ -156,6 +164,10 @@ const ActivityCard = ({ activity, displayAvatar, isLink = true }) => {
                   {`${activity?.noVotes ? activity.noVotes : '--'} No`}
                 </Badge>
               )}
+              <Text as='i' fontSize='xs' ml={3}>
+                votingPower:{' '}
+                {activity?.votingPower ? activity.votingPower : '0'}
+              </Text>
               <Text as='i' fontSize='xs' ml={3}>
                 {activity?.createdAt ? timeToNow(activity.createdAt) : '--'}
               </Text>

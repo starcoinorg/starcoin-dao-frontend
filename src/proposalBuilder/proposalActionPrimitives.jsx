@@ -156,7 +156,11 @@ export const VotingBar = ({ voteData = {} }) => {
       mb='4'
       mt='4'
       size='sm'
-      colorScheme='chakraProgressBarHack'
+      colorScheme={
+        +voteData?.totalYes > +voteData?.totalNo
+          ? 'green'
+          : 'chakraProgressBarHack'
+      }
     />
   );
 };
@@ -192,7 +196,6 @@ export const VotingActive = ({
 export const VotingInactive = props => {
   const { voteData } = props;
   const { totalYesReadable, totalNoReadable, isPassing, isFailing } = voteData;
-
   return (
     <>
       <VotingBar voteData={voteData} />

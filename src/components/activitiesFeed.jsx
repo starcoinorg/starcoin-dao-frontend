@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import ActivityCard from './activityCard';
 import Paginator from './paginator';
 import TextBox from './TextBox';
+import { useParams } from 'react-router-dom';
+import { useRequest } from '../hooks/useRequest';
 
 const ActivitiesFeed = ({
   activities,
@@ -13,18 +15,30 @@ const ActivitiesFeed = ({
 }) => {
   const [allActivities, setAllActivities] = useState(null);
   const [pagedActivities, setPagedActivities] = useState(null);
+  const { daochain, daoid, propid } = useParams();
+
+  const { data: _activities, loading } = useRequest('accountVotes', {
+    method: 'get',
+    params: {
+      daoId: daoid,
+      proposalNumber: propid,
+      page: 0,
+      size: 10,
+    },
+  });
 
   useEffect(() => {
-    if (activities) {
-      setAllActivities(hydrateFn(activities));
+    if (_activities) {
+      setAllActivities(_activities);
     }
-  }, [activities]);
+  }, [_activities]);
 
   return (
     <>
       <TextBox>{heading}</TextBox>
-      {pagedActivities
-        ? pagedActivities.map((activity, index) => {
+      {_activities
+        ? _activities.map((activity, index) => {
+            activity.memberAddress = activity.accountVoteId.accountAddress;
             return (
               <ActivityCard
                 key={`${activity.id}-${index}`}
@@ -35,13 +49,13 @@ const ActivitiesFeed = ({
             );
           })
         : null}
-      {!allActivities?.length ? (
+      {!_activities?.length ? (
         <TextBox variant='value'>Not much happening yet</TextBox>
       ) : null}
       <Paginator
         perPage={limit}
         setRecords={setPagedActivities}
-        allRecords={allActivities}
+        allRecords={_activities}
       />
     </>
   );

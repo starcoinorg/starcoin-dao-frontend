@@ -8,6 +8,10 @@ import ExploreCard from './exploreCard';
 const ExploreList = ({ daoList }) => {
   const [daos, setDaos] = useState(daoList || []);
 
+  useEffect(() => {
+    setDaos(daoList);
+  }, [daoList]);
+
   const daoListRender = daos.map((dao, i) => {
     return <ExploreCard dao={dao} key={`${dao.id}-${i}`} />;
   });

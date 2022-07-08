@@ -71,6 +71,7 @@ const ExploreCard = ({ dao }) => {
       href={daoData?.meta?.version === '1' ? pokemolUrlExplore(daoData) : null}
       w={['100%', '100%', '100%', '340px', '340px']}
       mt={5}
+      mr={5}
       style={{ transition: 'all .15s linear' }}
       _hover={{ transform: 'scale(1.05)', cursor: 'pointer' }}
     >

@@ -61,18 +61,56 @@ const ProposalActions = ({
   const [nextProposalToProcess, setNextProposal] = useState(null);
   const [quorumNeeded, setQuorumNeeded] = useState(null);
 
-  const { data: accountVotes } = useRequest('sumAccountVotesGroupByChoice', {
-    method: 'get',
-    params: {
-      daoId: daoid,
-      proposalNumber: propid,
-    },
+  const [voteData, setVoteData] = useState({
+    hasVoted: null,
+    votedYes: false,
+    votedNo: false,
+    userYes: false,
+    userNo: false,
+    userYesReadable: false,
+    userNoReadable: false,
+    totalYes: 0,
+    totalNo: 0,
+    totalYesReadable: '(0)',
+    totalNoReadable: '(0)',
+    totalVotes: 0,
+    isPassing: true,
+    isFailing: false,
+    votePassedProcessFailed: false,
   });
+
+  useEffect(() => {
+    if (proposal?.accountVoteSummaries?.length) {
+      const accountVoteSummaries = proposal.accountVoteSummaries;
+      for (let i = 0; i < accountVoteSummaries.length; i++) {
+        const choiceSequenceId = accountVoteSummaries[i].choiceSequenceId;
+        const subtotalVotingPower = accountVoteSummaries[i].subtotalVotingPower;
+
+        if (choiceSequenceId === 0) {
+          setVoteData({
+            ...voteData,
+            totalYes: subtotalVotingPower,
+            totalYesReadable: `(${subtotalVotingPower})`,
+            totalVotes: voteData.totalVotes + subtotalVotingPower,
+          });
+        }
+
+        if (choiceSequenceId === 2) {
+          setVoteData({
+            ...voteData,
+            totalNo: subtotalVotingPower,
+            totalNoReadable: `(${subtotalVotingPower})`,
+            totalVotes: voteData.totalVotes + subtotalVotingPower,
+          });
+        }
+      }
+    }
+  }, [proposal]);
 
   const currentlyVoting = proposal => {
     return (
-      isBefore(Date.now(), new Date(+proposal?.proposal * 1000)) &&
-      isAfter(Date.now(), new Date(+proposal?.votingPeriodStart * 1000))
+      isBefore(Date.now(), new Date(+proposal?.votingPeriodEnd)) &&
+      isAfter(Date.now(), new Date(+proposal?.votingPeriodStart))
     );
   };
   const NetworkOverlay = () => (
@@ -306,175 +344,177 @@ const ProposalActions = ({
             </Flex>
           </Flex>
         )}
-        {(proposal?.status !== 'Unsponsored' || proposal?.proposalIndex) &&
-          proposal?.status !== 'Cancelled' && (
-            <>
-              <Flex mb={6} w='100%'>
-                <Skeleton
-                  isLoaded={proposal}
-                  w='100%'
-                  display='flex'
-                  flexDirection='row'
-                >
-                  {currentlyVoting(proposal) ? (
-                    <>
-                      {daoConnectedAndSameChain(
-                        address,
-                        daochain,
-                        injectedChain?.chainId,
-                      ) &&
-                        canInteract &&
-                        memberVote(proposal, address) === null && (
-                          <Flex w='48%' justify='space-around'>
-                            <Flex
-                              p={3}
-                              borderWidth='1px'
-                              borderColor='green.500'
-                              borderStyle='solid'
-                              borderRadius='40px'
-                              justiy='center'
-                              align='center'
-                            >
-                              <Icon
-                                as={FaThumbsUp}
-                                color='green.500'
-                                w='25px'
-                                h='25px'
-                                _hover={{ cursor: 'pointer' }}
-                                onClick={() => submitVote(proposal, 1)}
-                              />
-                            </Flex>
-                            <Flex
-                              p={3}
-                              borderWidth='1px'
-                              borderColor='red.500'
-                              borderStyle='solid'
-                              borderRadius='40px'
-                              justiy='center'
-                              align='center'
-                            >
-                              <Icon
-                                as={FaThumbsDown}
-                                color='red.500'
-                                w='25px'
-                                h='25px'
-                                transform='rotateY(180deg)'
-                                _hover={{ cursor: 'pointer' }}
-                                onClick={() => submitVote(proposal, 2)}
-                              />
-                            </Flex>
+
+        {
+          <>
+            <Flex mb={6} w='100%'>
+              <Skeleton
+                isLoaded={proposal}
+                w='100%'
+                display='flex'
+                flexDirection='row'
+              >
+                {currentlyVoting(proposal) ? (
+                  <>
+                    {daoConnectedAndSameChain(
+                      address,
+                      daochain,
+                      injectedChain?.chainId,
+                    ) &&
+                      canInteract &&
+                      memberVote(proposal, address) === null && (
+                        <Flex w='48%' justify='space-around'>
+                          <Flex
+                            p={3}
+                            borderWidth='1px'
+                            borderColor='green.500'
+                            borderStyle='solid'
+                            borderRadius='40px'
+                            justiy='center'
+                            align='center'
+                          >
+                            <Icon
+                              as={FaThumbsUp}
+                              color='green.500'
+                              w='25px'
+                              h='25px'
+                              _hover={{ cursor: 'pointer' }}
+                              onClick={() => submitVote(proposal, 1)}
+                            />
                           </Flex>
-                        )}
-                      <Flex
-                        justify={
+                          <Flex
+                            p={3}
+                            borderWidth='1px'
+                            borderColor='red.500'
+                            borderStyle='solid'
+                            borderRadius='40px'
+                            justiy='center'
+                            align='center'
+                          >
+                            <Icon
+                              as={FaThumbsDown}
+                              color='red.500'
+                              w='25px'
+                              h='25px'
+                              transform='rotateY(180deg)'
+                              _hover={{ cursor: 'pointer' }}
+                              onClick={() => submitVote(proposal, 2)}
+                            />
+                          </Flex>
+                        </Flex>
+                      )}
+                    <Flex
+                      justify={
+                        daoMember && memberVote(proposal, address) === null
+                          ? 'flex-end'
+                          : 'center'
+                      }
+                      align='center'
+                      w={
+                        daoMember && memberVote(proposal, address) === null
+                          ? '50%'
+                          : '100%'
+                      }
+                    >
+                      <Box
+                        as='i'
+                        fontSize={
                           daoMember && memberVote(proposal, address) === null
-                            ? 'flex-end'
-                            : 'center'
-                        }
-                        align='center'
-                        w={
-                          daoMember && memberVote(proposal, address) === null
-                            ? '50%'
-                            : '100%'
+                            ? 'xs'
+                            : 'md'
                         }
                       >
-                        <Box
-                          as='i'
-                          fontSize={
-                            daoMember && memberVote(proposal, address) === null
-                              ? 'xs'
-                              : 'md'
-                          }
-                        >
-                          {+proposal?.noShares > +proposal?.yesShares &&
-                            'Not Passing'}
-                          {+proposal?.yesShares > +proposal?.noShares && (
-                            <Box>Currently Passing</Box>
-                          )}
-                          {+proposal?.yesShares === 0 &&
-                            +proposal?.noShares === 0 &&
-                            'Awaiting Votes'}
-                        </Box>
-                      </Flex>
-                    </>
-                  ) : (
-                    <>
-                      <Flex justify='center' align='center' w='100%'>
-                        <TextBox size='xl' variant='value'>
-                          {proposal?.status === 'Failed' && 'Failed'}
-                          {proposal?.status === 'Passed' && 'Passed'}
-                          {(proposal?.status === 'GracePeriod' ||
-                            proposal?.status === 'ReadyForProcessing') &&
-                            +proposal?.yesShares > +proposal?.noShares &&
-                            'Passed'}
-                          {(proposal?.status === 'GracePeriod' ||
-                            proposal?.status === 'ReadyForProcessing') &&
-                            +proposal?.noShares > +proposal?.yesShares &&
-                            'Failed'}
-                        </TextBox>
-                      </Flex>
-                    </>
-                  )}
-                </Skeleton>
-              </Flex>
-              <Flex
-                w='100%'
-                h='20px'
-                borderRadius='999px'
-                backgroundColor='whiteAlpha.500'
-                overflow='hidden'
-                justify='space-between'
-              >
-                {+proposal?.yesShares > 0 && (
-                  <MotionBox
-                    h='100%'
-                    backgroundColor='green.500'
-                    borderRight={
-                      proposal?.noShares > 0
-                        ? '1px solid white'
-                        : '0px solid transparent'
-                    }
-                    animate={{
-                      width: [
-                        '0%',
-                        `${(+proposal?.yesShares /
-                          (+proposal.yesShares + +proposal.noShares)) *
-                          100}%`,
-                      ],
-                    }}
-                    transition={{ duration: 0.5 }}
-                  />
+                        {+voteData?.totalNo > +voteData?.totalYes &&
+                          'Not Passing'}
+                        {+voteData?.totalYes > +voteData?.totalNo && (
+                          <Box>Currently Passing</Box>
+                        )}
+                        {!proposal?.accountVoteSummaries.length &&
+                          'Awaiting Votes'}
+                      </Box>
+                    </Flex>
+                  </>
+                ) : (
+                  <>
+                    <Flex justify='center' align='center' w='100%'>
+                      <TextBox size='xl' variant='value'>
+                        {/* {proposal?.status === 'Failed' && 'Failed'}
+                        {proposal?.status === 'Passed' && 'Passed'}
+                        {(proposal?.status === 'GracePeriod' ||
+                          proposal?.status === 'ReadyForProcessing') &&
+                          +voteData?.totalYes > +voteData?.totalNo &&
+                          'Passed'}
+                        {(proposal?.status === 'GracePeriod' ||
+                          proposal?.status === 'ReadyForProcessing') &&
+                          +voteData?.totalNo > +voteData?.totalYes &&
+                          'Failed'} */}
+                        {+voteData?.totalYes > +voteData?.totalNo && 'Passed'}
+                        {+voteData?.totalNo > +voteData?.totalYes && 'Failed'}
+                      </TextBox>
+                    </Flex>
+                  </>
                 )}
-                {+proposal?.noShares > 0 && (
-                  <MotionBox
-                    h='100%'
-                    backgroundColor='red.500'
-                    animate={{
-                      width: [
-                        '0%',
-                        `${(+proposal?.noShares /
-                          (+proposal.yesShares + +proposal.noShares)) *
-                          100}%`,
-                      ],
-                    }}
-                    transition={{ duration: 0.5 }}
-                  />
-                )}
-              </Flex>
-              <Flex justify='space-between' mt={3}>
-                <Skeleton isLoaded={proposal?.yesShares}>
-                  <TextBox variant='value' size='xl'>
-                    {`${proposal?.yesShares || '0'} Yes`}
-                  </TextBox>
-                </Skeleton>
-                <Skeleton isLoaded={proposal?.noShares}>
-                  <TextBox variant='value' size='xl'>
-                    {`${proposal?.noShares || '0'} No`}
-                  </TextBox>
-                </Skeleton>
-              </Flex>
-            </>
-          )}
+              </Skeleton>
+            </Flex>
+            <Flex
+              w='100%'
+              h='20px'
+              borderRadius='999px'
+              backgroundColor='whiteAlpha.500'
+              overflow='hidden'
+              justify='space-between'
+            >
+              {+voteData?.totalYes > 0 && (
+                <MotionBox
+                  h='100%'
+                  backgroundColor='green.500'
+                  borderRight={
+                    voteData?.totalNo > 0
+                      ? '1px solid white'
+                      : '0px solid transparent'
+                  }
+                  animate={{
+                    width: [
+                      '0%',
+                      `${(+voteData?.totalYes /
+                        (+voteData?.totalYes + +voteData?.totalNo)) *
+                        100}%`,
+                    ],
+                  }}
+                  transition={{ duration: 0.5 }}
+                />
+              )}
+              {+voteData?.totalNo > 0 && (
+                <MotionBox
+                  h='100%'
+                  backgroundColor='red.500'
+                  animate={{
+                    width: [
+                      '0%',
+                      `${(+voteData?.totalNo /
+                        (+voteData?.totalYes + +voteData?.totalNo)) *
+                        100}%`,
+                    ],
+                  }}
+                  transition={{ duration: 0.5 }}
+                />
+              )}
+            </Flex>
+            <Flex justify='space-between' mt={3}>
+              <Skeleton isLoaded={voteData || voteData.totalYes !== 0}>
+                <TextBox variant='value' size='xl'>
+                  {`${voteData?.totalYes || '0'} Yes`}
+                </TextBox>
+              </Skeleton>
+              <Skeleton isLoaded={voteData || voteData.totalNo == 0}>
+                <TextBox variant='value' size='xl'>
+                  {`${voteData?.totalNo || '0'} No`}
+                </TextBox>
+              </Skeleton>
+            </Flex>
+          </>
+        }
+
         <Stack>
           {daoConnectedAndSameChain(
             address,
@@ -515,14 +555,14 @@ const ProposalActions = ({
             <Stack mt='15px' justify='center'>
               {(proposal?.status === 'NeedsExecution' &&
                 proposal?.minionAddress) ||
-              (quorumNeeded && proposal.yesShares >= quorumNeeded) ? (
+              (quorumNeeded && voteData.totalYes >= quorumNeeded) ? (
                 <MinionExecute
                   hideMinionExecuteButton={hideMinionExecuteButton}
                   minionAction={minionAction}
                   proposal={proposal}
                   early={
                     earlyExecuteMinionType(proposal) &&
-                    proposal.yesShares >= quorumNeeded &&
+                    voteData.totalYes >= quorumNeeded &&
                     proposal?.status === 'NeedsExecution'
                   }
                 />

@@ -568,7 +568,7 @@ export const memberVote = (proposal, userAddress = '0') => {
       ? proposal
       : null
     : null;
-  return vote ? vote.accountVoteSummaries.choiceSequenceId[0] : null;
+  return vote ? vote.accountVoteSummaries[0].choiceSequenceId : null;
 };
 
 export const handleListFilter = (proposals, filter, daoMember, daoid) => {

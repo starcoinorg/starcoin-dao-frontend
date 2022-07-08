@@ -43,19 +43,22 @@ const ProposalsList = ({ customTerms }) => {
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
   const [filter, setFilter] = useSessionStorage(`${daoid}-filter`, null);
   const [sort, setSort] = useSessionStorage(`${daoid}-sort`, null);
+  const [proposals, setProposals] = useState([]);
 
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
 
-  const { data: proposals, loading } = useRequest('proposals', {
+  let { data: _proposals, loading } = useRequest(`proposals/${daoid}%2C1`, {
     method: 'get',
-    params: {
-      daoId: 'test_dao_id' || daoid,
-      page: '1',
-      size: '1',
-    },
   });
 
+  useEffect(() => {
+    if (_proposals) {
+      setProposals([_proposals]);
+    }
+  }, [_proposals]);
+
+  // proposals = [proposals];
   useEffect(() => {
     const initializeFilters = (initFilter, initSort) => {
       setFilter(initFilter);

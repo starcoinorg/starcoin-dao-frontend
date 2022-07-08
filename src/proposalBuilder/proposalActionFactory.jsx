@@ -22,21 +22,24 @@ import { ProposalStatus } from '../utils/proposalUtils';
 // };
 
 const PropActions = props => {
-  if (!props.proposal.votingPeriodStart) {
-    return <Unsponsored {...props} />;
-  }
+  // if (!props.proposal.votingPeriodStart) {
+  //   return <Unsponsored {...props} />;
+  // }
   // if (status === ProposalStatus.Cancelled) {
   //   return <Cancelled {...props} />;
   // }
-  if (props.proposal.votingPeriodStart >= props.proposal.VotingPeriodEnd) {
+  const nowDate = Date.now();
+  const votingPeriodEnd = props.proposal.votingPeriodEnd;
+  if (props.proposal.votingPeriodEnd > Date.now()) {
     return <VotingPeriod {...props} />;
   }
   // if (status === ProposalStatus.InQueue) {
   //   return <InQueue {...props} />;
   // }
-  // if (status === ProposalStatus.GracePeriod) {
-  //   return <GracePeriod {...props} />;
-  // }
+  console.log(votingPeriodEnd, nowDate, votingPeriodEnd < nowDate);
+  if (props.proposal.accountVoteSummaries.length && votingPeriodEnd < nowDate) {
+    return <Processed {...props} />;
+  }
   // if (status === ProposalStatus.ReadyForProcessing) {
   //   return <ReadyForProcessing {...props} />;
   // }
@@ -48,9 +51,9 @@ const PropActions = props => {
   // ) {
   //   return <Processed {...props} />;
   // }
-  return <VotingPeriod {...props} />;
+  // return <VotingPeriod {...props} />;
 
-  // return null;
+  return null;
 };
 
 export default PropActions;

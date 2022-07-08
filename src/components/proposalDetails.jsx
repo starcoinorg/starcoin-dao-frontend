@@ -205,14 +205,14 @@ const ProposalDetails = ({
             shouldFetchProfile
           />
           {/* {handleRecipient()} */}
-          <Flex align='center'>
+          {/* <Flex align='center'>
             {memberVote(proposal, address) !== null &&
               (+memberVote(proposal, address) === 1 ? (
                 <Vote thumbsUp />
               ) : (
                 <Vote thumbsDown />
               ))}
-          </Flex>
+          </Flex> */}
         </Flex>
       </ContentBox>
     </Box>

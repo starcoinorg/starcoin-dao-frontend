@@ -8,9 +8,40 @@ import Layout from '../components/layout';
 import Loading from '../components/loading';
 import MainViewLayout from '../components/mainViewLayout';
 import { useRequest } from '../hooks/useRequest';
+import axios from 'axios';
+
+const url_prev =
+  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/dev/v1/';
 
 const Explore = () => {
   const { theme, resetTheme } = useContext(CustomThemeContext);
+  const [daoList, setDaoList] = useState([]);
+  const [daos, setDaos] = useState([]);
+  const [_daos, _setDaos] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getAllData = async () => {
+    let { data: daos, loading } = await axios.get(`${url_prev}daos`, {
+      method: 'get',
+      params: {
+        page: '1',
+        size: '1',
+      },
+    });
+
+    setDaos(daos);
+
+    const { data: _daos } = await axios.get(`${url_prev}daos`, {
+      method: 'get',
+      params: {
+        page: '0',
+        size: '1',
+      },
+    });
+
+    _setDaos(_daos);
+    setLoading(loading);
+  };
 
   useEffect(() => {
     if (theme.active) {
@@ -18,21 +49,23 @@ const Explore = () => {
     }
   }, [theme, resetTheme]);
 
-  const { data: daos, loading } = useRequest('daos', {
-    method: 'get',
-    params: {
-      page: '1',
-      size: '1',
-    },
-  });
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+  useEffect(() => {
+    if (daos && _daos) {
+      setDaoList([...daos, ..._daos]);
+    }
+  }, [daos, _daos]);
 
   return (
     <Layout>
       <MainViewLayout header='Explore DAOs'>
         {!loading ? (
           <>
-            <ExploreFilters daoCount={daos?.length || 0} />
-            <ExploreList daoList={daos} />
+            <ExploreFilters daoCount={daoList?.length || 0} />
+            <ExploreList daoList={daoList} />
           </>
         ) : (
           <Loading message='Fetching DAOs...' />
