@@ -16,6 +16,24 @@ import { validate } from '../utils/validation';
 import { TX } from '../data/txLegos/contractTX';
 
 const VotingPeriod = ({ proposal, voteData, canInteract, isMember }) => {
+  voteData = {
+    hasVoted: null,
+    votedYes: false,
+    votedNo: false,
+    userYes: false,
+    userNo: false,
+    userYesReadable: false,
+    userNoReadable: false,
+    totalYes: 754,
+    totalNo: 0,
+    totalYesReadable: '(754)',
+    totalNoReadable: '(0)',
+    totalVotes: 754,
+    isPassing: true,
+    isFailing: false,
+    votePassedProcessFailed: false,
+  };
+
   const [isLoading, setLoading] = useState(false);
   const { submitTransaction } = useTX();
   const getTime = () => {
@@ -53,12 +71,13 @@ const VotingPeriod = ({ proposal, voteData, canInteract, isMember }) => {
       <TopStatusBox
         status='Voting'
         appendStatusText={`ends ${getTime()}`}
-        circleColor={voteData.isPassing ? 'green' : 'red'}
+        // circleColor={voteData.isPassing ? 'green' : 'red'}
+        circleColor={'green'}
         proposal={proposal}
         voteData={voteData}
         quorum
       />
-      {voteData.hasVoted ? (
+      {voteData?.hasVoted ? (
         <>
           <MiddleActionBox>
             <VotingInactive voteData={voteData} />
@@ -72,7 +91,7 @@ const VotingPeriod = ({ proposal, voteData, canInteract, isMember }) => {
               voteYes={voteYes}
               voteNo={voteNo}
               loadingAll={isLoading}
-              disableAll={!canInteract || !isMember}
+              // disableAll={!canInteract || !isMember}
               proposal={proposal}
               voteData={voteData}
             />

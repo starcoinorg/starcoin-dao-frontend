@@ -17,6 +17,7 @@ import { contractByProposalType } from '../utils/txHelpers';
 import { MINION_ACTION_FUNCTION_NAMES } from '../utils/proposalUtils';
 import { fetchSingleProposal } from '../utils/theGraph';
 import { proposalResolver } from '../utils/resolvers';
+import { useRequest } from '../hooks/useRequest';
 import axios from 'axios';
 
 const Proposal = ({
@@ -29,44 +30,17 @@ const Proposal = ({
 }) => {
   const { refreshDao } = useTX();
   const { propid, daochain, daoid } = useParams();
-
   const [minionAction, setMinionAction] = useState(null);
   const [hideMinionExecuteButton, setHideMinionExecuteButton] = useState(null);
   const [currentProposal, setCurrentProposal] = useState(null);
 
-  useEffect(() => {
-    const setUpProposal = async () => {
-      const prop = activities.proposals?.find(
-        proposal => proposal.proposalId === propid,
-      );
-
-      if (!prop) {
-        const res = await fetchSingleProposal({
-          chainID: daochain,
-          molochAddress: daoid,
-          proposalId: propid,
-        });
-
-        if (res.proposals[0]) {
-          setCurrentProposal(
-            proposalResolver(res.proposals[0], {
-              status: true,
-              title: true,
-              description: true,
-              link: true,
-              hash: true,
-              proposalType: true,
-            }),
-          );
-        }
-      } else {
-        setCurrentProposal(prop);
-      }
-    };
-    if (activities && propid.match(/^\d+$/)) {
-      setUpProposal();
-    }
-  }, [activities, propid]);
+  const { data: proposals, loading } = useRequest(`proposals/${daoid}%2C1`, {
+    method: 'get',
+    params: {
+      page: '1',
+      size: '1',
+    },
+  });
 
   const handleRefreshDao = () => {
     const skipVaults = true;
@@ -105,22 +79,6 @@ const Proposal = ({
     if (currentProposal && currentProposal.minion) {
       getMinionAction(currentProposal);
     }
-
-    const getDaos = async () => {
-      const res = await axios.get(
-        'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com:80/dev/v1//dev/v1/proposals',
-        {
-          params: {
-            daoid,
-            page: '1',
-            size: '1',
-          },
-        },
-      );
-
-      getDaos();
-      console.log(res.data, 'sssss');
-    };
   }, [currentProposal, daochain]);
 
   return (
@@ -150,12 +108,12 @@ const Proposal = ({
                 </TextBox>
               </Flex>
             </Link>
-            {/* <ProposalDetails
-              proposal={currentProposal}
+            <ProposalDetails
+              proposal={proposals}
               overview={overview}
               hideMinionExecuteButton={hideMinionExecuteButton}
               minionAction={minionAction}
-            /> */}
+            />
           </Flex>
           <Flex
             direction='column'
@@ -176,17 +134,18 @@ const Proposal = ({
               />
             </Flex>
             <Stack pt={6} spacing={6}>
-              {(!currentProposal?.cancelled || currentProposal?.escrow) && (
-                <ProposalActions
-                  proposal={currentProposal}
-                  overview={overview}
-                  daoMember={daoMember}
-                  daoProposals={daoProposals}
-                  delegate={delegate}
-                  hideMinionExecuteButton={hideMinionExecuteButton}
-                  minionAction={minionAction}
-                />
-              )}
+              <ProposalActions
+                proposal={proposals}
+                overview={overview}
+                daoMember={daoMember}
+                daoProposals={daoProposals}
+                delegate={delegate}
+                hideMinionExecuteButton={hideMinionExecuteButton}
+                minionAction={minionAction}
+              />
+              {/* {(!currentProposal?.cancelled || currentProposal?.escrow) && (
+                
+              )} */}
               <ActivitiesFeed
                 limit={6}
                 activities={currentProposal}

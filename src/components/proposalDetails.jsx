@@ -144,12 +144,12 @@ const ProposalDetails = ({
               </Box>
             </Flex>
           )}
-          <Box mt={proposal?.link || proposal?.minionAddress ? 6 : 2}>
-            {proposal?.link && <MediaBox link={proposal.link} />}
+          <Box mt={proposal?.discussion || proposal?.minionAddress ? 6 : 2}>
+            {proposal?.discussion && <MediaBox link={proposal.discussion} />}
           </Box>
           <DiscourseProposalTopic proposal={proposal} />
         </Box>
-        <Flex w='100%' justify='space-between' mt={6} wrap='wrap'>
+        {/* <Flex w='100%' justify='space-between' mt={6} wrap='wrap'>
           {(proposal?.tributeOffered > 0 || !proposal?.tributeOffered) && (
             <TextIndicator
               label={
@@ -190,7 +190,7 @@ const ProposalDetails = ({
               value={proposal?.lootRequested}
             />
           )}
-        </Flex>
+        </Flex> */}
         <Flex
           mt={3}
           mb={6}
@@ -200,11 +200,11 @@ const ProposalDetails = ({
           w='100%'
         >
           <MemberIndicator
-            address={proposal?.createdBy}
+            address={proposal?.submittedBy}
             label='submitted by'
             shouldFetchProfile
           />
-          {handleRecipient()}
+          {/* {handleRecipient()} */}
           <Flex align='center'>
             {memberVote(proposal, address) !== null &&
               (+memberVote(proposal, address) === 1 ? (

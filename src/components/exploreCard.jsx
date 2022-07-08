@@ -36,7 +36,7 @@ const ExploreCard = ({ dao }) => {
   };
 
   const renderTags = () => {
-    if (daoData.meta?.moreTags) {
+    if (daoData.meta?.tags) {
       return (
         <Flex direction='row' wrap='wrap'>
           {daoData.meta.tags.map(tag => {
@@ -70,7 +70,6 @@ const ExploreCard = ({ dao }) => {
       to={daoData?.meta?.version === '1' ? null : `/dao/0x1/${daoData.id}`}
       href={daoData?.meta?.version === '1' ? pokemolUrlExplore(daoData) : null}
       w={['100%', '100%', '100%', '340px', '340px']}
-      h='340px'
       mt={5}
       style={{ transition: 'all .15s linear' }}
       _hover={{ transform: 'scale(1.05)', cursor: 'pointer' }}
@@ -97,7 +96,6 @@ const ExploreCard = ({ dao }) => {
       <Text
         fontSize='md'
         color='whiteAlpha.800'
-        h='80px'
         my={3}
         style={{
           WebkitBoxOrient: 'vertical',
@@ -113,7 +111,7 @@ const ExploreCard = ({ dao }) => {
       <Box fontSize='md' mt={2} fontFamily='heading'>
         {/* ${numberWithCommas(dao.guildBankValue.toFixed(2))} */}
       </Box>
-      <Flex direction='row' align='center'>
+      {/* <Flex direction='row' align='center'>
         <Box fontSize='sm' mr={3}>
           {daoData?.members
             ? `${
@@ -131,11 +129,11 @@ const ExploreCard = ({ dao }) => {
           {daoData?.tokens?.length} Token
           {daoData?.tokens?.length > 1 && 's'}
         </Box>
-      </Flex>
+      </Flex> */}
       <Flex direction='row' align='center' mt={3}>
-        <Badge colorScheme='secondary' variant='outline' m='3px 5px 3px 0px'>
+        {/* <Badge colorScheme='secondary' variant='outline' m='3px 5px 3px 0px'>
           {daoData.meta?.purpose}
-        </Badge>
+        </Badge> */}
         <Badge colorScheme='primary' variant='outline' m='3px 5px 3px 0px'>
           {daoData.meta?.network}
         </Badge>

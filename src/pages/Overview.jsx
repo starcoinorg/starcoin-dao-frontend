@@ -18,6 +18,7 @@ const Overview = React.memo(function overview({
   customTerms,
   daoMetaData,
   daoVaults,
+  daoData,
 }) {
   return (
     <MainViewLayout header='Overview' customTerms={customTerms} isDao>
@@ -34,6 +35,7 @@ const Overview = React.memo(function overview({
                 isMember={isMember}
                 members={members}
                 daoVaults={daoVaults}
+                daoData={daoData}
               />
               {daoMetaData?.servicesUrl ? <ServicesBanner /> : null}
               {daoMetaData?.tags.includes('haus party favor') ? (

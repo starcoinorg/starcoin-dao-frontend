@@ -1,6 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Flex, Box, Skeleton, Button, Avatar, Spinner } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Skeleton,
+  Button,
+  Avatar,
+  Input,
+  Spinner,
+  Badge,
+  Stack,
+  FormControl,
+  InputGroup,
+  InputLeftAddon,
+} from '@chakra-ui/react';
+import { AiOutlineCaretDown, AiFillQuestionCircle } from 'react-icons/ai';
+import {
+  RiDiscordFill,
+  RiTelegramFill,
+  RiTwitterFill,
+  RiGlobeLine,
+  RiMediumFill,
+} from 'react-icons/ri';
 import makeBlockie from 'ethereum-blockies-base64';
 import { utils } from 'ethers';
 
@@ -15,10 +36,9 @@ import { getActiveMembers } from '../utils/dao';
 import { getTerm, getTitle, themeImagePath } from '../utils/metadata';
 import { POST_LOCATIONS } from '../utils/poster';
 
-const OverviewCard = ({ daoOverview, members, daoVaults }) => {
+const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
   const { daochain, daoid } = useParams();
   const { daoMetaData, customTerms } = useMetaData();
-  console.log(daoMetaData, 'ddddddddd');
   const [activeMembers, setActiveMembers] = useState(null);
   const totalShares = utils.commify(daoOverview?.totalShares || 0);
   const totalLoot = utils.commify(daoOverview?.totalLoot || 0);
@@ -30,6 +50,34 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
       setActiveMembers(getActiveMembers(members));
     }
   }, [members]);
+
+  const renderTags = () => {
+    if (daoData.daoMetaData?.tags) {
+      return (
+        <Flex direction='row' wrap='wrap'>
+          {daoData.daoMetaData?.tags.split(',').map(tag => {
+            return (
+              <Badge
+                key={tag}
+                colorScheme='secondary.500'
+                variant='outline'
+                fontSize='9px'
+                _notLast={{ marginRight: '3px' }}
+                mt={1}
+                _hover={{
+                  cursor: 'pointer',
+                  color: 'white',
+                }}
+              >
+                {tag}
+              </Badge>
+            );
+          })}
+        </Flex>
+      );
+    }
+    return null;
+  };
 
   return (
     <Box>
@@ -57,8 +105,34 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
         <Skeleton isLoaded={daoMetaData?.description}>
           <Box mt={6}>
             {daoMetaData?.description ? daoMetaData.description : '--'}
+            {renderTags()}
           </Box>
         </Skeleton>
+        <Flex mt={10}>
+          <TextBox size='xs' color='whiteAlpha.900'>
+            Community Links:
+          </TextBox>
+          <Flex ml={2} spacing={2} color='#fff'>
+            <a
+              href={daoMetaData?.communityLinksTwitter}
+              style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
+            >
+              <RiTwitterFill />
+            </a>
+            <a
+              href={daoMetaData?.communityLinksDiscord}
+              style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
+            >
+              <RiDiscordFill />
+            </a>
+            <a
+              href={daoMetaData?.communityLinksTelegram}
+              style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
+            >
+              <RiTelegramFill />
+            </a>
+          </Flex>
+        </Flex>
         {/* <Flex direction='row' w='100%' justify='space-between' mt={6}>
           <Box>
             <TextBox size='xs' title={getTitle(customTerms, 'Members')}>

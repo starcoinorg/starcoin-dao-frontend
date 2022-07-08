@@ -11,7 +11,6 @@ const SocialsLinkList = ({
 }) => {
   // console.log(dao.daoMetaData);
   // console.log(getTerm(dao.customTerms, 'proposals'));
-
   return (
     <>
       {socialLinks?.length > 0

@@ -20,44 +20,18 @@ import RaidAvatar from '../assets/img/raidguild__avatar.png';
 
 const featuredDaoList = [
   {
-    address: '0xb152b115c94275b54a3f0b08c1aa1d21f32a659a',
-    network: '0x64',
-    image: MCAvatar,
-    name: 'MetaCartel',
-    description: 'The airport to Web3',
-    badges: ['Grants', 'xDai'],
-  },
-  {
-    address: '0x93fa3b9d57bcddda4ed2ee40831f5859a9c417b7',
-    network: '0x89',
-    image: MGDAvatar,
-    name: 'Meta Gamma Delta',
-    description: 'Supporting women-led projects in Web3',
-    badges: ['Grants', 'Polygon'],
-  },
-  {
-    address: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f',
-    network: '0x64',
-    image: RaidAvatar,
-    name: 'RaidGuild',
-    description: 'Collective of Web3 product builders',
-    badges: ['Guilds', 'xDai'],
-  },
-  {
-    address: '0x58234d4bf7a83693dc0815d97189ed7d188f6981',
-    network: '0x64',
-    image: LexAvatar,
-    name: 'LexDAO',
-    description: 'The decentralized legal engineering guild',
-    badges: ['Grants', 'xDai'],
-  },
-  {
-    address: '0x4570b4faf71e23942b8b9f934b47ccedf7540162',
+    address: 'starswap_dao',
     network: '0x1',
-    image: VenturesAvatar,
-    name: 'Venture DAO',
-    description: 'Investing in Web3 projects and teams',
-    badges: ['Investments', 'Mainnet'],
+    name: 'Starswap DAO',
+    description: 'Starswap DAO',
+    badges: ['DEX', 'AMM', 'Starcoin', 'STC', 'swap', 'dao'],
+  },
+  {
+    address: 'test_dao_id',
+    network: '0x1',
+    name: 'test_dao_id',
+    description: 'test_dao_id',
+    badges: ['Starcoin', 'STC', 'swap', 'dao'],
   },
 ];
 

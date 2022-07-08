@@ -26,7 +26,7 @@ const Main = () => {
   );
 
   return (
-    <MainViewLayout header='Hub' headerEl={address ? ctaButton : null}>
+    <MainViewLayout header='Hub'>
       <Flex wrap='wrap'>
         <Box
           w={['100%', null, null, null, '60%']}
@@ -44,8 +44,7 @@ const Main = () => {
         </Box>
         {address && (
           <Box w={['100%', null, null, null, '40%']}>
-            <HausCard />
-
+            {/* <HausCard /> */}
             {hasDaos() ? <NewsFeed /> : <FeaturedDaos />}
           </Box>
         )}

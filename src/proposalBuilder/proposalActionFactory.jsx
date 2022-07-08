@@ -22,18 +22,18 @@ import { ProposalStatus } from '../utils/proposalUtils';
 // };
 
 const PropActions = props => {
-  if (!props.votingPeriodStart) {
+  if (!props.proposal.votingPeriodStart) {
     return <Unsponsored {...props} />;
   }
   // if (status === ProposalStatus.Cancelled) {
   //   return <Cancelled {...props} />;
   // }
-  if (props.votingPeriodStart >= props.VotingPeriodEnd) {
+  if (props.proposal.votingPeriodStart >= props.proposal.VotingPeriodEnd) {
     return <VotingPeriod {...props} />;
   }
-  if (status === ProposalStatus.InQueue) {
-    return <InQueue {...props} />;
-  }
+  // if (status === ProposalStatus.InQueue) {
+  //   return <InQueue {...props} />;
+  // }
   // if (status === ProposalStatus.GracePeriod) {
   //   return <GracePeriod {...props} />;
   // }

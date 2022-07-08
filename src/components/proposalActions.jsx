@@ -36,6 +36,7 @@ import { createContract } from '../utils/contract';
 import { LOCAL_ABI } from '../utils/abi';
 import { supportedChains } from '../utils/chain';
 import { earlyExecuteMinionType } from '../utils/minionUtils';
+import { useRequest } from '../hooks/useRequest';
 
 const MotionBox = motion(Box);
 
@@ -48,7 +49,7 @@ const ProposalActions = ({
   overview,
   proposal,
 }) => {
-  const { daochain, daoid } = useParams();
+  const { daochain, daoid, propid } = useParams();
   const { address, injectedChain, injectedProvider } = useInjectedProvider();
   const { submitTransaction } = useTX();
   const { customTerms } = useMetaData();
@@ -60,10 +61,18 @@ const ProposalActions = ({
   const [nextProposalToProcess, setNextProposal] = useState(null);
   const [quorumNeeded, setQuorumNeeded] = useState(null);
 
+  const { data: accountVotes } = useRequest('sumAccountVotesGroupByChoice', {
+    method: 'get',
+    params: {
+      daoId: daoid,
+      proposalNumber: propid,
+    },
+  });
+
   const currentlyVoting = proposal => {
     return (
-      isBefore(Date.now(), new Date(+proposal?.votingPeriodEnds * 1000)) &&
-      isAfter(Date.now(), new Date(+proposal?.votingPeriodStarts * 1000))
+      isBefore(Date.now(), new Date(+proposal?.proposal * 1000)) &&
+      isAfter(Date.now(), new Date(+proposal?.votingPeriodStart * 1000))
     );
   };
   const NetworkOverlay = () => (

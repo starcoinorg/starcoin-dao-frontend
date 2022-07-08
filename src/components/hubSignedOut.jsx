@@ -72,7 +72,6 @@ const HubSignedOut = () => {
           method: 'stc_requestAccounts',
         });
         initialData.changeAccounts(newAccounts);
-        console.log(window.starcoin, '???');
       } catch (error) {
         console.error(error);
       }
@@ -116,7 +115,6 @@ const HubSignedOut = () => {
         direction='column'
         align='center'
         w='100%'
-        bgImage={`url(${Bauhaus})`}
         bgSize='contain'
         bgPosition='center'
         bgRepeat='no-repeat'
@@ -124,7 +122,7 @@ const HubSignedOut = () => {
       >
         <Box textAlign='left'>
           <Box fontSize='2xl' fontFamily='heading' fontWeight={700}>
-            Welcome to DAOhaus v2
+            Welcome to Genesis DAO
           </Box>
           <Text fontSize='xl' mb={5}>
             Your new Hub for all Moloch DAO activity

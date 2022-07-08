@@ -32,12 +32,12 @@ export const defaultDaoData = [
 ];
 export const defaultHubData = [
   { icon: RiSearch2Line, label: 'Explore', path: '/explore' },
-  { icon: RiFireLine, label: 'Summon', path: '/summon' },
-  {
-    icon: RiQuestionLine,
-    label: 'Help',
-    href: 'https://daohaus.club/docs',
-  },
+  // { icon: RiFireLine, label: 'Summon', path: '/summon' },
+  // {
+  //   icon: RiQuestionLine,
+  //   label: 'Help',
+  //   href: 'https://daohaus.club/docs',
+  // },
 ];
 
 export const generateDaoLinks = (

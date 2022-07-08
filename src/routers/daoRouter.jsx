@@ -80,6 +80,7 @@ const DaoRouter = () => {
             members={daoMembers}
             daoMetaData={daoMetaData}
             daoVaults={daoVaults}
+            daoData={dao}
           />
         </Route>
         <Route exact path={`${path}/proposals`}>

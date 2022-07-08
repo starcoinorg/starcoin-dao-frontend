@@ -26,7 +26,7 @@ const SpamFilterListNotification = () => {
           On
         </Badge>
       </Box>
-      <Flex position='relative' justifyContent='space-between'>
+      {/* <Flex position='relative' justifyContent='space-between'>
         {isActive('SPAM_FILTER') && (
           <Box mr={5}>
             <Link to={`/dao/${daochain}/${daoid}/proposals/spam`}>
@@ -39,7 +39,7 @@ const SpamFilterListNotification = () => {
             View Boost Settings
           </Link>
         </Box>
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };

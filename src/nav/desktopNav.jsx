@@ -92,7 +92,7 @@ const DesktopNav = ({ dao }) => {
       <Flex direction='column' wrap='wrap'>
         <>
           <NavLinkList dao={dao} view='desktop' />
-          <Box>
+          {/* <Box>
             <Popover placement='right' w='auto' enabled={false}>
               <Tooltip
                 label='Community Links'
@@ -139,7 +139,7 @@ const DesktopNav = ({ dao }) => {
                 </Portal>
               )}
             </Popover>
-          </Box>
+          </Box> */}
         </>
       </Flex>
     </Flex>

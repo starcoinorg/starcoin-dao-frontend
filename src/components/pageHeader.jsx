@@ -32,7 +32,7 @@ const PageHeader = ({ isDao, header, headerEl, customTerms }) => {
         d={['none', null, null, 'flex']}
       >
         {isDao && <WrongNetworkToolTip />}
-        <HausBalance />
+        {/* <HausBalance /> */}
         <Web3SignIn isDao={isDao} />
       </Flex>
     </Flex>

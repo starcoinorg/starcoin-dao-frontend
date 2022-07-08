@@ -56,8 +56,6 @@ const ProposalsList = ({ customTerms }) => {
     },
   });
 
-  console.log(proposals, '?????');
-
   useEffect(() => {
     const initializeFilters = (initFilter, initSort) => {
       setFilter(initFilter);
