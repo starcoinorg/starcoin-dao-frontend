@@ -1,7 +1,7 @@
 {
   "name": "Genesis DAO",
   "short_name": "Genesis DAO",
-  "description": "Genesis DAO.",
+  "description": "Starcoin | Genesis DAO.",
   "providedBy": {
     "name": "Genesis DAO",
     "url": "http://test-dao.starcoin.org.s3-website-ap-northeast-1.amazonaws.com/"
@@ -11,8 +11,6 @@
   "display": "minimal-ui",
   "Scope": "/",
   "start_url": "/",
-  "iconPath": "",
-  "icons": [
-  ],
+  "iconPath": "logo.svg",
   "splash_pages": null
 }
