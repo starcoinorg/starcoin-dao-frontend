@@ -1,7 +1,7 @@
 {
   "name": "Genesis DAO",
   "short_name": "Genesis DAO",
-  "description": "Genesis DAO is a no code platform for Moloch DAOs.",
+  "description": "Genesis DAO.",
   "providedBy": {
     "name": "Genesis DAO",
     "url": "http://test-dao.starcoin.org.s3-website-ap-northeast-1.amazonaws.com/"
