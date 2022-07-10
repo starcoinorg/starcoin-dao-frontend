@@ -11,6 +11,6 @@
   "display": "minimal-ui",
   "Scope": "/",
   "start_url": "/",
-  "iconPath": "logo.svg",
+  "iconPath": "images/icons/logo.png",
   "splash_pages": null
 }
