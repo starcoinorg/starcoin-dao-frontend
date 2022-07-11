@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { useToast } from '@chakra-ui/react';
+import {
+  useToast,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Button,
+  AlertDialogCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
 
 import { useTX } from '../contexts/TXContext';
 import { ParaSm } from '../components/typography';
@@ -123,103 +134,70 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     return response.data;
   };
 
-  const voteYes = async () => {
-    setLoading(true);
-    const accountPowerData = await getPower();
-    if (+accountPowerData.totalVotingPower === 0) {
-      toast({
-        title: 'Error',
-        description: 'Voting Power = 0',
-        position: 'top-right',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    } else {
-      const message = JSON.stringify({
-        daoId: proposal.proposalId.daoId,
-        proposalNumber: +proposal.proposalId.proposalNumber,
-        accountAddress: address,
-        votingPower: accountPowerData.totalVotingPower,
-        choiceSequenceId: 1,
+  const signHandle = async choiceSequenceId => {
+    const message = JSON.stringify({
+      daoId: proposal.proposalId.daoId,
+      proposalNumber: +proposal.proposalId.proposalNumber,
+      accountAddress: address,
+      votingPower: accountPowerTotal,
+      choiceSequenceId,
+    });
+
+    const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
+    const networkId = `1`;
+    const extraParams = { networkId };
+    const getSign = async () => {
+      const sign = await window.starcoin.request({
+        method: 'personal_sign',
+        params: [msg, address, extraParams],
       });
 
-      const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
-      const networkId = `1`;
-      const extraParams = { networkId };
-      const getSign = async () => {
-        const sign = await window.starcoin.request({
-          method: 'personal_sign',
-          params: [msg, address, extraParams],
-        });
+      return sign;
+    };
 
-        return sign;
-      };
+    const sign = await getSign();
 
-      const sign = await getSign();
-
+    try {
       const ret = await axios.post(castVoteUrl, {
         signedMessageHex: sign,
       });
 
       setTimeout(() => {
+        setLoading(false);
         window.location.reload();
       }, 3000);
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err.message,
+        position: 'top-right',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
-    // await submitTransaction({
-    //   args: [proposal.proposalIndex, 1],
-    //   tx: TX.SUBMIT_VOTE,
-    // });
+  };
 
-    setLoading(false);
+  const voteYes = async () => {
+    setLoading(true);
+    const accountPowerData = await getPower();
+    setAccountPowerTotal(+accountPowerData.totalVotingPower);
+    setChoiceSequenceId(1);
+    onOpen();
   };
 
   const voteNo = async () => {
     setLoading(true);
     const accountPowerData = await getPower();
-    if (+accountPowerData.totalVotingPower === 0) {
-      toast({
-        title: 'Error',
-        description: 'Voting Power = 0',
-        position: 'top-right',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    } else {
-      const message = JSON.stringify({
-        daoId: proposal.proposalId.daoId,
-        proposalNumber: +proposal.proposalId.proposalNumber,
-        accountAddress: address,
-        votingPower: accountPowerData.totalVotingPower,
-        choiceSequenceId: 2,
-      });
-
-      const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
-      const networkId = `1`;
-      const extraParams = { networkId };
-      const getSign = async () => {
-        const sign = await window.starcoin.request({
-          method: 'personal_sign',
-          params: [msg, address, extraParams],
-        });
-
-        return sign;
-      };
-
-      const sign = await getSign();
-
-      const ret = await axios.post(castVoteUrl, {
-        signedMessageHex: sign,
-      });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-    }
-
-    setLoading(false);
+    setAccountPowerTotal(+accountPowerData.totalVotingPower);
+    setChoiceSequenceId(2);
+    onOpen();
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+  const [accountPowerTotal, setAccountPowerTotal] = useState(0);
+  const [choiceSequenceId, setChoiceSequenceId] = useState(null);
 
   return (
     <PropActionBox>
@@ -254,6 +232,60 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
           {/* <ParaSm fontStyle='italic'> Vote if you&apos;re a member</ParaSm> */}
         </>
       )}
+      <AlertDialog
+        motionPreset='slideInBottom'
+        leastDestructiveRef={cancelRef}
+        onClose={() => {
+          onClose();
+          setLoading(false);
+        }}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader color={'#000'}>Confirm Vote</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody color={'#000'}>
+            You have <i>{accountPowerTotal}</i> voting rights, All votes can be
+            cast at one time only, and cannot be modified after cast
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button
+              ref={cancelRef}
+              onClick={() => {
+                onClose();
+                setLoading(false);
+              }}
+              sx={{
+                border: '1px solid rgb(255, 150, 142)',
+                background: '#fff',
+                color: '#000',
+                _hover: {
+                  background: '#fff',
+                  color: '#000',
+                },
+                _focus: {
+                  background: '#fff',
+                  color: '#000',
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              colorScheme={'red'}
+              ml={3}
+              disabled={+accountPowerTotal === 0}
+              onClick={() => {
+                signHandle(choiceSequenceId);
+              }}
+            >
+              Confirm Vote
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </PropActionBox>
   );
 };
