@@ -188,7 +188,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
             {'BLOCK HEIGHT'}
           </Text>
           <Text as='i' fontSize='xs'>
-            {proposal.blockHeight || 0}
+            {proposal?.blockHeight || 0}
           </Text>
         </Flex>
         <Flex mt={6} alignItems='center'>
