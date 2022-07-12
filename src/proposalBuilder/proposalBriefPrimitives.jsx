@@ -60,14 +60,17 @@ export const PropCardTransfer = ({
     </Flex>
   );
 };
-export const PropCardDate = ({ label, dateTimeMillis }) => {
+export const PropCardDate = ({ label, dateTimeMillis, opacity }) => {
   const submissionDateText = useMemo(() => {
     if (dateTimeMillis) {
       return generateProposalDateText(dateTimeMillis);
     }
   }, [dateTimeMillis]);
   return (
-    <CardLabel textTransform='none'>{`${label} ${submissionDateText}`}</CardLabel>
+    <CardLabel
+      textTransform='none'
+      opacity={opacity}
+    >{`${label} ${submissionDateText}`}</CardLabel>
   );
 };
 

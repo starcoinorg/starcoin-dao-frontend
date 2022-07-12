@@ -40,6 +40,30 @@ import { useRequest } from '../hooks/useRequest';
 
 const MotionBox = motion(Box);
 
+const getVoteOptionData = (votingChoices, accountVote) => {
+  if (!votingChoices) return [];
+
+  const ret = votingChoices.map(item => {
+    if (accountVote.length) {
+      accountVote.map(vote => {
+        if (!item.subtotalVotingPower) {
+          item.subtotalVotingPower = 0;
+        }
+
+        if (vote.choiceSequenceId === item.sequenceId) {
+          item.subtotalVotingPower = vote.subtotalVotingPower;
+        }
+      });
+    } else {
+      item.subtotalVotingPower = 0;
+    }
+
+    return item;
+  });
+
+  return ret;
+};
+
 const ProposalActions = ({
   daoMember,
   daoProposals,
@@ -79,32 +103,57 @@ const ProposalActions = ({
     votePassedProcessFailed: false,
   });
 
-  useEffect(() => {
-    if (proposal?.accountVoteSummaries?.length) {
-      const accountVoteSummaries = proposal.accountVoteSummaries;
-      for (let i = 0; i < accountVoteSummaries.length; i++) {
-        const choiceSequenceId = accountVoteSummaries[i].choiceSequenceId;
-        const subtotalVotingPower = accountVoteSummaries[i].subtotalVotingPower;
+  const getVoteOptionData = (votingChoices, accountVote) => {
+    if (!votingChoices) return [];
 
-        if (choiceSequenceId === 0) {
-          setVoteData({
-            ...voteData,
-            totalYes: subtotalVotingPower,
-            totalYesReadable: `(${subtotalVotingPower})`,
-            totalVotes: voteData.totalVotes + subtotalVotingPower,
-          });
-        }
+    const ret = votingChoices.map(item => {
+      if (accountVote.length) {
+        accountVote.map(vote => {
+          if (!item.subtotalVotingPower) {
+            item.subtotalVotingPower = 0;
+          }
 
-        if (choiceSequenceId === 2) {
-          setVoteData({
-            ...voteData,
-            totalNo: subtotalVotingPower,
-            totalNoReadable: `(${subtotalVotingPower})`,
-            totalVotes: voteData.totalVotes + subtotalVotingPower,
-          });
-        }
+          if (vote.choiceSequenceId === item.sequenceId) {
+            item.subtotalVotingPower = vote.subtotalVotingPower;
+          }
+        });
+      } else {
+        item.subtotalVotingPower = 0;
       }
-    }
+
+      return item;
+    });
+
+    return ret;
+  };
+
+  useEffect(() => {
+    const optionsData = getVoteOptionData(
+      proposal?.proposalVotingChoices,
+      proposal?.accountVoteSummaries,
+    );
+
+    optionsData.map(item => {
+      if (item.title === 'Yes' || item.title === 'YES') {
+        setVoteData(
+          Object.assign(voteData, {
+            totalYes: item.subtotalVotingPower,
+            totalYesReadable: `(${item.subtotalVotingPower})`,
+            totalVotes: +voteData.totalVotes + item.subtotalVotingPower,
+          }),
+        );
+      }
+
+      if (item.title === 'No' || item.title === 'NO') {
+        setVoteData(
+          Object.assign(voteData, {
+            totalNo: item.subtotalVotingPower,
+            totalNoReadable: `(${item.subtotalVotingPower})`,
+            totalVotes: +voteData.totalVotes + item.subtotalVotingPower,
+          }),
+        );
+      }
+    });
   }, [proposal]);
 
   const currentlyVoting = proposal => {
@@ -500,17 +549,22 @@ const ProposalActions = ({
                 />
               )}
             </Flex>
-            <Flex justify='space-between' mt={3}>
-              <Skeleton isLoaded={voteData || voteData.totalYes !== 0}>
-                <TextBox variant='value' size='xl'>
-                  {`${voteData?.totalYes || '0'} Yes`}
-                </TextBox>
-              </Skeleton>
-              <Skeleton isLoaded={voteData || voteData.totalNo == 0}>
-                <TextBox variant='value' size='xl'>
-                  {`${voteData?.totalNo || '0'} No`}
-                </TextBox>
-              </Skeleton>
+            <Flex justify='space-between' flexDirection='column' mt={3}>
+              {getVoteOptionData(
+                proposal?.proposalVotingChoices,
+                proposal?.accountVoteSummaries,
+              ).map((item, index) => (
+                <Skeleton key={index} isLoaded={true}>
+                  <TextBox
+                    variant='value'
+                    size='xl'
+                    style={{ display: 'flex' }}
+                  >
+                    <Text style={{ flex: 1 }}>{`${item.title}`}</Text>
+                    <Text>{`${item.subtotalVotingPower}`}</Text>
+                  </TextBox>
+                </Skeleton>
+              ))}
             </Flex>
           </>
         }

@@ -194,10 +194,10 @@ export const timeToNow = time => {
   });
 };
 export const formatCreatedAt = createdAt => {
-  return format(new Date(createdAt * 1000), 'MMM dd, yyyy');
+  return format(new Date(createdAt), 'MMM dd, yyyy');
 };
 export const formatDate = (dateTimeMillis, formatDate = 'MMM dd, yyyy') => {
-  return format(new Date(dateTimeMillis * 1000), formatDate);
+  return format(new Date(dateTimeMillis), formatDate);
 };
 
 export const formatPeriods = (period, duration) => {

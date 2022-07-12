@@ -1,36 +1,58 @@
 import React from 'react';
-import { Box, Button, Flex, Progress } from '@chakra-ui/react';
+import { Box, Button, Flex, Progress, Text } from '@chakra-ui/react';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 
 import { ParaSm } from '../components/typography';
 import ExecuteQuorum from './executeQuorum';
 
+const getVoteOptionData = (votingChoices, accountVote) => {
+  if (!votingChoices) return [];
+
+  const ret = votingChoices.map(item => {
+    if (accountVote.length) {
+      accountVote.map(vote => {
+        if (!item.subtotalVotingPower) {
+          item.subtotalVotingPower = 0;
+        }
+
+        if (vote.choiceSequenceId === item.sequenceId) {
+          item.subtotalVotingPower = vote.subtotalVotingPower;
+        }
+      });
+    } else {
+      item.subtotalVotingPower = 0;
+    }
+
+    return item;
+  });
+
+  return ret;
+};
+
 export const StatusCircle = ({ color }) => (
   <Box borderRadius='50%' background={color} h='.6rem' w='.6rem' mr='2' />
 );
 export const VoteButton = props => {
-  const { voteslabel, votes } = props;
-  if (votes === 'yes') {
-    return (
+  const { voteslabel, votes, optionsdata } = props;
+
+  return (
+    <Flex
+      style={{
+        cursor: 'pointer',
+        marginBottom: '0.625rem',
+      }}
+      justifyContent='center'
+      alignItems='center'
+    >
+      <Text
+        fontSize={'0.88rem'}
+        flex={'1'}
+      >{`${optionsdata.title}（${optionsdata.subtotalVotingPower}）`}</Text>
       <Button size='sm' minW='4rem' {...props}>
-        {`Yes ${voteslabel}`}
+        {`Vote`}
       </Button>
-    );
-  }
-  if (votes === 'no') {
-    return (
-      <Button
-        size='sm'
-        minW='4rem'
-        backgroundColor='white'
-        color='black'
-        {...props}
-      >
-        {`No ${voteslabel}`}
-      </Button>
-    );
-  }
-  return null;
+    </Flex>
+  );
 };
 
 export const InactiveButton = props =>
@@ -145,10 +167,13 @@ export const UserVoteData = ({ voteData = {} }) => {
   );
 };
 
-export const VotingBar = ({ voteData = {} }) => {
+export const VotingBar = ({ voteData = {}, proposal = {} }) => {
   const { totalVotes, totalYes } = voteData;
+  const getNow = Date.now();
   const barPercentage =
-    totalVotes && totalYes && ((totalYes / totalVotes) * 100).toFixed();
+    ((proposal.votingPeriodEnd - proposal.votingPeriodStart) /
+      (proposal.votingPeriodEnd - getNow)) *
+    100;
 
   return (
     <Progress
@@ -156,11 +181,7 @@ export const VotingBar = ({ voteData = {} }) => {
       mb='4'
       mt='4'
       size='sm'
-      colorScheme={
-        +voteData?.totalYes > +voteData?.totalNo
-          ? 'green'
-          : 'chakraProgressBarHack'
-      }
+      colorScheme={barPercentage > 100 ? 'green' : 'chakraProgressBarHack'}
     />
   );
 };
@@ -170,35 +191,41 @@ export const VotingActive = ({
   voteNo,
   disableAll,
   loadingAll,
+  proposal,
   voteData,
-}) => (
-  <>
-    <VotingBar voteData={voteData} />
-    <Flex justifyContent='space-between'>
-      <VoteButton
-        votes='no'
-        onClick={voteNo}
-        isDisabled={disableAll}
-        isLoading={loadingAll}
-        voteslabel={voteData.totalNoReadable}
-      />
-      <VoteButton
-        votes='yes'
-        onClick={voteYes}
-        isDisabled={disableAll}
-        isLoading={loadingAll}
-        voteslabel={voteData.totalYesReadable}
-      />
-    </Flex>
-  </>
-);
+}) => {
+  const voteOptions = getVoteOptionData(
+    proposal.proposalVotingChoices,
+    proposal.accountVoteSummaries,
+  );
+  return (
+    <>
+      <VotingBar voteData={voteData} proposal={proposal} />
+      <Text fontSize={'1.25rem'}>Vote Options:</Text>
+      <Flex flexDirection='column'>
+        {voteOptions.map((item, index) => (
+          <VoteButton
+            key={index}
+            votes={item.title}
+            sequenceid={item.sequenceId}
+            onClick={() => voteNo(item.sequenceId)}
+            optionsdata={item}
+            isDisabled={disableAll}
+            isLoading={loadingAll}
+            voteslabel={voteData.totalNoReadable}
+          />
+        ))}
+      </Flex>
+    </>
+  );
+};
 
 export const VotingInactive = props => {
-  const { voteData } = props;
+  const { voteData, proposal } = props;
   const { totalYesReadable, totalNoReadable, isPassing, isFailing } = voteData;
   return (
     <>
-      <VotingBar voteData={voteData} />
+      <VotingBar voteData={voteData} proposal={proposal} />
       <Flex justifyContent='space-between'>
         <InactiveButton
           leftIcon={isFailing && <AiOutlineClose />}

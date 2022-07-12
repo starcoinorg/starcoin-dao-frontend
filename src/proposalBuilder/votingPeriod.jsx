@@ -186,11 +186,11 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     onOpen();
   };
 
-  const voteNo = async () => {
+  const voteHandler = async sequenceId => {
     setLoading(true);
     const accountPowerData = await getPower();
     setAccountPowerTotal(+accountPowerData.totalVotingPower);
-    setChoiceSequenceId(2);
+    setChoiceSequenceId(sequenceId);
     onOpen();
   };
 
@@ -221,8 +221,8 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         <>
           <MiddleActionBox>
             <VotingActive
-              voteYes={voteYes}
-              voteNo={voteNo}
+              voteYes={voteHandler}
+              voteNo={voteHandler}
               loadingAll={isLoading}
               disableAll={disabled}
               proposal={proposal}

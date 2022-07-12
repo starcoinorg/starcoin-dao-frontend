@@ -26,6 +26,7 @@ import {
 import { getCustomProposalTerm } from '../utils/metadata';
 import { generateSFLabels, TIP_LABELS } from '../utils/toolTipLabels';
 import { handleDecimals } from '../utils/general';
+import { PropCardDate } from '../proposalBuilder/proposalBriefPrimitives';
 
 const urlify = text => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -204,15 +205,30 @@ const ProposalDetails = ({
             label='submitted by'
             shouldFetchProfile
           />
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'submitted at'}
+            </TextBox>
+            <PropCardDate
+              label='Submitted'
+              dateTimeMillis={proposal?.submittedAt}
+              opacity='1'
+            />
+          </Flex>
+          {/* <MemberIndicator
+            address={proposal?.submittedAt}
+            label='submitted at'
+            shouldFetchProfile
+          /> */}
           {/* {handleRecipient()} */}
-          {/* <Flex align='center'>
+          <Flex align='center' visibility='hidden'>
             {memberVote(proposal, address) !== null &&
               (+memberVote(proposal, address) === 1 ? (
                 <Vote thumbsUp />
               ) : (
                 <Vote thumbsDown />
               ))}
-          </Flex> */}
+          </Flex>
         </Flex>
       </ContentBox>
     </Box>

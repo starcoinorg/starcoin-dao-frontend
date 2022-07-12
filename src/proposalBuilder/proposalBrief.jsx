@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Flex, Box, Button } from '@chakra-ui/react';
+import { Flex, Box, Button, Text } from '@chakra-ui/react';
 
 import { CardLabel, ParaMd } from '../components/typography';
 import CustomTransfer from './customTransferFactory';
@@ -10,8 +10,10 @@ import {
   PropCardOffer,
   PropCardRequest,
 } from './proposalBriefPrimitives';
+import { useRequest } from '../hooks/useRequest';
 
 import { CUSTOM_CARD_DATA } from '../data/proposalData';
+import { useEffect } from 'react';
 
 const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
   const { daochain, daoid } = useParams();
@@ -22,7 +24,15 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
     Number(proposal.paymentRequested) > 0;
   const isCrossChain = proposal.minion?.crossChainMinion;
   const { customTransferUI } = CUSTOM_CARD_DATA[proposal.proposalType] || {};
+  const [daoData, setDaoData] = useState(null);
 
+  const { data: dao } = useRequest(`daos/${daoid}`);
+
+  useEffect(() => {
+    if (dao) {
+      setDaoData(dao);
+    }
+  }, [dao]);
   return (
     <Flex
       width={['100%', '100%', '60%']}
@@ -88,6 +98,20 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
           >
             View Details
           </Button>
+        </Flex>
+        <Flex flexDirection='column'>
+          <Text size='xs' mb={2}>
+            {'STRATEGYID'}
+          </Text>
+          <Text as='i' fontSize='xs'>
+            {daoData?.daoStrategies[0]?.strategyId || ''}
+          </Text>
+        </Flex>
+        <Flex flexDirection='column' mt={5}>
+          <Text size='xs' mb={2}>
+            {'DAOSTRATEGIES'}
+          </Text>
+          <Text>{daoData?.daoStrategies[0]?.description || ''}</Text>
         </Flex>
       </Box>
     </Flex>

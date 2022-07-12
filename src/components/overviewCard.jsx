@@ -13,6 +13,7 @@ import {
   FormControl,
   InputGroup,
   InputLeftAddon,
+  Text,
 } from '@chakra-ui/react';
 import { AiOutlineCaretDown, AiFillQuestionCircle } from 'react-icons/ai';
 import {
@@ -35,6 +36,7 @@ import DocLink from './docLink';
 import { getActiveMembers } from '../utils/dao';
 import { getTerm, getTitle, themeImagePath } from '../utils/metadata';
 import { POST_LOCATIONS } from '../utils/poster';
+import { useRequest } from '../hooks/useRequest';
 
 const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
   const { daochain, daoid } = useParams();
@@ -44,6 +46,15 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
   const totalLoot = utils.commify(daoOverview?.totalLoot || 0);
   const history = useHistory();
   const { isActive } = useBoost();
+  const [proposalData, setProposalData] = useState(null);
+
+  const { data: proposal } = useRequest(`proposals/${daoid}%2C1`);
+
+  useEffect(() => {
+    if (proposal) {
+      setProposalData(proposal);
+    }
+  }, [proposal]);
 
   useEffect(() => {
     if (members?.length) {
@@ -172,6 +183,22 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
           )}
         </Box> */}
         <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} />
+        <Flex mt={6} alignItems='center'>
+          <Text size='xs' mr={5} minWidth='9.625rem'>
+            {'BLOCK HEIGHT'}
+          </Text>
+          <Text as='i' fontSize='xs'>
+            {proposal.blockHeight || 0}
+          </Text>
+        </Flex>
+        <Flex mt={6} alignItems='center'>
+          <Text size='xs' mr={5} minWidth='9.625rem'>
+            {'BLOCK STATE ROOT'}
+          </Text>
+          <Text as='i' fontSize='xs'>
+            {proposal.blockStateRoot || ''}
+          </Text>
+        </Flex>
         <Flex mt={6}>
           {/* <Button
             variant='outline'

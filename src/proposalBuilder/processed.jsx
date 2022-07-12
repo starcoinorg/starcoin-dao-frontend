@@ -126,6 +126,7 @@ const Processed = props => {
           {...props}
           justifyContent='space-between'
           voteData={voteData}
+          proposal={proposal}
         />
       </MiddleActionBox>
       <Flex alignItems='center'>
