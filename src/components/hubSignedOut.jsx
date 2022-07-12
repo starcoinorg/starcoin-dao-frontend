@@ -122,7 +122,7 @@ const HubSignedOut = () => {
       >
         <Box textAlign='left'>
           <Box fontSize='2xl' fontFamily='heading' fontWeight={700}>
-            Welcome to Genesis DAO
+            Welcome to DAOSpace
           </Box>
           <Text fontSize='xl' mb={5}>
             Your new Hub for all Moloch DAO activity

@@ -196,7 +196,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
             {'BLOCK STATE ROOT'}
           </Text>
           <Text as='i' fontSize='xs'>
-            {proposal.blockStateRoot || ''}
+            {proposal?.blockStateRoot || ''}
           </Text>
         </Flex>
         <Flex mt={6}>

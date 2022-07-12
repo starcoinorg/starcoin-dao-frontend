@@ -26,7 +26,7 @@ const Main = () => {
   );
 
   return (
-    <MainViewLayout header='Hub'>
+    <MainViewLayout header='DAOSpace'>
       <Flex wrap='wrap'>
         <Box
           w={['100%', null, null, null, '60%']}
