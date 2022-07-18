@@ -40,7 +40,7 @@ import { getTerm, getTitle, themeImagePath } from '../utils/metadata';
 import { POST_LOCATIONS } from '../utils/poster';
 import { useRequest } from '../hooks/useRequest';
 
-const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
+const OverviewCard = ({ daoOverview, members, daoVaults }) => {
   const { daochain, daoid } = useParams();
   const { daoMetaData, customTerms } = useMetaData();
   const [activeMembers, setActiveMembers] = useState(null);
@@ -48,15 +48,16 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
   const totalLoot = utils.commify(daoOverview?.totalLoot || 0);
   const history = useHistory();
   const { isActive } = useBoost();
-  const [proposalData, setProposalData] = useState(null);
 
-  const { data: proposal } = useRequest(`proposals/${daoid}%2C1`);
+  const [daoData, setDaoData] = useState(null);
+
+  const { data: dao } = useRequest(`daos/${daoid}`);
 
   useEffect(() => {
-    if (proposal) {
-      setProposalData(proposal);
+    if (dao) {
+      setDaoData(dao);
     }
-  }, [proposal]);
+  }, [dao]);
 
   useEffect(() => {
     if (members?.length) {
@@ -65,7 +66,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
   }, [members]);
 
   const renderTags = () => {
-    if (daoData.daoMetaData?.tags) {
+    if (daoData?.daoMetaData?.tags) {
       return (
         <Flex direction='row' wrap='wrap'>
           {daoData.daoMetaData?.tags.split(',').map(tag => {
@@ -185,55 +186,21 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
           )}
         </Box> */}
         <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} />
-        <Flex mt={6} alignItems='center'>
-          <Text size='xs' mr={5} minWidth='9.625rem'>
-            <Text
-              size='xs'
-              mr={2}
-              minWidth='9.625rem'
-              style={{ display: 'inline-block' }}
-            >
-              {'BLOCK HEIGHT'}
-            </Text>
-            <Tooltip
-              label='Snapshot block height：The block height of the snapshot used to calculate the voting power.'
-              fontSize='md'
-              ml={2}
-            >
-              <WarningIcon />
-            </Tooltip>
+        <Flex flexDirection='column'>
+          <Text size='xs' mb={2}>
+            {'STRATEGYID'}
           </Text>
           <Text as='i' fontSize='xs'>
-            {proposal?.blockHeight || 0}
+            {daoData?.daoStrategies[0]?.strategyId || ''}
           </Text>
         </Flex>
-        <Flex mt={6} alignItems='center'>
-          <Text
-            size='xs'
-            mr={5}
-            minWidth='9.625rem'
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Text
-              size='xs'
-              mr={2}
-              minWidth='9.625rem'
-              style={{ display: 'inline-block' }}
-            >
-              {'BLOCK STATE ROOT'}
-            </Text>
-            <Tooltip
-              label='Snapshot state root：The State Root corresponding to the block height of the snapshot.'
-              fontSize='md'
-              ml={2}
-            >
-              <WarningIcon />
-            </Tooltip>
+        <Flex flexDirection='column' mt={5}>
+          <Text size='xs' mb={2}>
+            {'DAOSTRATEGIES'}
           </Text>
-          <Text as='i' fontSize='xs'>
-            {proposal?.blockStateRoot || ''}
-          </Text>
+          <Text>{daoData?.daoStrategies[0]?.description || ''}</Text>
         </Flex>
+
         <Flex mt={6}>
           {/* <Button
             variant='outline'

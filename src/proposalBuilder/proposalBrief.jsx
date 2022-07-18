@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Flex, Box, Button, Text } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Skeleton,
+  Button,
+  Avatar,
+  Input,
+  Spinner,
+  Badge,
+  Stack,
+  FormControl,
+  InputGroup,
+  InputLeftAddon,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
+import { WarningIcon } from '@chakra-ui/icons';
 
 import { CardLabel, ParaMd } from '../components/typography';
 import CustomTransfer from './customTransferFactory';
@@ -24,15 +40,15 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
     Number(proposal.paymentRequested) > 0;
   const isCrossChain = proposal.minion?.crossChainMinion;
   const { customTransferUI } = CUSTOM_CARD_DATA[proposal.proposalType] || {};
-  const [daoData, setDaoData] = useState(null);
+  const [proposalData, setProposalData] = useState(null);
 
-  const { data: dao } = useRequest(`daos/${daoid}`);
+  const { data } = useRequest(`proposals/${daoid}%2C1`);
 
   useEffect(() => {
-    if (dao) {
-      setDaoData(dao);
+    if (data) {
+      setProposalData(data);
     }
-  }, [dao]);
+  }, [data]);
   return (
     <Flex
       width={['100%', '100%', '60%']}
@@ -99,19 +115,56 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
             View Details
           </Button>
         </Flex>
-        <Flex flexDirection='column'>
-          <Text size='xs' mb={2}>
-            {'STRATEGYID'}
+        <Flex mt={6} alignItems='center'>
+          <Text size='xs' mr={5} minWidth='9.625rem'>
+            <Text
+              size='xs'
+              mr={2}
+              minWidth='9.625rem'
+              style={{ display: 'flex' }}
+            >
+              {'BLOCK HEIGHT'}
+
+              <Box ml={2} display='inline-flex' alignItems='center'>
+                <Tooltip
+                  label='Snapshot block height：The block height of the snapshot used to calculate the voting power.'
+                  fontSize='md'
+                >
+                  <WarningIcon />
+                </Tooltip>
+              </Box>
+            </Text>
           </Text>
           <Text as='i' fontSize='xs'>
-            {daoData?.daoStrategies[0]?.strategyId || ''}
+            {proposal?.blockHeight || 0}
           </Text>
         </Flex>
-        <Flex flexDirection='column' mt={5}>
-          <Text size='xs' mb={2}>
-            {'DAOSTRATEGIES'}
+        <Flex mt={6} alignItems='center'>
+          <Text
+            size='xs'
+            mr={5}
+            minWidth='9.625rem'
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            <Text
+              size='xs'
+              mr={2}
+              minWidth='9.625rem'
+              style={{ display: 'inline-block' }}
+            >
+              {'BLOCK STATE ROOT'}
+            </Text>
+            <Tooltip
+              label='Snapshot state root：The State Root corresponding to the block height of the snapshot.'
+              fontSize='md'
+              ml={2}
+            >
+              <WarningIcon />
+            </Tooltip>
           </Text>
-          <Text>{daoData?.daoStrategies[0]?.description || ''}</Text>
+          <Text as='i' fontSize='xs'>
+            {proposal?.blockStateRoot || ''}
+          </Text>
         </Flex>
       </Box>
     </Flex>
