@@ -27,6 +27,8 @@ import { getCustomProposalTerm } from '../utils/metadata';
 import { generateSFLabels, TIP_LABELS } from '../utils/toolTipLabels';
 import { handleDecimals } from '../utils/general';
 import { PropCardDate } from '../proposalBuilder/proposalBriefPrimitives';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const urlify = text => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -118,7 +120,20 @@ const ProposalDetails = ({
                     }}
                   />
                 ) : (
-                  <Box w='100%'>{proposal?.description}</Box>
+                  <Box
+                    w='100%'
+                    mt={5}
+                    mb={5}
+                    pl={5}
+                    pb={5}
+                    className='markdown-body'
+                    style={{ backgroundColor: 'transparent' }}
+                  >
+                    <ReactMarkdown
+                      children={proposal?.description}
+                      remarkPlugins={[remarkGfm]}
+                    ></ReactMarkdown>
+                  </Box>
                 ))}
             </Skeleton>
           )}
