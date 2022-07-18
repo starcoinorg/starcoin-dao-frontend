@@ -4,6 +4,7 @@ import { Button } from '@chakra-ui/react';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { useOverlay } from '../contexts/OverlayContext';
 import AddressAvatar from './addressAvatar';
+import { initialClick } from './hubSignedOut';
 
 export const Web3SignIn = ({ isDao }) => {
   const { requestWallet, address } = useInjectedProvider();
@@ -24,7 +25,7 @@ export const Web3SignIn = ({ isDao }) => {
           <AddressAvatar hideCopy addr={address} key={address} />
         </Button>
       ) : (
-        <Button variant='outline' onClick={requestWallet}>
+        <Button variant='outline' onClick={() => initialClick()}>
           Connect Wallet
         </Button>
       )}

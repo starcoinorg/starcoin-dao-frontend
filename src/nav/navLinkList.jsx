@@ -60,7 +60,7 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
             />
           );
         })}
-      {inDao ? (
+      {/* {inDao ? (
         <NavLink
           label='Profile'
           path={`/dao/${dao.chainID}/${dao.daoID}/profile/${address}`}
@@ -68,7 +68,7 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
           view={view}
           onClick={toggleNav}
         />
-      ) : null}
+      ) : null} */}
     </Stack>
   );
 };

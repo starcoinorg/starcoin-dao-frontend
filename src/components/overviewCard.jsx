@@ -14,7 +14,9 @@ import {
   InputGroup,
   InputLeftAddon,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
+import { WarningIcon } from '@chakra-ui/icons';
 import { AiOutlineCaretDown, AiFillQuestionCircle } from 'react-icons/ai';
 import {
   RiDiscordFill,
@@ -185,15 +187,48 @@ const OverviewCard = ({ daoOverview, members, daoVaults, daoData }) => {
         <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} />
         <Flex mt={6} alignItems='center'>
           <Text size='xs' mr={5} minWidth='9.625rem'>
-            {'BLOCK HEIGHT'}
+            <Text
+              size='xs'
+              mr={2}
+              minWidth='9.625rem'
+              style={{ display: 'inline-block' }}
+            >
+              {'BLOCK HEIGHT'}
+            </Text>
+            <Tooltip
+              label='Snapshot block height：The block height of the snapshot used to calculate the voting power.'
+              fontSize='md'
+              ml={2}
+            >
+              <WarningIcon />
+            </Tooltip>
           </Text>
           <Text as='i' fontSize='xs'>
             {proposal?.blockHeight || 0}
           </Text>
         </Flex>
         <Flex mt={6} alignItems='center'>
-          <Text size='xs' mr={5} minWidth='9.625rem'>
-            {'BLOCK STATE ROOT'}
+          <Text
+            size='xs'
+            mr={5}
+            minWidth='9.625rem'
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            <Text
+              size='xs'
+              mr={2}
+              minWidth='9.625rem'
+              style={{ display: 'inline-block' }}
+            >
+              {'BLOCK STATE ROOT'}
+            </Text>
+            <Tooltip
+              label='Snapshot state root：The State Root corresponding to the block height of the snapshot.'
+              fontSize='md'
+              ml={2}
+            >
+              <WarningIcon />
+            </Tooltip>
           </Text>
           <Text as='i' fontSize='xs'>
             {proposal?.blockStateRoot || ''}
