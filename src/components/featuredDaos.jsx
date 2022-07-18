@@ -27,11 +27,11 @@ const featuredDaoList = [
     badges: ['DEX', 'AMM', 'Starcoin', 'STC', 'swap', 'dao'],
   },
   {
-    address: 'test_dao_id',
+    address: 'starcoin_dao',
     network: '0x1',
-    name: 'test_dao_id',
-    description: 'test_dao_id',
-    badges: ['Starcoin', 'STC', 'swap', 'dao'],
+    name: 'starcoin_dao',
+    description: 'starcoin_dao',
+    badges: ['Starcoin', 'STC', 'BlockChain', 'dao'],
   },
 ];
 

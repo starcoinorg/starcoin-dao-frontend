@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import CrossDaoInternalBalanceList from '../components/crossDaoInternalBalanceList';
@@ -49,13 +49,23 @@ const HubBalances = () => {
         {address ? (
           <>
             <HubProfileCard address={address} key={address} />
-            <Box my={5} maxW='800px'>
+            <Box
+              my={5}
+              maxW='800px'
+              style={{
+                widtH: '800px',
+                backgroundColor: '#0b0b0b',
+                borderRadius: '5px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '24px',
+              }}
+            >
               Internal DAO balances are the result of proposal deposits,
               processing rewards, rage quits and cancelled tribute proposals.
               These can be withdrawn into your wallet from the profile page in
               the DAO.
             </Box>
-            <CrossDaoInternalBalanceList tokens={balances} />
+            {/* <CrossDaoInternalBalanceList tokens={balances} /> */}
           </>
         ) : (
           <HubSignedOut />

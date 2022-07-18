@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BsFillCircleFill } from 'react-icons/bs';
 import { Link as RouterLink } from 'react-router-dom';
-import { Flex, Icon, Input } from '@chakra-ui/react';
+import { Flex, Icon, Input, Box, Text } from '@chakra-ui/react';
 
 import { useUser } from '../contexts/UserContext';
 import ContentBox from './ContentBox';
@@ -46,11 +46,19 @@ const NetworkList = () => {
         </Flex>
       ) : (
         <>
-          <TextBox size='sm'>You aren’t a member in any DAOs</TextBox>
-          <Flex justify='flex-start' alignItems='center' my={10}>
-            <Icon boxSize={10} as={BsFillCircleFill} color='grey' mr={5} />
-            <TextBox size='sm'>your DAOs will show here</TextBox>
-          </Flex>
+          <TextBox size='sm'>Welcome to DAOSPACE</TextBox>
+          <Text fontSize='md' mb={5} mt={7}>
+            Your new Hub for all Moloch DAO activity
+          </Text>
+          <Box fontSize='md' mb={5}>
+            🔥 Interact with DAOs or Summon a new one
+          </Box>
+          <Box fontSize='md' mb={5}>
+            🚨 Get activity feeds from all your DAOs
+          </Box>
+          <Box fontSize='md' mb={5}>
+            🌊️️️ Easily switch between your DAOs
+          </Box>
           <TextBox as={RouterLink} to='/explore'>
             Explore DAOs
           </TextBox>

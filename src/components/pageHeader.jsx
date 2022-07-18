@@ -15,14 +15,16 @@ const PageHeader = ({ isDao, header, headerEl, customTerms }) => {
         align='center'
         w={['100%', null, null, 'auto']}
       >
-        <Box
-          fontSize={['lg', null, null, '3xl']}
-          fontFamily='heading'
-          fontWeight={700}
-          mr={10}
-        >
-          {customTerms ? getTerm(customTerms, header) : header}
-        </Box>
+        {header ? (
+          <Box
+            fontSize={['lg', null, null, '3xl']}
+            fontFamily='heading'
+            fontWeight={700}
+            mr={10}
+          >
+            {customTerms ? getTerm(customTerms, header) : header}
+          </Box>
+        ) : null}
         {headerEl}
       </Flex>
       <Flex

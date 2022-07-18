@@ -10,6 +10,7 @@ import MainViewLayout from '../components/mainViewLayout';
 import NewsFeed from '../components/newsFeed';
 import NetworkList from '../components/networkList';
 import HausCard from '../components/hausCard';
+import TitleHeader from '../assets/img/title_header_light.png';
 
 const Main = () => {
   const { address } = useInjectedProvider();
@@ -25,8 +26,14 @@ const Main = () => {
     </Button>
   );
 
+  const TitleEl = () => (
+    <div style={{ width: '100%', height: '26px', marginTop: '20px' }}>
+      <img style={{ width: '100%', height: '100%' }} src={TitleHeader} />
+    </div>
+  );
+
   return (
-    <MainViewLayout header='DAOSpace'>
+    <MainViewLayout headerEl={<TitleEl />}>
       <Flex wrap='wrap'>
         <Box
           w={['100%', null, null, null, '60%']}
