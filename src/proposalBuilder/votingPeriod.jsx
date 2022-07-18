@@ -196,7 +196,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
           : undefined;
 
       const isStarMaskInstalled = StarMaskOnboarding.isStarMaskInstalled();
-      const isStarMaskConnected = false;
+      const isStarMaskConnected = !!window?.starcoin?.selectedAddress;
       const accounts = [];
 
       let onboarding;
