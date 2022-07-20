@@ -171,8 +171,8 @@ export const VotingBar = ({ voteData = {}, proposal = {} }) => {
   const { totalVotes, totalYes } = voteData;
   const getNow = Date.now();
   const barPercentage =
-    ((proposal.votingPeriodEnd - proposal.votingPeriodStart) /
-      (proposal.votingPeriodEnd - getNow)) *
+    ((proposal.votingPeriodEnd - getNow) /
+      (proposal.votingPeriodEnd - proposal.votingPeriodStart)) *
     100;
 
   return (
@@ -198,6 +198,7 @@ export const VotingActive = ({
     proposal.proposalVotingChoices,
     proposal.accountVoteSummaries,
   );
+  const getNow = Date.now();
   return (
     <>
       <VotingBar voteData={voteData} proposal={proposal} />
@@ -210,7 +211,11 @@ export const VotingActive = ({
             sequenceid={item.sequenceId}
             onClick={() => voteNo(item.sequenceId)}
             optionsdata={item}
-            isDisabled={disableAll}
+            isDisabled={
+              disableAll ||
+              getNow >= proposal.votingPeriodEnd ||
+              getNow < proposal.votingPeriodStart
+            }
             isLoading={loadingAll}
             voteslabel={voteData.totalNoReadable}
           />

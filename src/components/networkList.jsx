@@ -48,7 +48,7 @@ const NetworkList = () => {
         <>
           <TextBox size='sm'>Welcome to DAOSPACE</TextBox>
           <Text fontSize='md' mb={5} mt={7}>
-            Your new Hub for all Moloch DAO activity
+            Starcoin DAOSPACE
           </Text>
           <Box fontSize='md' mb={5}>
             🔥 Interact with DAOs or Summon a new one

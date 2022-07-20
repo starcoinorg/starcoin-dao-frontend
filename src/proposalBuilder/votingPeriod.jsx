@@ -118,9 +118,9 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   }, [_activities]);
 
   const url_prev =
-    'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/dev/v1/getVotingPower';
+    'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/getVotingPower';
   const castVoteUrl =
-    'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/dev/v1/castVote';
+    'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/castVote';
 
   const getPower = async () => {
     const response = await axios(url_prev, {

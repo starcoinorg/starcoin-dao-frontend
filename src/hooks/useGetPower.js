@@ -3,7 +3,7 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 
 const url_prev =
-  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/dev/v1/getVotingPower';
+  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/getVotingPower';
 
 export const useGetPower = options => {
   const { requestWallet, address } = useInjectedProvider();

@@ -122,7 +122,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             {renderTags()}
           </Box>
         </Skeleton>
-        <Flex mt={10}>
+        <Flex mt={5}>
           <TextBox size='xs' color='whiteAlpha.900'>
             Community Links:
           </TextBox>
@@ -186,21 +186,17 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
           )}
         </Box> */}
         <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} />
-        <Flex flexDirection='column'>
-          <Text size='xs' mb={2}>
-            {'STRATEGYID'}
+        <Flex flexDirection='column' mt={5}>
+          <Text mb={2} fontSize='xl'>
+            {'STRATEGY:'}
           </Text>
-          <Text as='i' fontSize='xs'>
+          <Text size='xs' ml={4} as='li'>
             {daoData?.daoStrategies[0]?.strategyId || ''}
           </Text>
-        </Flex>
-        <Flex flexDirection='column' mt={5}>
-          <Text size='xs' mb={2}>
-            {'DAOSTRATEGIES'}
+          <Text as='i' fontSize='xs' ml={4}>
+            {daoData?.daoStrategies[0]?.description || ''}
           </Text>
-          <Text>{daoData?.daoStrategies[0]?.description || ''}</Text>
         </Flex>
-
         <Flex mt={6}>
           {/* <Button
             variant='outline'

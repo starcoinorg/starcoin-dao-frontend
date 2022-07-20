@@ -20,6 +20,7 @@ import { WarningIcon } from '@chakra-ui/icons';
 
 import { CardLabel, ParaMd } from '../components/typography';
 import CustomTransfer from './customTransferFactory';
+import TextBox from '../components/TextBox';
 import {
   PropCardCrossChain,
   PropCardDate,
@@ -74,7 +75,7 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
         </Flex>
         <ParaMd
           fontWeight='700'
-          mb={['5', '5', '5']}
+          mb={['5', '5', '2']}
           fontSize={['1.2rem', '1.2rem', '1.2rem']}
           lineHeight={['1.8rem', '1.8rem', '1.2rem']}
         >
@@ -139,7 +140,7 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
             {proposal?.blockHeight || 0}
           </Text>
         </Flex>
-        <Flex mt={6} alignItems='center'>
+        <Flex alignItems='center'>
           <Text
             size='xs'
             mr={5}
@@ -165,6 +166,35 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
           <Text as='i' fontSize='xs'>
             {proposal?.blockStateRoot || ''}
           </Text>
+        </Flex>
+        <Flex
+          display='flex'
+          align={['none', 'center']}
+          direction={['column', 'row']}
+          justify={['none', 'space-between']}
+          mb='3'
+          mt={6}
+        >
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'voting start at'}
+            </TextBox>
+            <PropCardDate
+              label=''
+              dateTimeMillis={proposal?.votingPeriodStart}
+              opacity='1'
+            />
+          </Flex>
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'voting end at'}
+            </TextBox>
+            <PropCardDate
+              label=''
+              dateTimeMillis={proposal?.votingPeriodEnd}
+              opacity='1'
+            />
+          </Flex>
         </Flex>
       </Box>
     </Flex>
