@@ -2,9 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - 'v*'
+    branches: [test]
 
 jobs:
   deploy:
@@ -31,7 +29,7 @@ jobs:
         with:
           args: --acl public-read --delete
         env:
-          AWS_S3_BUCKET: 'daospace.starcoin.org'
+          AWS_S3_BUCKET: 'test-dao.starcoin.org'
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'ap-northeast-1'
