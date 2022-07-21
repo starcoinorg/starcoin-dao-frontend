@@ -117,53 +117,42 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
           </Button>
         </Flex>
         <Flex mt={6} alignItems='center'>
-          <Box size='xs' mr={5} minWidth='9.625rem'>
-            <Box
-              size='xs'
-              mr={2}
-              minWidth='9.625rem'
-              style={{ display: 'flex' }}
-            >
-              {'BLOCK HEIGHT'}
+          <Box size='xs' mr={2} width='12rem' style={{ display: 'flex' }}>
+            {'BLOCK HEIGHT'}
 
-              <Box ml={2} display='inline-flex' alignItems='center'>
-                <Tooltip
-                  label='Snapshot block height：The block height of the snapshot used to calculate the voting power.'
-                  fontSize='md'
-                >
-                  <WarningIcon />
-                </Tooltip>
-              </Box>
+            <Box ml={2} display='inline-flex' alignItems='center'>
+              <Tooltip
+                label='Snapshot block height：The block height of the snapshot used to calculate the voting power.'
+                fontSize='md'
+              >
+                <WarningIcon />
+              </Tooltip>
             </Box>
           </Box>
-          <Text as='i' fontSize='xs'>
+          <Text as='i' fontSize='xs' ml={5}>
             {proposal?.blockHeight || 0}
           </Text>
         </Flex>
         <Flex alignItems='center'>
-          <Box
-            size='xs'
-            mr={5}
-            minWidth='9.625rem'
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Text
-              size='xs'
-              mr={2}
-              minWidth='9.625rem'
-              style={{ display: 'inline-block' }}
-            >
-              {'BLOCK STATE ROOT'}
-            </Text>
-            <Tooltip
-              label='Snapshot state root：The State Root corresponding to the block height of the snapshot.'
-              fontSize='md'
-              ml={2}
-            >
-              <WarningIcon />
-            </Tooltip>
+          <Box size='xs' mr={2} minWidth='12rem' style={{ display: 'flex' }}>
+            {'BLOCK STATE ROOT'}
+            <Box ml={2} display='inline-flex' alignItems='center'>
+              <Tooltip
+                label='Snapshot state root：The State Root corresponding to the block height of the snapshot.'
+                fontSize='md'
+              >
+                <WarningIcon />
+              </Tooltip>
+            </Box>
           </Box>
-          <Text as='i' fontSize='xs'>
+          <Text
+            as='i'
+            fontSize='xs'
+            maxWidth={'34.375rem'}
+            minW={'12.5rem'}
+            ml={5}
+            pr={'2.5rem'}
+          >
             {proposal?.blockStateRoot || ''}
           </Text>
         </Flex>
