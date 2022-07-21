@@ -554,7 +554,7 @@ const ProposalActions = ({
                 <Skeleton key={index} isLoaded={true}>
                   <TextBox
                     variant='value'
-                    size='xl'
+                    size='md'
                     style={{ display: 'flex' }}
                   >
                     <Text style={{ flex: 1 }}>{`${item.title}`}</Text>
