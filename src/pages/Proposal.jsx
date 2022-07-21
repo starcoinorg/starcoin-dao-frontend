@@ -147,7 +147,7 @@ const Proposal = ({
                 
               )} */}
               <ActivitiesFeed
-                limit={6}
+                limit={10}
                 activities={currentProposal}
                 hydrateFn={getProposalHistories}
                 isLink={false}
