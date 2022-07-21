@@ -25,7 +25,7 @@ const ActivitiesFeed = ({
       daoId: daoid,
       proposalNumber: propid,
       page: 0,
-      size: 10,
+      size: 1000,
     },
   });
 
@@ -38,8 +38,8 @@ const ActivitiesFeed = ({
   return (
     <>
       <TextBox>{heading}</TextBox>
-      {_activities
-        ? _activities.map((activity, index) => {
+      {pagedActivities
+        ? pagedActivities.map((activity, index) => {
             activity.memberAddress = activity.accountVoteId.accountAddress;
             return (
               <ActivityCard
