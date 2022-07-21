@@ -30,16 +30,19 @@ const PropActions = props => {
   // }
   const nowDate = Date.now();
   const votingPeriodEnd = props.proposal.votingPeriodEnd;
-  if (props.proposal.votingPeriodEnd > Date.now()) {
+  if (votingPeriodEnd > Date.now()) {
     return <VotingPeriod {...props} />;
   }
   // if (status === ProposalStatus.InQueue) {
   //   return <InQueue {...props} />;
   // }
-  console.log(votingPeriodEnd, nowDate, votingPeriodEnd < nowDate);
-  if (props.proposal.accountVoteSummaries.length && votingPeriodEnd < nowDate) {
-    return <Processed {...props} />;
-  }
+
+  // if (
+  //   props.proposal.accountVoteSummaries.length &&
+  //   props.proposal.votingPeriodEnd < nowDate
+  // ) {
+  //   return <Processed {...props} />;
+  // }
   // if (status === ProposalStatus.ReadyForProcessing) {
   //   return <ReadyForProcessing {...props} />;
   // }
@@ -53,7 +56,7 @@ const PropActions = props => {
   // }
   // return <VotingPeriod {...props} />;
 
-  return null;
+  return <VotingPeriod {...props} />;
 };
 
 export default PropActions;

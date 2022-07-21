@@ -60,7 +60,6 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   useEffect(() => {
     if (dao) {
       setDaoData(dao);
-      console.log(dao, 'daoooooo');
     }
   }, [dao]);
 

@@ -17,8 +17,8 @@ export const getRPCUrl = chainId => {
 export const supportedChains = {
   '0x1': {
     name: 'Main',
-    short_name: 'eth',
-    nativeCurrency: 'ETH',
+    short_name: 'main',
+    nativeCurrency: 'stc',
     network: 'mainnet',
     network_id: 1,
     chain_id: '0x1',

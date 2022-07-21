@@ -151,6 +151,8 @@ const Proposal = ({
                 activities={currentProposal}
                 hydrateFn={getProposalHistories}
                 isLink={false}
+                proposal={proposals}
+                daoProposals={daoProposals}
               />
             </Stack>
           </Flex>

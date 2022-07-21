@@ -162,6 +162,8 @@ const ProposalActions = ({
       isAfter(Date.now(), new Date(+proposal?.votingPeriodStart))
     );
   };
+
+  const dateNow = Date.now();
   const NetworkOverlay = () => (
     <Flex
       position='absolute'
@@ -473,12 +475,9 @@ const ProposalActions = ({
                             : 'md'
                         }
                       >
-                        {+voteData?.totalNo > +voteData?.totalYes &&
-                          'Not Passing'}
-                        {+voteData?.totalYes > +voteData?.totalNo && (
-                          <Box>Currently Passing</Box>
-                        )}
-                        {!proposal?.accountVoteSummaries.length &&
+                        {dateNow > proposal.votingPeriodEnd && 'Voting ends'}
+                        {dateNow < proposal.votingPeriodEnd &&
+                          dateNow >= proposal.votingPeriodStart &&
                           'Awaiting Votes'}
                       </Box>
                     </Flex>
@@ -513,27 +512,25 @@ const ProposalActions = ({
               overflow='hidden'
               justify='space-between'
             >
-              {+voteData?.totalYes > 0 && (
+              {
                 <MotionBox
                   h='100%'
                   backgroundColor='green.500'
-                  borderRight={
-                    voteData?.totalNo > 0
-                      ? '1px solid white'
-                      : '0px solid transparent'
-                  }
                   animate={{
                     width: [
                       '0%',
-                      `${(+voteData?.totalYes /
-                        (+voteData?.totalYes + +voteData?.totalNo)) *
-                        100}%`,
+                      proposal
+                        ? `${((proposal.votingPeriodEnd - dateNow) /
+                            (proposal.votingPeriodEnd -
+                              proposal.votingPeriodStart)) *
+                            100}%`
+                        : '0%',
                     ],
                   }}
                   transition={{ duration: 0.5 }}
                 />
-              )}
-              {+voteData?.totalNo > 0 && (
+              }
+              {/* {+voteData?.totalNo > 0 && (
                 <MotionBox
                   h='100%'
                   backgroundColor='red.500'
@@ -547,7 +544,7 @@ const ProposalActions = ({
                   }}
                   transition={{ duration: 0.5 }}
                 />
-              )}
+              )} */}
             </Flex>
             <Flex justify='space-between' flexDirection='column' mt={3}>
               {getVoteOptionData(
@@ -561,7 +558,15 @@ const ProposalActions = ({
                     style={{ display: 'flex' }}
                   >
                     <Text style={{ flex: 1 }}>{`${item.title}`}</Text>
-                    <Text>{`${item.subtotalVotingPower}`}</Text>
+                    <Text
+                      maxW={'13.125rem'}
+                      style={{
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                      }}
+                      alt={item.subtotalVotingPower}
+                    >{`${item.subtotalVotingPower}`}</Text>
                   </TextBox>
                 </Skeleton>
               ))}

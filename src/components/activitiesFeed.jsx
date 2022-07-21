@@ -12,6 +12,8 @@ const ActivitiesFeed = ({
   limit,
   heading = 'Activities',
   isLink,
+  daoProposals,
+  proposal,
 }) => {
   const [allActivities, setAllActivities] = useState(null);
   const [pagedActivities, setPagedActivities] = useState(null);
@@ -45,6 +47,8 @@ const ActivitiesFeed = ({
                 activity={activity}
                 displayAvatar
                 isLink={isLink}
+                daoProposals={daoProposals}
+                proposal={proposal}
               />
             );
           })

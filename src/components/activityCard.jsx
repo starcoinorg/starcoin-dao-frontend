@@ -48,7 +48,13 @@ const handleAvatar = (activity, profile) => {
   );
 };
 
-const ActivityCard = ({ activity, displayAvatar, isLink = true }) => {
+const ActivityCard = ({
+  activity,
+  displayAvatar,
+  isLink = true,
+  daoProposals,
+  proposal,
+}) => {
   const [profile, setProfile] = useState(null);
   const { daochain, daoid } = useParams();
 
@@ -91,7 +97,14 @@ const ActivityCard = ({ activity, displayAvatar, isLink = true }) => {
       : null;
 
   const getChoiceSequenceId = choiceSequenceId => {
-    return choiceSequenceId === 0 ? 'Yes' : 'No';
+    let ret = '';
+    proposal?.proposalVotingChoices?.forEach(voting => {
+      if (voting.sequenceId === choiceSequenceId) {
+        ret = voting.title;
+      }
+    });
+
+    return ret;
   };
 
   return (
@@ -115,7 +128,9 @@ const ActivityCard = ({ activity, displayAvatar, isLink = true }) => {
               </Heading>
             ) : (
               <Heading as='h4' size='sm'>
-                {`${name} ${getChoiceSequenceId(activity.choiceSequenceId)}`}
+                {`${name} vote ${getChoiceSequenceId(
+                  activity.choiceSequenceId,
+                )}`}
               </Heading>
             )}
             <Flex direction='row' align='center' mt={3}>
