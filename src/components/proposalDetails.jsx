@@ -87,7 +87,7 @@ const ProposalDetails = ({
               <TextBox size='xs' mb={[3, null, null, 0]}>
                 {getCustomProposalTerm(customTerms, proposal?.proposalType)}
               </TextBox>
-              <Box fontSize={['sm', null, null, 'md']}>
+              {/* <Box fontSize={['sm', null, null, 'md']}>
                 {proposal?.proposalIndex ? (
                   <>{status && getProposalDetailStatus(proposal, status)}</>
                 ) : (
@@ -97,7 +97,7 @@ const ProposalDetails = ({
                     </Badge>
                   </Skeleton>
                 )}
-              </Box>
+              </Box> */}
             </Flex>
             <Skeleton isLoaded={proposal?.title}>
               {proposal?.title && <Text fontSize='3xl'>{proposal?.title}</Text>}
@@ -242,12 +242,12 @@ const ProposalDetails = ({
           </Flex>
         </Flex>
         <Flex
-          display='flex'
-          align={['none', 'center']}
+          mt={3}
+          mb={6}
+          justify='space-between'
           direction={['column', 'row']}
-          justify={['none', 'space-between']}
-          mb='3'
-          mt={6}
+          pr={memberVote(proposal, address) !== null && '5%'}
+          w='100%'
         >
           <Flex flexDirection='column'>
             <TextBox size='xs' mb={2}>

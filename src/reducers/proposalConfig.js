@@ -26,7 +26,7 @@ const handleInit = daoMetaData => {
   if (daoMetaData?.proposalConfig) {
     return handleDevForms(handleFormBlacklist(daoMetaData.proposalConfig));
   }
-  console.warn('DID NOT RECIEVE PROPOSAL CONFIG FROM DAO METADATA');
+  // console.warn('DID NOT RECIEVE PROPOSAL CONFIG FROM DAO METADATA');
   return handleDevForms(
     handleFormBlacklist(generateNewConfig({ daoMetaData })),
   );

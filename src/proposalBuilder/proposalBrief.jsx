@@ -117,8 +117,8 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
           </Button>
         </Flex>
         <Flex mt={6} alignItems='center'>
-          <Text size='xs' mr={5} minWidth='9.625rem'>
-            <Text
+          <Box size='xs' mr={5} minWidth='9.625rem'>
+            <Box
               size='xs'
               mr={2}
               minWidth='9.625rem'
@@ -134,14 +134,14 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
                   <WarningIcon />
                 </Tooltip>
               </Box>
-            </Text>
-          </Text>
+            </Box>
+          </Box>
           <Text as='i' fontSize='xs'>
             {proposal?.blockHeight || 0}
           </Text>
         </Flex>
         <Flex alignItems='center'>
-          <Text
+          <Box
             size='xs'
             mr={5}
             minWidth='9.625rem'
@@ -162,7 +162,7 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
             >
               <WarningIcon />
             </Tooltip>
-          </Text>
+          </Box>
           <Text as='i' fontSize='xs'>
             {proposal?.blockStateRoot || ''}
           </Text>

@@ -558,15 +558,16 @@ const ProposalActions = ({
                     style={{ display: 'flex' }}
                   >
                     <Text style={{ flex: 1 }}>{`${item.title}`}</Text>
-                    <Text
-                      maxW={'13.125rem'}
-                      style={{
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                      }}
-                      alt={item.subtotalVotingPower}
-                    >{`${item.subtotalVotingPower}`}</Text>
+                    <Tooltip label={item.subtotalVotingPower} fontSize='md'>
+                      <Text
+                        maxW={'50%'}
+                        style={{
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >{`${item.subtotalVotingPower}`}</Text>
+                    </Tooltip>
                   </TextBox>
                 </Skeleton>
               ))}
