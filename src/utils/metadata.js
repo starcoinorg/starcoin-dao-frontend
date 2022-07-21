@@ -8,7 +8,7 @@ import {
 } from '../data/playlists';
 
 const metadataApiUrl =
-  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com:80/dev/v1';
+  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1';
 
 export const fetchMetaData = async endpoint => {
   const url = `${metadataApiUrl}/daos/${endpoint}`;

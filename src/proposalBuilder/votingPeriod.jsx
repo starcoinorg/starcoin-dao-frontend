@@ -32,6 +32,9 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 
+const url_prev =
+  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/';
+
 const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   const [voteData, setVoteData] = useState({
     hasVoted: null,
@@ -50,6 +53,18 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     isFailing: false,
     votePassedProcessFailed: false,
   });
+
+  const { daochain, daoid } = useParams();
+
+  const [daoData, setDaoData] = useState(null);
+
+  const { data: dao } = useRequest(`daos/${daoid}`);
+  useEffect(() => {
+    if (dao) {
+      setDaoData(dao);
+      console.log(dao, 'daoooooo');
+    }
+  }, [dao]);
 
   useEffect(() => {
     if (proposal?.accountVoteSummaries?.length) {
@@ -92,7 +107,6 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   };
 
   const toast = useToast();
-  const { daochain, daoid } = useParams();
   const { requestWallet, address } = useInjectedProvider();
 
   const { data: _activities, loading } = useRequest('accountVotes', {
@@ -307,7 +321,8 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
           <AlertDialogHeader color={'#000'}>Confirm Vote</AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody color={'#000'}>
-            You have <i>{accountPowerTotal}</i> voting rights, All votes can be
+            You have <i>{accountPowerTotal}</i> voting rights（
+            {daoData?.daoStrategies[0]?.votingPowerName}）, All votes can be
             cast at one time only, and cannot be modified after cast
           </AlertDialogBody>
           <AlertDialogFooter>
