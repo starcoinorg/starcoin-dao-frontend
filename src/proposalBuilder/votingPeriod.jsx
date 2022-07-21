@@ -31,9 +31,7 @@ import { useParams } from 'react-router-dom';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
-
-const url_prev =
-  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/';
+import config from '../utils/getConfig';
 
 const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   const [voteData, setVoteData] = useState({
@@ -131,10 +129,8 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     }
   }, [_activities]);
 
-  const url_prev =
-    'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/getVotingPower';
-  const castVoteUrl =
-    'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/castVote';
+  const url_prev = `${config.api}/getVotingPower`;
+  const castVoteUrl = `${config.api}/castVote`;
 
   const getPower = async () => {
     const response = await axios(url_prev, {
@@ -177,10 +173,19 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         signedMessageHex: sign,
       });
 
+      onClose();
+      setLoading(false);
+      toast({
+        title: 'Success',
+        description: 'Vote successfully',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
       setTimeout(() => {
-        setLoading(false);
         window.location.reload();
-      }, 3000);
+      }, 2000);
     } catch (err) {
       toast({
         title: 'Error',
@@ -246,11 +251,21 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         return 1;
       }
     };
-
     const _status = status();
     if (_status === 0) {
       initialData.onboarding.startOnboarding();
     } else if (_status === 2) {
+      if (window.starcoin.networkVersion !== '1') {
+        toast({
+          title: 'Error',
+          description: 'Please switch to the mainnet',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
       setLoading(true);
       const accountPowerData = await getPower();
       setAccountPowerTotal(+accountPowerData.totalVotingPower);

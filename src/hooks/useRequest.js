@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import config from '../utils/getConfig';
 
-const url_prev =
-  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/';
+const url_prev = `${config.api}/`;
 
 export const useRequest = (url, options) => {
   const [data, setData] = useState(null);

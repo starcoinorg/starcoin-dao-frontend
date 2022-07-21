@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
+import config from '../utils/getConfig';
 
-const url_prev =
-  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/getVotingPower';
+const url_prev = `${config.api}/getVotingPower`;
 
 export const useGetPower = options => {
   const { requestWallet, address } = useInjectedProvider();

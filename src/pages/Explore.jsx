@@ -9,9 +9,9 @@ import Loading from '../components/loading';
 import MainViewLayout from '../components/mainViewLayout';
 import { useRequest } from '../hooks/useRequest';
 import axios from 'axios';
+import config from '../utils/getConfig';
 
-const url_prev =
-  'http://k8s-default-daoapiin-a10a2591c6-298563096.ap-northeast-1.elb.amazonaws.com/main/v1/';
+const url_prev = `${config.api}/`;
 
 const Explore = () => {
   const { theme, resetTheme } = useContext(CustomThemeContext);
