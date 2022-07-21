@@ -29,7 +29,7 @@ const ExploreFilters = ({ daoCount }) => {
         >
           {daoCount} DAOS
         </Box>
-        <ExploreSearch />
+        {/* <ExploreSearch /> */}
         <Box mr={6}>
           <ListSort sort={sort} setSort={setSort} options={SORT_OPTIONS} />
         </Box>
