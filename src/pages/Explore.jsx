@@ -21,26 +21,26 @@ const Explore = () => {
   const [loading, setLoading] = useState(false);
 
   const getAllData = async () => {
-    let { data: daos, loading } = await axios.get(`${url_prev}daos`, {
-      method: 'get',
-      params: {
-        page: '1',
-        size: '1',
-      },
+    Promise.all([
+      axios.get(`${url_prev}daos`, {
+        method: 'get',
+        params: {
+          page: '1',
+          size: '1',
+        },
+      }),
+      axios.get(`${url_prev}daos`, {
+        method: 'get',
+        params: {
+          page: '0',
+          size: '1',
+        },
+      }),
+    ]).then(res => {
+      setDaos(res[0].data);
+      _setDaos(res[1].data);
+      setDaos(res[0].loading);
     });
-
-    setDaos(daos);
-
-    const { data: _daos } = await axios.get(`${url_prev}daos`, {
-      method: 'get',
-      params: {
-        page: '0',
-        size: '1',
-      },
-    });
-
-    _setDaos(_daos);
-    setLoading(loading);
   };
 
   useEffect(() => {

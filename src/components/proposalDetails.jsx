@@ -29,6 +29,8 @@ import { handleDecimals } from '../utils/general';
 import { PropCardDate } from '../proposalBuilder/proposalBriefPrimitives';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
+import remarkMdx from 'remark-mdx';
 
 const urlify = text => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -111,30 +113,22 @@ const ProposalDetails = ({
             </>
           ) : (
             <Skeleton isLoaded={proposal?.description}>
-              {proposal?.description &&
-                (proposal?.description.indexOf('http') > -1 ? (
-                  <Box
-                    w='100%'
-                    dangerouslySetInnerHTML={{
-                      __html: urlify(proposal?.description),
-                    }}
-                  />
-                ) : (
-                  <Box
-                    w='100%'
-                    mt={5}
-                    mb={5}
-                    pl={5}
-                    pb={5}
-                    className='markdown-body'
-                    style={{ backgroundColor: 'transparent' }}
-                  >
-                    <ReactMarkdown
-                      children={proposal?.description}
-                      remarkPlugins={[remarkGfm]}
-                    ></ReactMarkdown>
-                  </Box>
-                ))}
+              {proposal?.description && (
+                <Box
+                  w='100%'
+                  mt={5}
+                  mb={5}
+                  pl={5}
+                  pb={5}
+                  className='markdown-body'
+                  style={{ backgroundColor: 'transparent' }}
+                >
+                  <ReactMarkdown
+                    children={proposal?.description}
+                    remarkPlugins={[remarkGfm, remarkBreaks, remarkMdx]}
+                  ></ReactMarkdown>
+                </Box>
+              )}
             </Skeleton>
           )}
           {proposal?.proposalType === PROPOSAL_TYPES.WHITELIST && (
@@ -215,11 +209,13 @@ const ProposalDetails = ({
           pr={memberVote(proposal, address) !== null && '5%'}
           w='100%'
         >
-          <MemberIndicator
-            address={proposal?.submittedBy}
-            label='submitted by'
-            shouldFetchProfile
-          />
+          <Box minW={'19.0625rem'}>
+            <MemberIndicator
+              address={proposal?.submittedBy}
+              label='submitted by'
+              shouldFetchProfile
+            />
+          </Box>
           <Flex flexDirection='column'>
             <TextBox size='xs' mb={2}>
               {'submitted at'}
@@ -236,6 +232,43 @@ const ProposalDetails = ({
             shouldFetchProfile
           /> */}
           {/* {handleRecipient()} */}
+          <Flex align='center' visibility='hidden'>
+            {memberVote(proposal, address) !== null &&
+              (+memberVote(proposal, address) === 1 ? (
+                <Vote thumbsUp />
+              ) : (
+                <Vote thumbsDown />
+              ))}
+          </Flex>
+        </Flex>
+        <Flex
+          display='flex'
+          align={['none', 'center']}
+          direction={['column', 'row']}
+          justify={['none', 'space-between']}
+          mb='3'
+          mt={6}
+        >
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'voting start at'}
+            </TextBox>
+            <PropCardDate
+              label=''
+              dateTimeMillis={proposal?.votingPeriodStart}
+              opacity='1'
+            />
+          </Flex>
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'voting end at'}
+            </TextBox>
+            <PropCardDate
+              label=''
+              dateTimeMillis={proposal?.votingPeriodEnd}
+              opacity='1'
+            />
+          </Flex>
           <Flex align='center' visibility='hidden'>
             {memberVote(proposal, address) !== null &&
               (+memberVote(proposal, address) === 1 ? (

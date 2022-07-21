@@ -29,8 +29,8 @@ const featuredDaoList = [
   {
     address: 'starcoin_dao',
     network: '0x1',
-    name: 'starcoin_dao',
-    description: 'starcoin_dao',
+    name: 'Starcoin DAO',
+    description: 'Starcoin DAO',
     badges: ['Starcoin', 'STC', 'BlockChain', 'dao'],
   },
 ];
