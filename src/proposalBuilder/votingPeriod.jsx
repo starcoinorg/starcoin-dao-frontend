@@ -118,16 +118,6 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
 
   const [disabled, setDisabled] = useState(false);
 
-  useEffect(() => {
-    if (_activities) {
-      _activities.forEach(item => {
-        if (item.accountVoteId.accountAddress === address) {
-          setDisabled(true);
-        }
-      });
-    }
-  }, [_activities]);
-
   const url_prev = `${config.api}/getVotingPower`;
   const castVoteUrl = `${config.api}/castVote`;
 
@@ -177,6 +167,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
       toast({
         title: 'Success',
         description: 'Vote successfully',
+        position: 'top-right',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -286,6 +277,16 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   const cancelRef = React.useRef();
   const [accountPowerTotal, setAccountPowerTotal] = useState(0);
   const [choiceSequenceId, setChoiceSequenceId] = useState(null);
+
+  useEffect(() => {
+    if (_activities) {
+      _activities.forEach(item => {
+        if (item.accountVoteId.accountAddress === address) {
+          setDisabled(true);
+        }
+      });
+    }
+  }, [_activities, address]);
 
   return (
     <PropActionBox>
