@@ -177,11 +177,11 @@ export const VotingBar = ({ voteData = {}, proposal = {} }) => {
   const getBgColor = () => {
     if (proposal?.status) {
       if (proposal.status === 'PASSED') {
-        return 'green.500';
+        return 'green';
       } else if (proposal.status === 'FAILED') {
-        return 'red.500';
+        return 'red';
       } else if (proposal.status === 'UNKNOWN') {
-        return 'green.500';
+        return 'green';
       }
     }
 
