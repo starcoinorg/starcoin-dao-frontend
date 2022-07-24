@@ -292,7 +292,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     if (proposal?.status) {
       if (proposal.status === 'PASSED') {
         return {
-          status: 'green.500',
+          status: 'Passed',
           color: 'green',
         };
       } else if (proposal.status === 'FAILED') {
