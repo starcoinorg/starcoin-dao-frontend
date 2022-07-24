@@ -293,6 +293,40 @@ const ProposalActions = ({
     setLoading(false);
   };
 
+  const getMaxOptionsTitle = () => {
+    let maxId = -1;
+    let maxPower = -1;
+    let ret = '';
+    proposal.accountVoteSummaries.forEach(item => {
+      if (item.subtotalVotingPower > maxPower) {
+        maxPower = item.subtotalVotingPower;
+        maxId = item.choiceSequenceId;
+      }
+    });
+
+    proposal.proposalVotingChoices.forEach(item => {
+      if (item.sequenceId === maxId) {
+        ret = item.title;
+      }
+    });
+
+    return ret;
+  };
+
+  const getBgColor = () => {
+    if (proposal?.status) {
+      if (proposal.status === 'PASSED') {
+        return 'green.500';
+      } else if (proposal.status === 'FAILED') {
+        return 'red.500';
+      } else if (proposal.status === 'UNKNOWN') {
+        return 'green.500';
+      }
+    }
+
+    return '#EB8A23';
+  };
+
   return (
     <>
       <ContentBox position='relative'>
@@ -475,7 +509,6 @@ const ProposalActions = ({
                             : 'md'
                         }
                       >
-                        {dateNow > proposal.votingPeriodEnd && 'Voting ends'}
                         {dateNow < proposal.votingPeriodEnd &&
                           dateNow >= proposal.votingPeriodStart &&
                           'Awaiting Votes'}
@@ -486,18 +519,9 @@ const ProposalActions = ({
                   <>
                     <Flex justify='center' align='center' w='100%'>
                       <TextBox size='xl' variant='value'>
-                        {/* {proposal?.status === 'Failed' && 'Failed'}
-                        {proposal?.status === 'Passed' && 'Passed'}
-                        {(proposal?.status === 'GracePeriod' ||
-                          proposal?.status === 'ReadyForProcessing') &&
-                          +voteData?.totalYes > +voteData?.totalNo &&
-                          'Passed'}
-                        {(proposal?.status === 'GracePeriod' ||
-                          proposal?.status === 'ReadyForProcessing') &&
-                          +voteData?.totalNo > +voteData?.totalYes &&
-                          'Failed'} */}
-                        {+voteData?.totalYes > +voteData?.totalNo && 'Passed'}
-                        {+voteData?.totalNo > +voteData?.totalYes && 'Failed'}
+                        {proposal?.status === 'FAILED' && 'Failed'}
+                        {proposal?.status === 'PASSED' && 'Passed'}
+                        {proposal?.status === 'UNKNOWN' && getMaxOptionsTitle()}
                       </TextBox>
                     </Flex>
                   </>
@@ -515,12 +539,12 @@ const ProposalActions = ({
               {
                 <MotionBox
                   h='100%'
-                  backgroundColor='green.500'
+                  backgroundColor={getBgColor()}
                   animate={{
                     width: [
                       '0%',
                       proposal
-                        ? `${((proposal.votingPeriodEnd - dateNow) /
+                        ? `${((dateNow - proposal.votingPeriodStart) /
                             (proposal.votingPeriodEnd -
                               proposal.votingPeriodStart)) *
                             100}%`

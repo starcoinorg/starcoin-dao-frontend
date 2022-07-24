@@ -288,13 +288,39 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     }
   }, [_activities, address]);
 
+  const getProposalStatus = () => {
+    if (proposal?.status) {
+      if (proposal.status === 'PASSED') {
+        return {
+          status: 'green.500',
+          color: 'green',
+        };
+      } else if (proposal.status === 'FAILED') {
+        return {
+          status: 'Failed',
+          color: 'red.500',
+        };
+      } else if (proposal.status === 'UNKNOWN') {
+        return {
+          status: 'Passed',
+          color: 'green.500',
+        };
+      }
+    }
+
+    return {
+      status: 'Voting',
+      color: '#EB8A23',
+    };
+  };
+
   return (
     <PropActionBox>
       <TopStatusBox
-        status='Voting'
+        status={getProposalStatus().status}
         appendStatusText={`ends ${getTime()}`}
         // circleColor={voteData.isPassing ? 'green' : 'red'}
-        circleColor={'green'}
+        circleColor={getProposalStatus().color}
         proposal={proposal}
         voteData={voteData}
         quorum

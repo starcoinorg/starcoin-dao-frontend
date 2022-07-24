@@ -171,9 +171,22 @@ export const VotingBar = ({ voteData = {}, proposal = {} }) => {
   const { totalVotes, totalYes } = voteData;
   const getNow = Date.now();
   const barPercentage =
-    ((proposal.votingPeriodEnd - getNow) /
+    ((getNow - proposal.votingPeriodStart) /
       (proposal.votingPeriodEnd - proposal.votingPeriodStart)) *
     100;
+  const getBgColor = () => {
+    if (proposal?.status) {
+      if (proposal.status === 'PASSED') {
+        return 'green.500';
+      } else if (proposal.status === 'FAILED') {
+        return 'red.500';
+      } else if (proposal.status === 'UNKNOWN') {
+        return 'green.500';
+      }
+    }
+
+    return 'chakraProgressBarHack';
+  };
 
   return (
     <Progress
@@ -181,7 +194,7 @@ export const VotingBar = ({ voteData = {}, proposal = {} }) => {
       mb='4'
       mt='4'
       size='sm'
-      colorScheme={barPercentage > 100 ? 'green' : 'chakraProgressBarHack'}
+      colorScheme={getBgColor()}
     />
   );
 };
