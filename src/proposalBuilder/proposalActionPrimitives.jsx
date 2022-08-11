@@ -4,6 +4,7 @@ import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 
 import { ParaSm } from '../components/typography';
 import ExecuteQuorum from './executeQuorum';
+import { useRequest } from '../hooks/useRequest';
 
 const getVoteOptionData = (votingChoices, accountVote) => {
   if (!votingChoices) return [];
@@ -206,13 +207,33 @@ export const VotingActive = ({
   loadingAll,
   proposal,
   voteData,
+  daoData,
 }) => {
+  let isLoading = false;
+  if (daoData) {
+    let { data: _proposals, loading } = useRequest(
+      `proposals/${daoData.daoId}%2C${proposal.proposalId.proposalNumber}`,
+      {
+        method: 'get',
+        param: {
+          page: 1,
+          pageSize: 1,
+        },
+      },
+    );
+
+    if (_proposals) {
+      proposal = _proposals;
+      isLoading = !loading;
+    }
+  }
+
   const voteOptions = getVoteOptionData(
     proposal.proposalVotingChoices,
     proposal.accountVoteSummaries,
   );
   const getNow = Date.now();
-  return (
+  return isLoading ? (
     <>
       <VotingBar voteData={voteData} proposal={proposal} />
       <Text fontSize={'1.25rem'}>Vote Options:</Text>
@@ -235,6 +256,8 @@ export const VotingActive = ({
         ))}
       </Flex>
     </>
+  ) : (
+    <span>loading...</span>
   );
 };
 

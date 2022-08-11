@@ -342,6 +342,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
               disableAll={disabled}
               proposal={proposal}
               voteData={voteData}
+              daoData={daoData}
             />
           </MiddleActionBox>
           {/* <ParaSm fontStyle='italic'> Vote if you&apos;re a member</ParaSm> */}
