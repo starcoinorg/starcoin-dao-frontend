@@ -48,13 +48,16 @@ const ProposalsList = ({ customTerms }) => {
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
 
-  let { data: _proposals, loading } = useRequest(`proposals/${daoid}%2C1`, {
-    method: 'get',
-  });
+  let { data: _proposals, loading } = useRequest(
+    `proposals?daoId=${daoid}&page=0&size=10`,
+    {
+      method: 'get',
+    },
+  );
 
   useEffect(() => {
     if (_proposals) {
-      setProposals([_proposals]);
+      setProposals(_proposals);
     }
   }, [_proposals]);
 

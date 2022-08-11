@@ -34,13 +34,16 @@ const Proposal = ({
   const [hideMinionExecuteButton, setHideMinionExecuteButton] = useState(null);
   const [currentProposal, setCurrentProposal] = useState(null);
 
-  const { data: proposals, loading } = useRequest(`proposals/${daoid}%2C1`, {
-    method: 'get',
-    params: {
-      page: '1',
-      size: '1',
+  const { data: proposals, loading } = useRequest(
+    `proposals/${daoid}%2C${propid}`,
+    {
+      method: 'get',
+      params: {
+        page: '1',
+        size: '1',
+      },
     },
-  });
+  );
 
   const handleRefreshDao = () => {
     const skipVaults = true;

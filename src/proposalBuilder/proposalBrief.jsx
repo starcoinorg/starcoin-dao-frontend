@@ -41,15 +41,7 @@ const ProposalCardBrief = ({ proposal = {}, minionAction }) => {
     Number(proposal.paymentRequested) > 0;
   const isCrossChain = proposal.minion?.crossChainMinion;
   const { customTransferUI } = CUSTOM_CARD_DATA[proposal.proposalType] || {};
-  const [proposalData, setProposalData] = useState(null);
 
-  const { data } = useRequest(`proposals/${daoid}%2C1`);
-
-  useEffect(() => {
-    if (data) {
-      setProposalData(data);
-    }
-  }, [data]);
   return (
     <Flex
       width={['100%', '100%', '60%']}
