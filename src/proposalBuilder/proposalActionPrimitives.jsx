@@ -171,10 +171,16 @@ export const UserVoteData = ({ voteData = {} }) => {
 export const VotingBar = ({ voteData = {}, proposal = {} }) => {
   const { totalVotes, totalYes } = voteData;
   const getNow = Date.now();
-  const barPercentage =
+
+  let barPercentage =
     ((getNow - proposal.votingPeriodStart) /
       (proposal.votingPeriodEnd - proposal.votingPeriodStart)) *
     100;
+
+  if (getNow < proposal.votingPeriodStart) {
+    barPercentage = 0;
+  }
+
   const getBgColor = () => {
     if (proposal?.status) {
       if (proposal.status === 'PASSED') {
