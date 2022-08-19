@@ -45,10 +45,9 @@ export const VoteButton = props => {
       justifyContent='center'
       alignItems='center'
     >
-      <Text
-        fontSize={'0.88rem'}
-        flex={'1'}
-      >{`${optionsdata.title}（${optionsdata.subtotalVotingPower}）`}</Text>
+      <Text fontSize={'0.88rem'} flex={'1'}>
+        {`${optionsdata.title}（${optionsdata.subtotalVotingPower}）`}
+      </Text>
       <Button size='sm' minW='4rem' {...props}>
         {`Vote`}
       </Button>

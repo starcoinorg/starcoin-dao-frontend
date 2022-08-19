@@ -330,7 +330,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     <PropActionBox>
       <TopStatusBox
         status={getProposalStatus().status}
-        appendStatusText={`ends ${getTime()}`}
+        appendStatusText={`ended ${getTime()}`}
         // circleColor={voteData.isPassing ? 'green' : 'red'}
         circleColor={getProposalStatus().color}
         proposal={proposal}
