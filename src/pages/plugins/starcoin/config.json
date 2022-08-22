@@ -1,0 +1,9 @@
+{
+    "name": "starcoin",
+    "version": "0.0.1",
+    "description": "starcoin plugin",
+    "author": "starcoin",
+    "repo": "",
+    "type": "plugin",
+    "logo": "./starcoin-logo.svg"
+}

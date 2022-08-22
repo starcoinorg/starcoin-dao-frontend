@@ -1,3 +1,8 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* HEADING */
 
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Mulish:wght@300;400;500;700;900&family=Inknut+Antiqua:wght@300;400;500;700;900&display=swap');

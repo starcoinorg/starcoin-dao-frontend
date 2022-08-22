@@ -118,26 +118,6 @@ const DesktopNav = ({ dao }) => {
                   </Button>
                 </PopoverTrigger>
               </Tooltip>
-              {isCommunityLinkProvided && (
-                <Portal>
-                  <TemporaryPopoverFix>
-                    <PopoverContent width='fit-content' pr='1rem'>
-                      <PopoverArrow />
-                      <PopoverCloseButton />
-                      <PopoverBody w='auto'>
-                        <Flex direction='row' align='center' justify='start'>
-                          <SocialsLinkList
-                            socialLinks={socialLinks}
-                            discourseLinkData={discourseLinkData}
-                            dao={dao}
-                            view='desktop'
-                          />
-                        </Flex>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </TemporaryPopoverFix>
-                </Portal>
-              )}
             </Popover>
           </Box> */}
         </>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { RiTrophyLine } from 'react-icons/ri';
+import { RiTrophyLine, RiLinksLine } from 'react-icons/ri';
 import { Stack } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
@@ -11,6 +11,7 @@ import {
   generateDaoLinksLoading,
 } from '../utils/navLinks';
 import { getTerm } from '../utils/metadata';
+import { Plugins } from '../pages/plugins';
 
 const NavLinkList = ({ dao, view, toggleNav = null }) => {
   // const { daoMetaData } = useMetaData();
@@ -55,6 +56,20 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
               path={link.path}
               href={link.href}
               icon={link.icon}
+              view={view}
+              onClick={toggleNav}
+            />
+          );
+        })}
+      {Plugins &&
+        Plugins.map(config => {
+          return (
+            <NavLink
+              key={config.name}
+              label={config.description}
+              path={`/plugins/${config.name}`}
+              href={`/plugins/${config.name}`}
+              icon={config.logo || RiLinksLine}
               view={view}
               onClick={toggleNav}
             />

@@ -11,6 +11,7 @@ import Haus from '../pages/Haus';
 import Register from '../pages/Register';
 import Summon from '../pages/Summon';
 import SummonPartyFavor from '../pages/SummonPartyFavor';
+import Layout from '../components/layout';
 
 const BaseRouter = () => {
   return (
@@ -29,6 +30,22 @@ const BaseRouter = () => {
           <Explore />
         </ExploreContextProvider>
       </Route>
+      <Route
+        path={`/plugins/:pluginname`}
+        render={routeProps => {
+          // 首字母大写
+          const ComponentName =
+            routeProps.match.params.pluginname.charAt(0).toUpperCase() +
+            routeProps.match.params.pluginname.slice(1);
+          const Component = require(`../pages/plugins/${routeProps.match.params.pluginname}/index.jsx`)
+            .default;
+          return (
+            <Layout>
+              <Component />
+            </Layout>
+          );
+        }}
+      />
       <Route exact path='/summon'>
         <Summon />
       </Route>
