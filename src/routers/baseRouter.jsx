@@ -37,7 +37,7 @@ const BaseRouter = () => {
           const ComponentName =
             routeProps.match.params.pluginname.charAt(0).toUpperCase() +
             routeProps.match.params.pluginname.slice(1);
-          const Component = require(`../pages/plugins/${routeProps.match.params.pluginname}/index.jsx`)
+          const Component = require(`../pages/plugins/daos/${routeProps.match.params.pluginname}/index.jsx`)
             .default;
           return (
             <Layout>

@@ -1,0 +1,9 @@
+{
+    "name": "proposal",
+    "version": "0.0.1",
+    "description": "proposal plugin",
+    "author": "starcoin",
+    "repo": "",
+    "type": "plugin",
+    "logo": "./starcoin-logo.svg"
+}

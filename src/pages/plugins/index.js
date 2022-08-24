@@ -1,4 +1,4 @@
-import Starcoin from './starcoin/config.json';
-import StarcoinTwo from './starcointwo/config.json';
+import Starcoin from './daos/starcoin/config.json';
+import Proposal from './daos/proposal/config.json';
 
-export const Plugins = [Starcoin, StarcoinTwo];
+export const Plugins = [Starcoin, Proposal];
