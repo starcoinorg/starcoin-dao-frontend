@@ -1,8 +1,6 @@
 import React from 'react';
 import { Flex, Center } from '@chakra-ui/react';
 
-import { useDaoMember } from '../contexts/DaoMemberContext';
-import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import ContentBox from '../components/ContentBox';
 import PropActions from './proposalActionFactory';
 
@@ -11,13 +9,9 @@ import useMinionAction from '../hooks/useMinionAction';
 import ProposalCardBrief from './proposalBrief';
 
 const ProposalCardV2 = ({ proposal, interaction }) => {
-  const { address } = useInjectedProvider();
-  const { daoMember, isMember } = useDaoMember();
   const { minionAction, executeTX } = proposal?.minion
     ? useMinionAction(proposal)
     : {};
-
-  const { canInteract } = interaction || {};
 
   // const voteData = getVoteData(proposal, address, daoMember);
 
@@ -33,8 +27,6 @@ const ProposalCardV2 = ({ proposal, interaction }) => {
         >
           <PropActions
             proposal={proposal}
-            canInteract={canInteract}
-            isMember={isMember}
             minionAction={minionAction}
             executeTX={executeTX}
           />

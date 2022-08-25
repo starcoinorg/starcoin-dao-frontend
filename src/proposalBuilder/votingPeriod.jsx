@@ -51,12 +51,11 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     isFailing: false,
     votePassedProcessFailed: false,
   });
-
   const { daochain, daoid } = useParams();
 
   const [daoData, setDaoData] = useState(null);
 
-  const { data: dao } = useRequest(`daos/${daoid}`);
+  const { data: dao } = useRequest(`daos/${proposal?.proposalId?.daoId || ''}`);
   useEffect(() => {
     if (dao) {
       setDaoData(dao);

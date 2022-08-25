@@ -150,17 +150,13 @@ const ProposalsList = () => {
             marginLeft: '5%',
           }}
         />
-        <ProposalSearch
-          performSearch={performSearch}
-          resetSearch={resetSearch}
-        />
         {/* <CsvDownloadButton entityList={listProposals} typename='Proposals' /> */}
       </Flex>
 
       <Box mt={4}>
         {isLoaded &&
-          paginatedProposals?.map(proposal => (
-            <ProposalCardV2 key={proposal.categoryId} proposal={proposal} />
+          paginatedProposals?.map((proposal, i) => (
+            <ProposalCardV2 key={i} proposal={proposal} />
           ))}
       </Box>
 
