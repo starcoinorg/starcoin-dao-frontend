@@ -52,7 +52,7 @@ const BaseRouter = () => {
       <Route exact path='/summon-party-favor/:poapId'>
         <SummonPartyFavor />
       </Route>
-      <Route exact path='/register/:registerchain/:daoid'>
+      <Route exact path='/register-dao'>
         <Register />
       </Route>
       <Route exact path='/hub-balances'>
