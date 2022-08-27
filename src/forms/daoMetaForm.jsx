@@ -64,11 +64,30 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
         signature,
       };
 
-      const res = await put('dao/update', updateData);
+      const wasmfs = new WasmFs()
+      const git = new Git(wasmfs)
+      const tokenPackage = new TokenPackage(wasmfs, accountAddress, tokenName, parseInt(tokenPrecision), parseInt(initMint))
 
-      if (res.error) {
-        throw res.error;
-      }
+      const starcoinFrameworkURL = process.env.NODE_ENV === "production" ? "/dapps/data/starcoin-framework.zip" : "/data/starcoin-framework.zip"
+      await git.download(starcoinFrameworkURL, "/workspace/starcoin-framework")
+      tokenPackage.export("/workspace/my-token")
+
+      const mp = new MovePackage(wasmfs, {
+          packagePath: "/workspace/my-token",
+          test: false,
+          alias: new Map([
+              ["StarcoinFramework", "/workspace/starcoin-framework"]
+          ]),
+          initFunction: `${accountAddress}::${tokenName}::init`
+      })
+
+      await mp.build()
+      const blobBuf = wasmfs.fs.readFileSync("/workspace/my-token/target/starcoin/release/package.blob") as Buffer;
+      const transactionHash = await deployContract(blobBuf)
+
+      setSuccessTips(`Deploy token ${tokenName} success, please wait for the transaction to be confirmed, the transaction hash: ${transactionHash}`)
+      setSuccessErrorTips(true);
+
 
       handleUpdate(data);
     } catch (err) {
