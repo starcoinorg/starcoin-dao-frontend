@@ -31,68 +31,63 @@ import TextBox from '../components/TextBox';
 import { daoPresets } from '../utils/summoning';
 import { put, themeImagePath } from '../utils/metadata';
 import ImageUploadModal from '../modals/imageUploadModal';
+import { DaoService } from '../services/daoService';
+import { deployContract } from '../utils/stcWalletSdk';
+import { useOverlay } from '../contexts/OverlayContext';
 
 const puposes = daoPresets('0x1').map(preset => preset.presetName);
 
 const DaoMetaForm = ({ metadata, handleUpdate }) => {
-  const { address, injectedProvider, injectedChain } = useInjectedProvider();
   const [ipfsHash, setIpfsHash] = useState();
   const [loading, setLoading] = useState();
   const [uploading, setUploading] = useState();
+
+  const { address, injectedProvider } = useInjectedProvider();
   const { register, handleSubmit } = useForm();
+  const { successToast, errorToast } = useOverlay();
+
+  const daoService = new DaoService();
 
   const onSubmit = async data => {
     setLoading(true);
 
     try {
-      const messageHash = injectedProvider.utils.sha3(metadata.address);
-      const signature = await injectedProvider.eth.personal.sign(
-        messageHash,
-        address,
-      );
-
       if (ipfsHash) {
         data.avatarImg = ipfsHash;
       }
+
       data.tags = data.tags.split(',');
 
-      const updateData = {
+      const cfg = {
         ...data,
-        contractAddress: metadata.address,
-        network: injectedChain.network,
-        version: metadata.version,
-        signature,
+        address: metadata.address,
+
+        voting_delay: 1 * 60 * 60 * 24,
+        voting_period: 1 * 60 * 60 * 24,
+        voting_quorum_rate: 100 / 100,
+        min_action_delay: 1 * 60 * 60 * 24,
+        min_proposal_deposit: 1 * 10 ** 18,
       };
 
-      const wasmfs = new WasmFs()
-      const git = new Git(wasmfs)
-      const tokenPackage = new TokenPackage(wasmfs, accountAddress, tokenName, parseInt(tokenPrecision), parseInt(initMint))
+      const daoBlobBuf = daoService.createDao(cfg);
+      const transactionHash = await deployContract(
+        injectedProvider,
+        daoBlobBuf,
+      );
 
-      const starcoinFrameworkURL = process.env.NODE_ENV === "production" ? "/dapps/data/starcoin-framework.zip" : "/data/starcoin-framework.zip"
-      await git.download(starcoinFrameworkURL, "/workspace/starcoin-framework")
-      tokenPackage.export("/workspace/my-token")
-
-      const mp = new MovePackage(wasmfs, {
-          packagePath: "/workspace/my-token",
-          test: false,
-          alias: new Map([
-              ["StarcoinFramework", "/workspace/starcoin-framework"]
-          ]),
-          initFunction: `${accountAddress}::${tokenName}::init`
-      })
-
-      await mp.build()
-      const blobBuf = wasmfs.fs.readFileSync("/workspace/my-token/target/starcoin/release/package.blob") as Buffer;
-      const transactionHash = await deployContract(blobBuf)
-
-      setSuccessTips(`Deploy token ${tokenName} success, please wait for the transaction to be confirmed, the transaction hash: ${transactionHash}`)
-      setSuccessErrorTips(true);
-
-
-      handleUpdate(data);
-    } catch (err) {
-      console.log('err', err);
       setLoading(false);
+      successToast({
+        title: 'Dao Summoned!',
+        description: `Your dao has been summoned. View the transaction here: ${transactionHash}`,
+      });
+
+      handleUpdate();
+    } catch (err) {
+      setLoading(false);
+      errorToast({
+        title: 'Error Summoning Dao',
+        description: err.message,
+      });
     }
   };
 
@@ -295,7 +290,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
                 </Stack>
 
                 <Button type='submit' disabled={loading} my={4}>
-                  Save
+                  Create
                 </Button>
               </Flex>
             )}

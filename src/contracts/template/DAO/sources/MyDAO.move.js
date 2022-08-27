@@ -1,31 +1,32 @@
 const MyDAOSourceTpl = (
-    daoName:string, 
-    voting_delay:number, 
-    voting_period:number,
-    voting_quorum_rate:number,
-    min_action_delay: number,
-    min_proposal_deposit: number,
-    describe: string,
-    long_description: string,
-    purpose: string,
-    tags: [string],
-    links: [string]
+  address,
+  daoName,
+  description,
+  long_description,
+  purpose,
+  tags,
+  links,
+
+  voting_delay,
+  voting_period,
+  voting_quorum_rate,
+  min_action_delay,
+  min_proposal_deposit,
 ) => {
+  let tagsCode = 'let tags = Vector::empty<vector<u8>>();\n';
+  for (const i in tags) {
+    const tag = tags[i];
+    tagsCode += `Vector::push_back<vector<u8>>(&mut tags, b"${tag}");\n`;
+  }
 
-    let tagsCode = "let tags = Vector::empty<vector<u8>>();\n"
-    for (const i in tags) {
-        const tag = tags[i];
-        tagsCode+=`Vector::push_back<vector<u8>>(&mut tags, b"${tag}");\n`;
-    }
+  let linksCode = 'let tags = Vector::empty<vector<u8>>();\n';
+  for (const i in links) {
+    const link = links[i];
+    linksCode += `Vector::push_back<vector<u8>>(&mut tags, b"${link}");\n`;
+  }
 
-    let linksCode = "let tags = Vector::empty<vector<u8>>();\n"
-    for (const i in links) {
-        const link = links[i];
-        linksCode+=`Vector::push_back<vector<u8>>(&mut tags, b"${link}");\n`;
-    }
-
-    return `
-module ${daoName}::${daoName} {
+  return `
+module ${address}::${daoName} {
     use StarcoinFramework::Vector;
     use StarcoinFramework::DAOAccount;
     use StarcoinFramework::DAOSpace;
@@ -81,7 +82,7 @@ module ${daoName}::${daoName} {
             installed_web_plugins: Vector::empty<InstalledWebPluginInfo>(),
         }
 
-        let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, b"${describe}", dao, config);
+        let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, b"${description}", dao, config);
         
         DAOSpace::install_plugin_with_root_cap<${daoName}, InstallPluginProposalPlugin>(&dao_root_cap, InstallPluginProposalPlugin::required_caps()); 
         DAOSpace::install_plugin_with_root_cap<${daoName}, MemberProposalPlugin>(&dao_root_cap, MemberProposalPlugin::required_caps());
@@ -159,7 +160,7 @@ module ${daoName}::${daoName} {
         Option::is_some(&idx)
     }
 }
-`
-}
+`;
+};
 
-export {MyDAOSourceTpl}
+export { MyDAOSourceTpl };
