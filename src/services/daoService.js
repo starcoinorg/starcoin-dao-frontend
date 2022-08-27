@@ -31,15 +31,18 @@ class DaoService {
     this.renderDAOPackage('/workspace/my-dao', cfg);
 
     const mp = new MovePackage(this.wasmfs, {
-      packagePath: '/workspace/my-token',
+      packagePath: '/workspace/my-dao',
       test: false,
-      alias: new Map([['StarcoinFramework', '/workspace/starcoin-framework']]),
+      alias: new Map([
+        ['StarcoinFramework', '/workspace/starcoin-framework'],
+        ['FreePlugin', '/workspace/freepai-plugin'],
+      ]),
       initFunction: `${cfg.address}::${cfg.name}::init`,
     });
 
     await mp.build();
     const blobBuf = this.wasmfs.fs.readFileSync(
-      '/workspace/my-token/target/starcoin/release/package.blob',
+      '/workspace/my-dao/target/starcoin/release/package.blob',
     );
     return blobBuf;
   }

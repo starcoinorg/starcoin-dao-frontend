@@ -16,6 +16,7 @@
     "@gnosis.pm/zodiac": "^1.0.3",
     "@self.id/core": "0.4.0",
     "@self.id/web": "0.4.0",
+    "@wasmer/wasmfs": "^0.12.0",
     "@starcoin/move-js": "^0.6.1",
     "@starcoin/starcoin": "^2.1.6",
     "@starcoin/starmask-onboarding": "^1.2.0",

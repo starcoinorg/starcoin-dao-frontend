@@ -29,7 +29,7 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import ContentBox from '../components/ContentBox';
 import TextBox from '../components/TextBox';
 import { daoPresets } from '../utils/summoning';
-import { put, themeImagePath } from '../utils/metadata';
+import { themeImagePath } from '../utils/metadata';
 import ImageUploadModal from '../modals/imageUploadModal';
 import { DaoService } from '../services/daoService';
 import { deployContract } from '../utils/stcWalletSdk';
@@ -42,7 +42,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
   const [loading, setLoading] = useState();
   const [uploading, setUploading] = useState();
 
-  const { address, injectedProvider } = useInjectedProvider();
+  const { injectedProvider } = useInjectedProvider();
   const { register, handleSubmit } = useForm();
   const { successToast, errorToast } = useOverlay();
 

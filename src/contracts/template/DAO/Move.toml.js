@@ -6,6 +6,7 @@ version = "0.0.1"
 
 [addresses]
 StarcoinFramework = "0x1"
+FreePlugin = "0x7dA9Cd8048A4620fda9e22977750C517"
 ${daoName} = "${address}"
 
 [dependencies]
