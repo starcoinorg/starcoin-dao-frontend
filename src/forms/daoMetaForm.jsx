@@ -42,7 +42,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
   const [loading, setLoading] = useState();
   const [uploading, setUploading] = useState();
 
-  const { injectedProvider } = useInjectedProvider();
+  const { address, injectedProvider } = useInjectedProvider();
   const { register, handleSubmit } = useForm();
   const { successToast, errorToast } = useOverlay();
 
@@ -60,13 +60,15 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
 
       const cfg = {
         ...data,
-        address: metadata.address,
+        address: address,
 
-        voting_delay: 1 * 60 * 60 * 24,
-        voting_period: 1 * 60 * 60 * 24,
-        voting_quorum_rate: 100 / 100,
-        min_action_delay: 1 * 60 * 60 * 24,
-        min_proposal_deposit: 1 * 10 ** 18,
+        proposalConfig: {
+          voting_delay: 1 * 60 * 60 * 24,
+          voting_period: 1 * 60 * 60 * 24,
+          voting_quorum_rate: 100 / 100,
+          min_action_delay: 1 * 60 * 60 * 24,
+          min_proposal_deposit: 1 * 10 ** 18,
+        },
       };
 
       const daoBlobBuf = daoService.createDao(cfg);

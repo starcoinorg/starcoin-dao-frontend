@@ -16,13 +16,14 @@ const MyDAOSourceTpl = (
   let tagsCode = 'let tags = Vector::empty<vector<u8>>();\n';
   for (const i in tags) {
     const tag = tags[i];
-    tagsCode += `Vector::push_back<vector<u8>>(&mut tags, b"${tag}");\n`;
+    tagsCode += `\t\tVector::push_back<vector<u8>>(&mut tags, b"${tag}");\n`;
   }
 
-  let linksCode = 'let tags = Vector::empty<vector<u8>>();\n';
-  for (const i in links) {
-    const link = links[i];
-    linksCode += `Vector::push_back<vector<u8>>(&mut tags, b"${link}");\n`;
+  let linksCode = 'let links = Vector::empty<vector<u8>>();\n';
+  for (const key in links) {
+    const value = links[key];
+    const link = `${key}=${value}`;
+    linksCode += `\t\tVector::push_back<vector<u8>>(&mut links, b"${link}");\n`;
   }
 
   return `
