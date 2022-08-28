@@ -28,7 +28,10 @@ const MyDAOSourceTpl = (
 
   return `
 module ${address}::${daoName} {
+    use StarcoinFramework::Signer;
+    use StarcoinFramework::Errors;
     use StarcoinFramework::Vector;
+    use StarcoinFramework::Option::{ Self, Option};
     use StarcoinFramework::DAOAccount;
     use StarcoinFramework::DAOSpace;
     use StarcoinFramework::MemberProposalPlugin::{Self, MemberProposalPlugin};
@@ -41,12 +44,12 @@ module ${address}::${daoName} {
         plugin_version: u64,
     }
 
-    struct ${daoName} has store{
-        long_description: vector<u8>
-        purpose: vector<u8>
-        tags: vector<vector<u8>>
-        links: vector<vector<u8>>
-        installed_web_plugins: vector<InstalledWebPluginInfo>
+    struct ${daoName} has key, store {
+        long_description: vector<u8>,
+        purpose: vector<u8>,
+        tags: vector<vector<u8>>,
+        links: vector<vector<u8>>,
+        installed_web_plugins: vector<InstalledWebPluginInfo>,
     }
     
     const NAME: vector<u8> = b"${daoName}";
@@ -75,13 +78,13 @@ module ${address}::${daoName} {
         );
         ${tagsCode}
         ${linksCode}
-        let dao = ${daoName}{
-            long_description: b"${long_description}"
-            purpose: b"${purpose}"
+        let dao = ${daoName} {
+            long_description: b"${long_description}",
+            purpose: b"${purpose}",
             tags: tags,
             links: links,
             installed_web_plugins: Vector::empty<InstalledWebPluginInfo>(),
-        }
+        };
 
         let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, b"${description}", dao, config);
         
@@ -99,7 +102,7 @@ module ${address}::${daoName} {
         let dao = borrow_global_mut<${daoName}>(CONTRACT_ACCOUNT);
         assert!(!exists_installed_plugin(dao, plugin_id, plugin_version), Errors::already_published(ERR_PLUGIN_HAS_INSTALLED));
         
-        Vector::push_back<InstalledWebPluginInfo>(&mut dao.installed_plugins, InstalledWebPluginInfo{
+        Vector::push_back<InstalledWebPluginInfo>(&mut dao.installed_web_plugins, InstalledWebPluginInfo{
             plugin_id: plugin_id,
             plugin_version: plugin_version,
         });
@@ -110,11 +113,11 @@ module ${address}::${daoName} {
         assert!(Signer::address_of(sender)==CONTRACT_ACCOUNT, Errors::requires_address(ERR_NOT_CONTRACT_OWNER));
 
         let dao = borrow_global_mut<${daoName}>(CONTRACT_ACCOUNT);
-        let idx = find_by_plugin_id_and_version(&dao.installed_plugins, plugin_id, plugin_version);
+        let idx = find_by_plugin_id_and_version(&dao.installed_web_plugins, plugin_id, plugin_version);
         assert!(Option::is_some(&idx), Errors::already_published(ERR_PLUGIN_NOT_INSTALLED));
 
         let i = Option::extract(&mut idx);
-        Vector::remove<InstalledWebPluginInfo>(&mut dao.installed_plugins, i);
+        Vector::remove<InstalledWebPluginInfo>(&mut dao.installed_web_plugins, i);
     }
 
     /// Helpers
@@ -136,7 +139,7 @@ module ${address}::${daoName} {
     }
 
     fun find_by_plugin_id_and_version(
-        c: &vector<InstalledPluginInfo>,
+        c: &vector<InstalledWebPluginInfo>,
         plugin_id: u64, plugin_version: u64
     ): Option<u64> {
         let len = Vector::length(c);
@@ -157,7 +160,7 @@ module ${address}::${daoName} {
     }
 
     fun exists_installed_plugin(dao: &${daoName}, plugin_id: u64, plugin_version: u64): bool {
-        let idx = find_by_plugin_id_and_version(&dao.installed_plugins, plugin_id, plugin_version);
+        let idx = find_by_plugin_id_and_version(&dao.installed_web_plugins, plugin_id, plugin_version);
         Option::is_some(&idx)
     }
 }

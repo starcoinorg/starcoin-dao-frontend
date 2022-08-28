@@ -16,6 +16,7 @@ import {
   getProviderOptions,
 } from '../utils/web3Modal';
 import { supportedChains } from '../utils/chain';
+import { providers } from '@starcoin/starcoin';
 
 const defaultModal = new SafeAppWeb3Modal({
   providerOptions: getProviderOptions(),
@@ -135,8 +136,10 @@ export const InjectedProvider = ({ children }) => {
             method: 'chain.id',
           });
 
+          const provider = new providers.Web3Provider(window.starcoin, chainInfo.id);
           setAddress(newAccounts[0]);
           setInjectedChain(chainInfo.id);
+          setInjectedProvider(provider);
         } catch (error) {
           console.error(error);
         }

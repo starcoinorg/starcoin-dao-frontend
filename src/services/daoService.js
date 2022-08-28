@@ -11,6 +11,8 @@ class DaoService {
 
   async createDao(cfg) {
     // download starcoin framework
+    this.wasmfs.fs.mkdirpSync('/workspace/starcoin-framework/unit-test');
+
     const starcoinFrameworkURL =
       process.env.NODE_ENV === 'production'
         ? '/dapps/data/starcoin-framework.zip'
@@ -20,7 +22,12 @@ class DaoService {
       '/workspace/starcoin-framework',
     );
 
+    const dirTree = this.wasmfs.toJSON('/workspace/starcoin-framework');
+    console.log(dirTree);
+
     // download starcoin framework
+
+    this.wasmfs.fs.mkdirpSync('/workspace/freepai-plugin/sources');
     const freepaiPluginURL =
       process.env.NODE_ENV === 'production'
         ? '/dapps/data/freepai-plugin.zip'

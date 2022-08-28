@@ -71,7 +71,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
         },
       };
 
-      const daoBlobBuf = daoService.createDao(cfg);
+      const daoBlobBuf = await daoService.createDao(cfg);
       const transactionHash = await deployContract(
         injectedProvider,
         daoBlobBuf,
