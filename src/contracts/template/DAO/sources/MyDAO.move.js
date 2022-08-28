@@ -65,7 +65,7 @@ module ${address}::${daoName} {
     const ERR_PLUGIN_NOT_INSTALLED: u64 = 107;
 
     /// directly upgrade the sender account to DAOAccount and create DAO
-    public(script) fun create_dao(
+    public(script) fun initialize(
         sender: signer
     ){
         let dao_account_cap = DAOAccount::upgrade_to_dao(sender);

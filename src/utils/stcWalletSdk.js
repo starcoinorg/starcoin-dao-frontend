@@ -1,6 +1,5 @@
 import { encoding } from '@starcoin/starcoin';
 import { hexlify } from '@ethersproject/bytes';
-import { ethers } from 'ethers';
 
 export async function deployContract(injectedProvider, code) {
   let transactionHash;
@@ -13,10 +12,8 @@ export async function deployContract(injectedProvider, code) {
   const transactionPayloadHex = encoding.packageHexToTransactionPayloadHex(
     packageHex,
   );
-  const provider = new ethers.providers.Web3Provider(
-    injectedProvider.currentProvider,
-  );
-  transactionHash = await provider
+
+  transactionHash = await injectedProvider
     .getSigner()
     .sendUncheckedTransaction({ data: transactionPayloadHex });
 

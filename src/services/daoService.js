@@ -44,7 +44,7 @@ class DaoService {
         ['StarcoinFramework', '/workspace/starcoin-framework'],
         ['FreePlugin', '/workspace/freepai-plugin'],
       ]),
-      initFunction: `${cfg.address}::${cfg.name}::init`,
+      initFunction: `${cfg.address}::${cfg.name}::initialize`,
     });
 
     await mp.build();
