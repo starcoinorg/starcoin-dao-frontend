@@ -34,11 +34,11 @@ const Register = () => {
     }
   }, [address, injectedChain]);
 
-  const handleUpdate = async () => {
+  const handleUpdate = async ret => {
     refetchUserHubDaos();
     sessionStorage.removeItem('exploreDaoData');
 
-    history.push(`/dao/${registerchain}/${daoid}`);
+    history.push(`/dao/${ret.chainId}/${ret.daoAddress}`);
   };
 
   return (

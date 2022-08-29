@@ -51,6 +51,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
 
   const [daoData, setDaoData] = useState(null);
 
+  /*
   const { data: dao } = useRequest(`daos/${daoid}`);
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
       setDaoData(dao);
     }
   }, [dao]);
+  */
 
   useEffect(() => {
     if (members?.length) {

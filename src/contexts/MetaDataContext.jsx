@@ -12,6 +12,7 @@ import { useCustomTheme } from './CustomThemeContext';
 import { useUser } from './UserContext';
 import { proposalConfigReducer } from '../reducers/proposalConfig';
 import { fetchMetaData } from '../utils/metadata';
+import { DaoService } from '../services/daoService';
 
 export const MetaDataContext = createContext();
 
@@ -29,6 +30,13 @@ export const MetaDataProvider = ({ children }) => {
 
   const hasFetchedMetadata = useRef(false);
   const shouldUpdateTheme = useRef(true);
+
+  const daoService = new DaoService();
+
+  let isChainDao = false;
+  if (daoid && daoid.startsWith('0x')) {
+    isChainDao = true;
+  }
 
   //  We're essentially calling the same function 3 times here.
   //  I have to keep them separate so that the useEffect has
@@ -80,7 +88,7 @@ export const MetaDataProvider = ({ children }) => {
         console.error(error);
       }
     };
-    if (daoid) {
+    if (daoid && !isChainDao) {
       getApiMetadata();
     }
   }, [daoid]);
@@ -106,6 +114,32 @@ export const MetaDataProvider = ({ children }) => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const getDaoMetadata = async () => {
+      try {
+        const data = await daoService.getDao(daoid);
+        if (shouldUpdateTheme.current && !daoMetaData) {
+          if (data.customThemeConfig) {
+            updateTheme(data.customThemeConfig);
+          } else {
+            resetTheme();
+          }
+          if (data.customTermsConfig) {
+            setCustomTerms(data.customTermsConfig);
+          }
+          setDaoMetaData(data);
+          dispatchPropConfig({ action: 'INIT', payload: data });
+          shouldUpdateTheme.current = false;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (daoid && isChainDao) {
+      getDaoMetadata();
+    }
+  }, [daoid]);
 
   const refetchMetaData = () => {
     shouldUpdateTheme.current = true;

@@ -83,7 +83,10 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
         description: `Your dao has been summoned. View the transaction here: ${transactionHash}`,
       });
 
-      handleUpdate();
+      handleUpdate({
+        chainId: injectedProvider.chainId,
+        daoAddress: address,
+      });
     } catch (err) {
       setLoading(false);
       errorToast({

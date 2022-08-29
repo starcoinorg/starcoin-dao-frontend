@@ -10,6 +10,7 @@ import MainViewLayout from '../components/mainViewLayout';
 import { useRequest } from '../hooks/useRequest';
 import axios from 'axios';
 import config from '../utils/getConfig';
+import { DaoService } from '../services/daoService';
 
 const url_prev = `${config.api}/`;
 
@@ -18,7 +19,9 @@ const Explore = () => {
   const [daoList, setDaoList] = useState([]);
   const [daos, setDaos] = useState([]);
   const [_daos, _setDaos] = useState([]);
+  const [_chainDaos, _setChainDaos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const daoService = new DaoService();
 
   const getAllData = async () => {
     Promise.all([
@@ -53,9 +56,14 @@ const Explore = () => {
     getAllData();
   }, []);
 
+  useEffect(async () => {
+    const daos = await daoService.listDaos();
+    _setChainDaos(daos);
+  }, []);
+
   useEffect(() => {
     if (daos && _daos) {
-      setDaoList([...daos, ..._daos]);
+      setDaoList([...daos, ..._daos, ..._chainDaos]);
     }
   }, [daos, _daos]);
 

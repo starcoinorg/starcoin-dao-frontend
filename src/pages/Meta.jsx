@@ -27,9 +27,9 @@ const Meta = ({ isMember, daoMetaData, refetchMetaData }) => {
     }
   }, [daoMetaData, localMetadata]);
 
-  const handleUpdate = () => {
+  const handleUpdate = ret => {
     refetchMetaData();
-    history.push(`/dao/${daochain}/${daoid}/settings`);
+    history.push(`/dao/${ret.chainId}/${ret.daoAddress}/settings`);
   };
 
   return (

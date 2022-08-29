@@ -2,6 +2,7 @@ import { WasmFs } from '@wasmer/wasmfs';
 import { Git, MovePackage } from '@starcoin/move-js';
 import { MoveTomlTpl } from '../contracts/template/DAO/Move.toml';
 import { MyDAOSourceTpl } from '../contracts/template/DAO/sources/MyDAO.move';
+import { listDaos, getDaoDetail } from '../utils/dao';
 
 class DaoService {
   constructor() {
@@ -90,6 +91,14 @@ class DaoService {
     window.console.info(myTokenPath);
     window.console.info(myTokenContent);
     window.console.info();
+  }
+
+  async listDaos() {
+    return await listDaos();
+  }
+
+  async getDao(daoId) {
+    return await getDaoDetail(daoId);
   }
 }
 
