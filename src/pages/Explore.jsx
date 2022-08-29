@@ -19,7 +19,7 @@ const Explore = () => {
   const [daoList, setDaoList] = useState([]);
   const [daos, setDaos] = useState([]);
   const [_daos, _setDaos] = useState([]);
-  const [_chainDaos, _setChainDaos] = useState([]);
+  const [chainDaos, setChainDaos] = useState([]);
   const [loading, setLoading] = useState(false);
   const daoService = new DaoService();
 
@@ -42,7 +42,7 @@ const Explore = () => {
     ]).then(res => {
       setDaos(res[0].data);
       _setDaos(res[1].data);
-      setDaos(res[0].loading);
+      setLoading(false);
     });
   };
 
@@ -56,16 +56,20 @@ const Explore = () => {
     getAllData();
   }, []);
 
-  useEffect(async () => {
-    const daos = await daoService.listDaos();
-    _setChainDaos(daos);
+  useEffect(() => {
+    daoService.listDaos().then(res => {
+      console.log('loaded chain daos', res);
+      setChainDaos(res);
+    });
   }, []);
 
   useEffect(() => {
-    if (daos && _daos) {
-      setDaoList([...daos, ..._daos, ..._chainDaos]);
+    if (daos && _daos && chainDaos) {
+      const totalDaos = [...daos, ..._daos, ...chainDaos];
+      console.log('loaded total daos', totalDaos);
+      setDaoList(totalDaos);
     }
-  }, [daos, _daos]);
+  }, [daos, _daos, chainDaos]);
 
   return (
     <Layout>
