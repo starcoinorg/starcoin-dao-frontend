@@ -11,6 +11,7 @@ import { useDao } from '../contexts/DaoContext';
 import { useDaoMember } from '../contexts/DaoMemberContext';
 import { useMetaData } from '../contexts/MetaDataContext';
 import { useToken } from '../contexts/TokenContext';
+import { GarfishInit } from '../garfishInit';
 
 // import Allies from '../pages/Allies';
 import DiscourseSettings from '../pages/DiscourseSettings';
@@ -42,6 +43,7 @@ import SpamFilterSettings from '../pages/SpamFilterSettings';
 import DaoDocs from '../pages/daoDocs';
 import DaoDoc from '../pages/DaoDoc';
 
+
 const DaoRouter = () => {
   const { path } = useRouteMatch();
   const { currentDaoTokens } = useToken();
@@ -57,6 +59,8 @@ const DaoRouter = () => {
 
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const [pluginLoaded, setPluginLoaded] = useState(false)
+
   const dao = {
     daoID: daoid,
     chainID: daochain,
@@ -66,6 +70,51 @@ const DaoRouter = () => {
     daoProposals,
     daoVaults,
   };
+
+  dao.registerApp = async (app) => {
+    const activeWhen = `/newRegister${app.activeWhen}`
+
+    // 调用 Garfish.registerApp 动态注册子应用
+    Garfish.registerApp({
+      name: this.name,
+      basename: "/examples",
+      activeWhen: activeWhen,
+      entry: "cached",
+    });
+
+    subAppMenus.push({
+      key: app.name,
+      icon: <img src={newSvg} className="sidebar-item-icon" />,
+      title: `【PluginApp】${app.name}`,
+      path: activeWhen,
+    });
+
+    setSubAppMenus(subAppMenus);
+  };
+
+  useEffect(async () => {
+    if (pluginLoaded) {
+      return
+    }
+
+    await GarfishInit(path)
+
+    const daoPlugins = daoMetaData.installedPlugins;
+
+    for (const i in daoPlugins) {
+      const plugin_info = daoPlugins[i];
+
+      const app = await Garfish.preLoadApp(plugin_info.name, {
+        entry: adapter_uri(plugin_info.js_entry_uri)
+      })
+
+      const modules = app?.cjsModules.exports;
+      modules?.setup(dao);
+    }
+
+    setPluginLoaded(true)
+
+  }, [path]);
 
   return (
     <Layout dao={dao}>
