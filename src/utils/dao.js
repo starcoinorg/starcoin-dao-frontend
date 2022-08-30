@@ -1,6 +1,7 @@
 import { LinkError } from 'apollo-link/lib/linkUtils';
 import { utils } from 'web3';
 import { MINION_TYPES } from './proposalUtils';
+import { getPluginInfo } from './marketplace';
 
 const orderDaosByNetwork = (userHubDaos, userNetwork) => ({
   currentNetwork: userHubDaos.find(dao => dao.networkID === userNetwork) || [],
@@ -165,9 +166,15 @@ export const getDaoDetail = async daoId => {
   let plugins = [];
   if (daoExt.json.ext.installed_web_plugins) {
     for (const i in daoExt.json.ext.installed_web_plugins) {
-      const encodedPlugin = daoExt.json.ext.installed_web_plugins[i];
-      const plugin = utils.hexToString(encodedPlugin);
-      plugins.push(plugin);
+      const plugin_info = daoExt.json.ext.installed_web_plugins[i];
+      const plugin = await getPluginInfo(
+        plugin_info.plugin_id,
+        plugin_info.plugin_version,
+      );
+
+      if (plugin) {
+        plugins.push(plugin);
+      }
     }
   }
 

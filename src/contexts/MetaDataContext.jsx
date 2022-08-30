@@ -119,6 +119,7 @@ export const MetaDataProvider = ({ children }) => {
     const getDaoMetadata = async () => {
       try {
         const data = await daoService.getDao(daoid);
+        console.log('current DAO data:', data);
         if (shouldUpdateTheme.current && !daoMetaData) {
           if (data.customThemeConfig) {
             updateTheme(data.customThemeConfig);
