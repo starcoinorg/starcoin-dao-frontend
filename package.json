@@ -84,7 +84,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "lint:fix": "eslint ./src/garfishInit.js --fix",
+    "lint:fix": "eslint ./src/routers/daoRouter.jsx --fix",
     "test": "craco test",
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
