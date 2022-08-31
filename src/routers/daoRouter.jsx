@@ -72,194 +72,191 @@ const DaoRouter = () => {
 
   return (
     <Layout dao={dao}>
-      <Switch>
-        <Route exact path={`${path}/`}>
-          <Overview
-            activities={daoActivities}
-            daoMember={daoMember}
-            isMember={isMember}
-            isCorrectNetwork={isCorrectNetwork}
-            daoOverview={daoOverview}
-            members={daoMembers}
-            daoMetaData={daoMetaData}
-            daoVaults={daoVaults}
-            daoData={dao}
+      <div id='submodule'>
+        <Switch id='submodule'>
+          <Route exact path={`${path}/`}>
+            <Overview
+              activities={daoActivities}
+              daoMember={daoMember}
+              isMember={isMember}
+              isCorrectNetwork={isCorrectNetwork}
+              daoOverview={daoOverview}
+              members={daoMembers}
+              daoMetaData={daoMetaData}
+              daoVaults={daoVaults}
+              daoData={dao}
+            />
+          </Route>
+          <Route exact path={`${path}/proposals`}>
+            <Proposals
+              proposals={daoActivities?.proposals}
+              overview={daoOverview}
+              activities={daoActivities}
+              customTerms={customTerms}
+            />
+          </Route>
+          <Route exact path={`${path}/vaults`}>
+            <Vaults
+              currentDaoTokens={currentDaoTokens}
+              overview={daoOverview}
+              customTerms={customTerms}
+              daoVaults={daoVaults}
+            />
+          </Route>
+          <Route exact path={`${path}/vaults/treasury`}>
+            <Treasury
+              currentDaoTokens={currentDaoTokens}
+              overview={daoOverview}
+              customTerms={customTerms}
+              daoMember={daoMember}
+              daoVaults={daoVaults}
+            />
+          </Route>
+          <Route exact path={`${path}/vaults/minion/:minion`}>
+            <MinionVault
+              currentDaoTokens={currentDaoTokens}
+              overview={daoOverview}
+              customTerms={customTerms}
+              daoMember={daoMember}
+              daoVaults={daoVaults}
+              isMember={isMember}
+            />
+          </Route>
+          <Route
+            exact
+            path={[`${path}/gallery/minion/:minion`, `${path}/gallery/`]}
+          >
+            <MinionGallery daoVaults={daoVaults} customTerms={customTerms} />
+          </Route>
+          <Route exact path={`${path}/members`}>
+            <Members
+              members={daoMembers}
+              activities={daoActivities}
+              overview={daoOverview}
+              daoMember={daoMember}
+              daoMembers={daoMembers}
+              customTerms={customTerms}
+              daoMetaData={daoMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/settings/boosts`}>
+            <MarketPlaceV0 />
+          </Route>
+          <Route exact path={`${path}/staking`}>
+            <Redirect to='/' />
+          </Route>
+          <Route exact path={`${path}/settings/notifications`}>
+            <Notifications
+              daoMetaData={daoMetaData}
+              refetchMetaData={refetchMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/settings/discourse`}>
+            <DiscourseSettings
+              daoMetaData={daoMetaData}
+              refetchMetaData={refetchMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/settings/theme`}>
+            <ThemeBuilder refetchMetaData={refetchMetaData} />
+          </Route>
+          <Route exact path={`${path}/settings`}>
+            <Settings
+              overview={daoOverview}
+              daoMetaData={daoMetaData}
+              customTerms={customTerms}
+            />
+          </Route>
+          <Route exact path={`${path}/settings/meta`}>
+            <Meta
+              daoMetaData={daoMetaData}
+              isMember={isMember}
+              refetchMetaData={refetchMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/settings/audit`}>
+            <MetaAudit daoMetaData={daoMetaData} />
+          </Route>
+          <Route exact path={`${path}/settings/proposals`}>
+            <ProposalTypes
+              daoMetaData={daoMetaData}
+              refetchMetaData={refetchMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/settings/spam`}>
+            <SpamFilterSettings
+              daoMetaData={daoMetaData}
+              daoOverview={daoOverview}
+            />
+          </Route>
+          <Route
+            exact
+            path={`${path}/settings/superfluid-minion/:minion`} // path={`${path}/settings/superfluid-minion/:minion(\b0x[0-9a-f]{10,40}\b)`}
+          >
+            <SuperfluidMinion
+              activities={daoActivities}
+              overview={daoOverview}
+              daoMember={daoMember}
+              members={daoMembers}
+            />
+          </Route>
+          <Redirect
+            from={`${path}/proposals/hardcore`}
+            to={`${path}/proposals/audit`}
           />
-        </Route>
-        <Route exact path={`${path}/proposals`}>
-          <Proposals
-            proposals={daoActivities?.proposals}
-            overview={daoOverview}
-            activities={daoActivities}
-            customTerms={customTerms}
-          />
-        </Route>
-        <Route exact path={`${path}/vaults`}>
-          <Vaults
-            currentDaoTokens={currentDaoTokens}
-            overview={daoOverview}
-            customTerms={customTerms}
-            daoVaults={daoVaults}
-          />
-        </Route>
-        <Route exact path={`${path}/vaults/treasury`}>
-          <Treasury
-            currentDaoTokens={currentDaoTokens}
-            overview={daoOverview}
-            customTerms={customTerms}
-            daoMember={daoMember}
-            daoVaults={daoVaults}
-          />
-        </Route>
-        <Route exact path={`${path}/vaults/minion/:minion`}>
-          <MinionVault
-            currentDaoTokens={currentDaoTokens}
-            overview={daoOverview}
-            customTerms={customTerms}
-            daoMember={daoMember}
-            daoVaults={daoVaults}
-            isMember={isMember}
-          />
-        </Route>
-        <Route
-          exact
-          path={[`${path}/gallery/minion/:minion`, `${path}/gallery/`]}
-        >
-          <MinionGallery daoVaults={daoVaults} customTerms={customTerms} />
-        </Route>
-        <Route exact path={`${path}/members`}>
-          <Members
-            members={daoMembers}
-            activities={daoActivities}
-            overview={daoOverview}
-            daoMember={daoMember}
-            daoMembers={daoMembers}
-            customTerms={customTerms}
-            daoMetaData={daoMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/settings/boosts`}>
-          <MarketPlaceV0 />
-        </Route>
-        <Route exact path={`${path}/staking`}>
-          <Redirect to='/' />
-        </Route>
-        <Route exact path={`${path}/settings/notifications`}>
-          <Notifications
-            daoMetaData={daoMetaData}
-            refetchMetaData={refetchMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/settings/discourse`}>
-          <DiscourseSettings
-            daoMetaData={daoMetaData}
-            refetchMetaData={refetchMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/settings/theme`}>
-          <ThemeBuilder refetchMetaData={refetchMetaData} />
-        </Route>
-        <Route exact path={`${path}/settings`}>
-          <Settings
-            overview={daoOverview}
-            daoMetaData={daoMetaData}
-            customTerms={customTerms}
-          />
-        </Route>
-        <Route exact path={`${path}/settings/meta`}>
-          <Meta
-            daoMetaData={daoMetaData}
-            isMember={isMember}
-            refetchMetaData={refetchMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/settings/audit`}>
-          <MetaAudit daoMetaData={daoMetaData} />
-        </Route>
-        <Route exact path={`${path}/settings/proposals`}>
-          <ProposalTypes
-            daoMetaData={daoMetaData}
-            refetchMetaData={refetchMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/settings/spam`}>
-          <SpamFilterSettings
-            daoMetaData={daoMetaData}
-            daoOverview={daoOverview}
-          />
-        </Route>
-        <Route
-          exact
-          path={`${path}/settings/superfluid-minion/:minion`} // path={`${path}/settings/superfluid-minion/:minion(\b0x[0-9a-f]{10,40}\b)`}
-        >
-          <SuperfluidMinion
-            activities={daoActivities}
-            overview={daoOverview}
-            daoMember={daoMember}
-            members={daoMembers}
-          />
-        </Route>
-        <Redirect
-          from={`${path}/proposals/hardcore`}
-          to={`${path}/proposals/audit`}
-        />
-        <Route exact path={`${path}/proposals/audit`}>
-          <ProposalAudit daoProposals={daoProposals} />
-        </Route>
+          <Route exact path={`${path}/proposals/audit`}>
+            <ProposalAudit daoProposals={daoProposals} />
+          </Route>
 
-        <Route exact path={`${path}/proposals/spam`}>
-          <ProposalsSpam daoMetaData={daoMetaData} />
-        </Route>
-        <Route exact path={`${path}/proposals/:propid`}>
-          <Proposal
-            overview={daoOverview}
-            daoMember={daoMember}
-            activities={daoActivities}
-            customTerms={customTerms}
-            daoProposals={daoProposals}
-            delegate={delegate}
-          />
-        </Route>
-        <Route exact path={`${path}/profile/:userid`}>
-          <Profile
-            members={daoMembers}
-            overview={daoOverview}
-            daoTokens={currentDaoTokens}
-            activities={daoActivities}
-            daoMember={daoMember}
-          />
-        </Route>
-        <Route exact path={`${path}/boost/mintgate`}>
-          <MintGate daoMetaData={daoMetaData} />
-        </Route>
-        <Route exact path={`${path}/boost/snapshot/settings`}>
-          <SnapshotSettings
-            daoMetaData={daoMetaData}
-            refetchMetaData={refetchMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/boost/snapshot`}>
-          <Snapshot
-            isMember={isMember}
-            daoMetaData={daoMetaData}
-            refetchMetaData={refetchMetaData}
-          />
-        </Route>
-        <Route exact path={`${path}/party-favor`}>
-          <PartyFavor isMember={isMember} />
-        </Route>
-        <Route exact path={`${path}/docs`}>
-          <DaoDocs />
-        </Route>
-        <Route exact path={`${path}/doc/:docId`}>
-          <DaoDoc />
-        </Route>
-        <Route exact path={`${path}/plugins`}>
-          <PluginOutlet />
-        </Route>
-      </Switch>
-
-      <PluginOutlet />
+          <Route exact path={`${path}/proposals/spam`}>
+            <ProposalsSpam daoMetaData={daoMetaData} />
+          </Route>
+          <Route exact path={`${path}/proposals/:propid`}>
+            <Proposal
+              overview={daoOverview}
+              daoMember={daoMember}
+              activities={daoActivities}
+              customTerms={customTerms}
+              daoProposals={daoProposals}
+              delegate={delegate}
+            />
+          </Route>
+          <Route exact path={`${path}/profile/:userid`}>
+            <Profile
+              members={daoMembers}
+              overview={daoOverview}
+              daoTokens={currentDaoTokens}
+              activities={daoActivities}
+              daoMember={daoMember}
+            />
+          </Route>
+          <Route exact path={`${path}/boost/mintgate`}>
+            <MintGate daoMetaData={daoMetaData} />
+          </Route>
+          <Route exact path={`${path}/boost/snapshot/settings`}>
+            <SnapshotSettings
+              daoMetaData={daoMetaData}
+              refetchMetaData={refetchMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/boost/snapshot`}>
+            <Snapshot
+              isMember={isMember}
+              daoMetaData={daoMetaData}
+              refetchMetaData={refetchMetaData}
+            />
+          </Route>
+          <Route exact path={`${path}/party-favor`}>
+            <PartyFavor isMember={isMember} />
+          </Route>
+          <Route exact path={`${path}/docs`}>
+            <DaoDocs />
+          </Route>
+          <Route exact path={`${path}/doc/:docId`}>
+            <DaoDoc />
+          </Route>
+        </Switch>
+      </div>
     </Layout>
   );
 };

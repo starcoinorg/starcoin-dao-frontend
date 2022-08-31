@@ -3,6 +3,7 @@ import React, { useContext, createContext, useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
+import PluginApp from '../pages/PluginApp';
 
 export const DaoPluginContext = createContext();
 
@@ -15,38 +16,49 @@ export const DaoPluginProvider = ({ children }) => {
   const [pluginMenus, setPluginMenus] = useState([]);
   const [pluginLoaded, setPluginLoaded] = useState(false);
 
-  const registerApp = async app => {
-    const activeWhen = `/newRegister${app.activeWhen}`;
-
-    // 调用 Garfish.registerApp 动态注册子应用
-    Garfish.registerApp({
-      name: app.name,
-      basename: '/examples',
-      activeWhen: activeWhen,
-      entry: 'cached',
-    });
-
-    pluginMenus.push({
-      key: app.name,
-      icon: <img src={app.icon} className='sidebar-item-icon' />,
-      title: `【PluginApp】${app.name}`,
-      path: activeWhen,
-    });
-
-    setPluginMenus(pluginMenus);
-  };
-
-  const adapterURI = res => {
-    if (res.startsWith('ipfs:://')) {
-      const ipfs_cid = res.substring(8);
-      return `https://ipfs.filebase.io/ipfs/${ipfs_cid}`.toString();
-    } else {
-      return res.toString();
+  class PluginContext {
+    constructor(name) {
+      this.name = name;
     }
-  };
+
+    registerApp = async app => {
+      const basename = `/`;
+      const activeWhen = `/dao/${daochain}/${daoid}/plugins${app.activeWhen}`;
+
+      // 调用 Garfish.registerApp 动态注册子应用
+      Garfish.registerApp({
+        name: this.name,
+        basename: basename,
+        activeWhen: activeWhen,
+        entry: 'cached',
+      });
+
+      pluginMenus.push({
+        key: this.name,
+        icon: <img src={app.icon} className='sidebar-item-icon' />,
+        title: `${app.name}`,
+        path: activeWhen,
+      });
+
+      setPluginMenus(pluginMenus);
+    };
+
+    adapterURI = res => {
+      if (res.startsWith('ipfs:://')) {
+        const ipfs_cid = res.substring(8);
+        return `https://ipfs.filebase.io/ipfs/${ipfs_cid}`.toString();
+      } else {
+        return res.toString();
+      }
+    };
+  }
 
   const PluginOutlet = ({ name, props }) => {
-    return <div id='submodule'>PluginOutlet</div>;
+    return (
+      <PluginApp>
+        <div id='submodule'></div>
+      </PluginApp>
+    );
   };
 
   useEffect(async () => {
@@ -61,19 +73,11 @@ export const DaoPluginProvider = ({ children }) => {
 
     await GarfishInit(path);
 
-    const ctx = {
-      daoid,
-      daochain,
-      daoMetaData,
-      loadedPlugins,
-      registerApp,
-      adapterURI,
-    };
-
     const daoPlugins = daoMetaData.installedPlugins;
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
 
+      const ctx = new PluginContext(plugin_info.name);
       const app = await Garfish.preLoadApp(plugin_info.name, {
         entry: ctx.adapterURI(plugin_info.js_entry_uri),
       });
@@ -86,7 +90,7 @@ export const DaoPluginProvider = ({ children }) => {
 
     setloadedPlugins(loadedPlugins);
     setPluginLoaded(true);
-  }, [path, daoMetaData]);
+  }, [daoMetaData]);
 
   return (
     <DaoPluginContext.Provider

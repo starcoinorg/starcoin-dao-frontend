@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiTrophyLine, RiLinksLine } from 'react-icons/ri';
 import { Stack } from '@chakra-ui/react';
 
@@ -12,31 +12,33 @@ import {
   generateDaoLinksLoading,
 } from '../utils/navLinks';
 import { getTerm } from '../utils/metadata';
-import { Plugins } from '../pages/plugins';
 
 const NavLinkList = ({ dao, view, toggleNav = null }) => {
-  // const { daoMetaData } = useMetaData();
-
   const { address } = useInjectedProvider();
   const { pluginMenus } = useDaoPlugin();
 
-  let navLinks;
-  if (dao?.chainID && dao?.daoID) {
-    navLinks =
-      dao.daoProposals && dao.daoVaults && dao.daoMetaData
-        ? generateDaoLinks(
-            dao.chainID,
-            dao.daoID,
-            dao.daoProposals,
-            dao.daoVaults,
-            dao.daoMetaData,
-          )
-        : generateDaoLinksLoading(dao.chainID, dao.daoID);
-  } else {
-    navLinks = defaultHubData;
-  }
+  const [navLinks, setNavLinks] = useState([]);
+  const [pluginLinks, setPluginLinks] = useState([]);
 
-  const inDao = dao?.daoID && address;
+  useEffect(async () => {
+    if (dao?.chainID && dao?.daoID) {
+      const navLinks =
+        dao.daoProposals && dao.daoVaults && dao.daoMetaData
+          ? generateDaoLinks(
+              dao.chainID,
+              dao.daoID,
+              dao.daoProposals,
+              dao.daoVaults,
+              dao.daoMetaData,
+            )
+          : generateDaoLinksLoading(dao.chainID, dao.daoID);
+      setNavLinks(navLinks);
+
+      setPluginLinks(pluginMenus);
+    } else {
+      setNavLinks(defaultHubData);
+    }
+  }, [address, dao]);
 
   return (
     <Stack
@@ -63,29 +65,20 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
             />
           );
         })}
-      {pluginMenus &&
-        pluginMenus.map(config => {
+      {pluginLinks &&
+        pluginLinks.map(config => {
           return (
             <NavLink
               key={config.key}
               label={config.title}
-              path={`/plugins/${config.path}`}
-              href={`/plugins/${config.path}`}
+              path={`${config.path}`}
+              href={`${config.path}`}
               icon={config.logo || RiLinksLine}
               view={view}
               onClick={toggleNav}
             />
           );
         })}
-      {/* {inDao ? (
-        <NavLink
-          label='Profile'
-          path={`/dao/${dao.chainID}/${dao.daoID}/profile/${address}`}
-          icon={RiTrophyLine}
-          view={view}
-          onClick={toggleNav}
-        />
-      ) : null} */}
     </Stack>
   );
 };

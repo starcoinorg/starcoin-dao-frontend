@@ -3,6 +3,7 @@ import React from 'react';
 import * as ReactDom from 'react-dom';
 import * as ReactRouterDom from 'react-router-dom';
 import { GarfishEsModule } from '@garfish/es-module';
+import { GarfishCssScope } from '@garfish/css-scope';
 import { AppLoader } from './utils/garfish/appLoaderPlugin';
 
 export const GarfishInit = async basename => {
@@ -37,7 +38,7 @@ export const GarfishInit = async basename => {
       'Garfish',
       '__GARFISH_GLOBAL_APP_LIFECYCLE__',
     ],
-    plugins: [GarfishEsModule(), AppLoader()],
+    plugins: [GarfishEsModule(), GarfishCssScope(), AppLoader()],
   };
 
   try {
