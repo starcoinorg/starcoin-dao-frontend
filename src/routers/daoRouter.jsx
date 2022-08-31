@@ -1,6 +1,4 @@
-import Garfish from 'garfish';
 import React from 'react';
-import { useEffect, useState } from 'react';
 import {
   Switch,
   Route,
@@ -13,7 +11,7 @@ import { useDao } from '../contexts/DaoContext';
 import { useDaoMember } from '../contexts/DaoMemberContext';
 import { useMetaData } from '../contexts/MetaDataContext';
 import { useToken } from '../contexts/TokenContext';
-import { GarfishInit } from '../garfishInit';
+import { useDaoPlugin } from '../contexts/DaoPluginContext';
 
 // import Allies from '../pages/Allies';
 import DiscourseSettings from '../pages/DiscourseSettings';
@@ -60,9 +58,7 @@ const DaoRouter = () => {
 
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
-
-  const [subAppMenus, setSubAppMenus] = useState([]);
-  const [pluginLoaded, setPluginLoaded] = useState(false);
+  const { PluginOutlet } = useDaoPlugin();
 
   const dao = {
     daoID: daoid,
@@ -72,61 +68,7 @@ const DaoRouter = () => {
     customTerms,
     daoProposals,
     daoVaults,
-    subAppMenus,
   };
-
-  dao.registerApp = async app => {
-    const activeWhen = `/newRegister${app.activeWhen}`;
-
-    // 调用 Garfish.registerApp 动态注册子应用
-    Garfish.registerApp({
-      name: this.name,
-      basename: '/examples',
-      activeWhen: activeWhen,
-      entry: 'cached',
-    });
-
-    subAppMenus.push({
-      key: app.name,
-      icon: <img src={app.icon} className='sidebar-item-icon' />,
-      title: `【PluginApp】${app.name}`,
-      path: activeWhen,
-    });
-
-    setSubAppMenus(subAppMenus);
-  };
-
-  dao.adapterIPFS = res => {
-    if (res.startsWith('ipfs:://')) {
-      const ipfs_cid = res.substring(8);
-      return `https://ipfs.filebase.io/ipfs/${ipfs_cid}`.toString();
-    } else {
-      return res.toString();
-    }
-  };
-
-  useEffect(async () => {
-    if (pluginLoaded) {
-      return;
-    }
-
-    await GarfishInit(path);
-
-    const daoPlugins = daoMetaData.installedPlugins;
-
-    for (const i in daoPlugins) {
-      const plugin_info = daoPlugins[i];
-
-      const app = await Garfish.preLoadApp(plugin_info.name, {
-        entry: dao.adapterIPFS(plugin_info.js_entry_uri),
-      });
-
-      const modules = app?.cjsModules.exports;
-      modules?.setup(dao);
-    }
-
-    setPluginLoaded(true);
-  }, [path]);
 
   return (
     <Layout dao={dao}>
@@ -312,7 +254,12 @@ const DaoRouter = () => {
         <Route exact path={`${path}/doc/:docId`}>
           <DaoDoc />
         </Route>
+        <Route exact path={`${path}/plugins`}>
+          <PluginOutlet />
+        </Route>
       </Switch>
+
+      <PluginOutlet />
     </Layout>
   );
 };

@@ -3,7 +3,8 @@ import { RiTrophyLine, RiLinksLine } from 'react-icons/ri';
 import { Stack } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
-// import { useMetaData } from '../contexts/MetaDataContext';
+import { useDaoPlugin } from '../contexts/DaoPluginContext';
+
 import NavLink from './navlink';
 import {
   defaultHubData,
@@ -17,6 +18,7 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
   // const { daoMetaData } = useMetaData();
 
   const { address } = useInjectedProvider();
+  const { pluginMenus } = useDaoPlugin();
 
   let navLinks;
   if (dao?.chainID && dao?.daoID) {
@@ -61,14 +63,14 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
             />
           );
         })}
-      {Plugins &&
-        Plugins.map(config => {
+      {pluginMenus &&
+        pluginMenus.map(config => {
           return (
             <NavLink
-              key={config.name}
-              label={config.description}
-              path={`/plugins/${config.name}`}
-              href={`/plugins/${config.name}`}
+              key={config.key}
+              label={config.title}
+              path={`/plugins/${config.path}`}
+              href={`/plugins/${config.path}`}
               icon={config.logo || RiLinksLine}
               view={view}
               onClick={toggleNav}
