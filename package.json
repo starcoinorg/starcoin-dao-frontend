@@ -84,7 +84,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "lint:fix": "eslint ./src/contexts/MetaDataContext.jsx --fix",
+    "lint:fix": "eslint ./src --fix",
     "test": "craco test",
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
