@@ -73,8 +73,6 @@ export const getPluginInfo = async (plugin_id, version_id) => {
       ],
     });
 
-    console.log(registry);
-
     for (const plugin of registry.json.plugins) {
       if (plugin.id === plugin_id) {
         const plugin_info = {

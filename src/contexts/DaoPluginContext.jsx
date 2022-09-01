@@ -1,5 +1,11 @@
 import Garfish from 'garfish';
-import React, { useContext, createContext, useEffect, useState } from 'react';
+import React, {
+  useContext,
+  createContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
@@ -46,7 +52,7 @@ export const DaoPluginProvider = ({ children }) => {
     adapterURI = res => {
       if (res.startsWith('ipfs:://')) {
         const ipfs_cid = res.substring(8);
-        return `https://ipfs.filebase.io/ipfs/${ipfs_cid}`.toString();
+        return `https://ipfs.filebase.io/ipfs/${ipfs_cid}/`.toString();
       } else {
         return res.toString();
       }
@@ -61,7 +67,7 @@ export const DaoPluginProvider = ({ children }) => {
     );
   };
 
-  useEffect(async () => {
+  const loadDaoPlugins = useCallback(async () => {
     if (!daoMetaData) {
       return;
     }
@@ -91,6 +97,10 @@ export const DaoPluginProvider = ({ children }) => {
     setloadedPlugins(loadedPlugins);
     setPluginLoaded(true);
   }, [daoMetaData]);
+
+  useEffect(() => {
+    loadDaoPlugins();
+  }, [loadDaoPlugins]);
 
   return (
     <DaoPluginContext.Provider

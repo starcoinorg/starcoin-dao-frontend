@@ -58,7 +58,7 @@ const DaoRouter = () => {
 
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
-  const { PluginOutlet } = useDaoPlugin();
+  const { pluginLoaded, pluginMenus, PluginOutlet } = useDaoPlugin();
 
   const dao = {
     daoID: daoid,
@@ -68,6 +68,9 @@ const DaoRouter = () => {
     customTerms,
     daoProposals,
     daoVaults,
+    pluginLoaded,
+    pluginMenus,
+    PluginOutlet,
   };
 
   return (

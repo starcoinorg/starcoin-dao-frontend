@@ -15,8 +15,6 @@ import { getTerm } from '../utils/metadata';
 
 const NavLinkList = ({ dao, view, toggleNav = null }) => {
   const { address } = useInjectedProvider();
-  const { pluginMenus } = useDaoPlugin();
-
   const [navLinks, setNavLinks] = useState([]);
   const [pluginLinks, setPluginLinks] = useState([]);
 
@@ -33,12 +31,11 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
             )
           : generateDaoLinksLoading(dao.chainID, dao.daoID);
       setNavLinks(navLinks);
-
-      setPluginLinks(pluginMenus);
+      setPluginLinks(dao.pluginMenus);
     } else {
       setNavLinks(defaultHubData);
     }
-  }, [address, dao]);
+  }, [dao]);
 
   return (
     <Stack
