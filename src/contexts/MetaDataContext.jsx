@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
   useReducer,
+  useCallback,
 } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -115,31 +116,31 @@ export const MetaDataProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    const getDaoMetadata = async () => {
-      try {
-        const data = await daoService.getDao(daoid);
-        if (shouldUpdateTheme.current && !daoMetaData) {
-          if (data.customThemeConfig) {
-            updateTheme(data.customThemeConfig);
-          } else {
-            resetTheme();
-          }
-          if (data.customTermsConfig) {
-            setCustomTerms(data.customTermsConfig);
-          }
-          setDaoMetaData(data);
-          dispatchPropConfig({ action: 'INIT', payload: data });
-          shouldUpdateTheme.current = false;
+  const fetchData = useCallback(async () => {
+    try {
+      const data = await daoService.getDao(daoid);
+      console.log('current DAO data:', data);
+      if (shouldUpdateTheme.current && !daoMetaData) {
+        if (data.customThemeConfig) {
+          updateTheme(data.customThemeConfig);
+        } else {
+          resetTheme();
         }
-      } catch (error) {
-        console.error(error);
+        if (data.customTermsConfig) {
+          setCustomTerms(data.customTermsConfig);
+        }
+        setDaoMetaData(data);
+        dispatchPropConfig({ action: 'INIT', payload: data });
+        shouldUpdateTheme.current = false;
       }
-    };
-    if (daoid && isChainDao) {
-      getDaoMetadata();
+    } catch (error) {
+      console.error(error);
     }
   }, [daoid]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const refetchMetaData = () => {
     shouldUpdateTheme.current = true;
