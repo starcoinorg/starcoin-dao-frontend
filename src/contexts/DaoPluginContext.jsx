@@ -9,7 +9,6 @@ import React, {
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
-import PluginApp from '../pages/PluginApp';
 
 export const DaoPluginContext = createContext();
 
@@ -59,12 +58,8 @@ export const DaoPluginProvider = ({ children }) => {
     };
   }
 
-  const PluginOutlet = ({ name, props }) => {
-    return (
-      <PluginApp>
-        <div id='submodule'></div>
-      </PluginApp>
-    );
+  const PluginOutlet = () => {
+    return <div id='submodule'></div>;
   };
 
   const loadDaoPlugins = useCallback(async () => {
