@@ -58,8 +58,8 @@ export const DaoPluginProvider = ({ children }) => {
     };
   }
 
-  const PluginOutlet = () => {
-    return <div id='submodule'></div>;
+  const PluginOutlet = ({ children }) => {
+    return <div id='submodule'>{children}</div>;
   };
 
   const loadDaoPlugins = useCallback(async () => {

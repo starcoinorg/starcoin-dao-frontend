@@ -75,7 +75,7 @@ const DaoRouter = () => {
 
   return (
     <Layout dao={dao}>
-      <div id='submodule'>
+      <PluginOutlet>
         <Switch id='submodule'>
           <Route exact path={`${path}/`}>
             <Overview
@@ -259,7 +259,7 @@ const DaoRouter = () => {
             <DaoDoc />
           </Route>
         </Switch>
-      </div>
+      </PluginOutlet>
     </Layout>
   );
 };
