@@ -17,7 +17,7 @@ const PageHeader = ({ header, headerEl }) => {
             fontWeight={700}
             mr={10}
           >
-            Header
+            {header}
           </Box>
         ) : null}
         {headerEl}

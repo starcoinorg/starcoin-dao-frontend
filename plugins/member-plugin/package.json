@@ -5,6 +5,8 @@
     "@garfish/bridge-react": "^1.10.2",
     "@chakra-ui/icons": "^2.0.4",
     "@chakra-ui/react": "~1.6.0",
+    "@emotion/react": "^11.1.4",
+    "@emotion/styled": "^11.0.0",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "react": "^17.0.1",
@@ -12,7 +14,20 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.1.2",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "@starcoin/starcoin": "^2.1.6",
+    "@starcoin/starmask-onboarding": "^1.2.0",
+    "assert-polyfill": "^0.0.0",
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "0.11.10",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url-polyfill": "^1.1.12",
+    "web3": "^1.6.1"
   },
   "browserslist": {
     "production": [
