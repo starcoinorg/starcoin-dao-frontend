@@ -1,0 +1,14 @@
+{
+    "dev/main": {
+      "pkgName": "@garfish-dev/main",
+      "port": 8090
+     },
+    "dev/react17": {
+      "pkgName": "@garfish-dev/react17",
+      "port": 8091
+    },
+    "member_app": {
+      "pkgName": "@starcoin/member_app",
+      "port": 8092
+     }
+  }
