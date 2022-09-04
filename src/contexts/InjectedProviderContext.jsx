@@ -32,7 +32,7 @@ export const InjectedProvider = ({ children }) => {
   const [injectedChain, setInjectedChain] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(defaultModal);
   const { errorToast } = useContext(OverlayContext);
-  const [network, setNetwork] = useLocalStorage('network', 'main');
+  const [network, setNetwork] = useLocalStorage('dao_fe_network', 'main');
 
   const hasListeners = useRef(null);
 

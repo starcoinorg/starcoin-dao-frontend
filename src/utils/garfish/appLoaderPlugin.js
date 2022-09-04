@@ -2,16 +2,18 @@ import { getRenderNode } from '@garfish/utils';
 
 export function AppLoader() {
   return function(garfish) {
-    garfish.preLoadApp = async function(appName, options) {
-      const app = await garfish.loadApp(appName, {
-        cache: true,
-        preCompiled: true,
+    const originloadApp = garfish.loadApp;
+    garfish.loadApp = async function(appName, options) {
+      const app = await originloadApp.call(this, appName, {
         entry: options?.entry,
         ...options,
       });
-      const rets = await app?.compileAndRenderContainer();
-      if (rets) {
-        await rets.asyncScripts;
+
+      if (options?.preCompiled) {
+        const rets = await app?.compileAndRenderContainer();
+        if (rets) {
+          await rets.asyncScripts;
+        }
       }
 
       return app;
@@ -20,6 +22,7 @@ export function AppLoader() {
     return {
       name: 'app-loader',
       version: 'v0.1.0',
+
       afterLoad(appInfo, appInstance) {
         if (!appInfo.preCompiled || appInstance == undefined) {
           return;

@@ -1,14 +1,20 @@
 import React from 'react';
 import { RiAddFill } from 'react-icons/ri';
 import { Button } from '@chakra-ui/react';
-import { requestAccounts } from '../utils/stcWalletSdk';
 import MainViewLayout from '../components/mainViewLayout';
+import { createMemberProposal } from '../utils/memberPluginAPI';
+import { useDao } from '../contexts/DaoContext';
 
-const Members = React.memo(
-  () => {
+const Members = () => {
+    const { dao } = useDao();
     const openProposalSelector = () => {
-      const newAccounts = requestAccounts();
-      console.log(newAccounts);
+      createMemberProposal(
+        dao.daoType,
+        'Apply add xxxx as member',
+        '0x9711320238d0Ab3d42848A20d54b6b00',
+        100,
+        1000
+      );
     };
 
     const ctaButton = (
@@ -26,10 +32,9 @@ const Members = React.memo(
         header='Members'
         headerEl={ctaButton}
       >
-        Body
+
       </MainViewLayout>
     );
-  },
-);
+}
 
 export default Members;

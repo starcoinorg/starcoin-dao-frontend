@@ -11,6 +11,7 @@ export const GarfishInit = async basename => {
     react: React,
     'react-dom': ReactDom,
     'react-router-dom': ReactRouterDom,
+    starcoin: window.starcoin,
   });
 
   Garfish.channel.on('event', msg => {

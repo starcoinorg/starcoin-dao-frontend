@@ -1,4 +1,4 @@
-module MemberPlugin::MemberPlugin {
+module MemberPlugin::MemberPluginV3 {
     use StarcoinFramework::Signer;
     use StarcoinFramework::Errors;
     use StarcoinFramework::Vector;
@@ -29,13 +29,13 @@ module MemberPlugin::MemberPlugin {
         PluginMarketplace::publish_plugin_version(
             &sender, 
             PLUGIN_ID,
-            b"v0.1.0", 
+            b"v3",
             *&required_caps, 
             *&export_caps, 
             *&implement_extpoints, 
             *&depend_extpoints, 
             b"0xce38a3D11bb357ceA0cc60a62b9D11dB::MemberPlugin", 
-            b"ipfs:://QmR2qsFESkhDe4Sgr1MazzfXUbUGc2CBa7vG6p2u9ALzUF"
+            b"ipfs:://QmarzouxCJ6JeL5qCdyeNcWLqFVR1KJkKDwfKKT8LYTdrt"
         );
     }
 }
