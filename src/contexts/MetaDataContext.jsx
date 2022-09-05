@@ -136,11 +136,11 @@ export const MetaDataProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
     }
-  }, [daoid]);
+  }, [daoid, daochain]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [daoid, daochain]);
 
   const refetchMetaData = () => {
     shouldUpdateTheme.current = true;

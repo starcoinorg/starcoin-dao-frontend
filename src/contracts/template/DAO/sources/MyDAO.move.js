@@ -91,6 +91,11 @@ module ${address}::${daoName} {
             plugin_version: 1,
         });
 
+        Vector::push_back<InstalledWebPluginInfo>(&mut dao.installed_web_plugins, InstalledWebPluginInfo{
+          plugin_id: 2,
+          plugin_version: 3,
+        });
+
         let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, b"${description}", dao, config);
         
         DAOSpace::install_plugin_with_root_cap<${daoName}, InstallPluginProposalPlugin>(&dao_root_cap, InstallPluginProposalPlugin::required_caps()); 

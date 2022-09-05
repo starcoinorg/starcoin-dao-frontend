@@ -187,6 +187,7 @@ export const getDaoDetail = async daoId => {
     daoId: daoTypeTag,
     name: daoInfo.name,
     description: daoInfo.description,
+    daoAddress: daoAddress,
     longDescription: long_description,
     purposeId: null,
     tags: tags.join(','),
