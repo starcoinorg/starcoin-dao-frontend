@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
@@ -39,9 +40,10 @@ export const DaoPluginProvider = ({ children }) => {
     }
 
     registerApp = async appInfo => {
-      const basename = `/`;
-      const activeWhen = `/dao/${daochain}/${daoid}/plugins${appInfo.activeWhen}`;
-      console.log(`registerApp ${appInfo.name}, path: ${activeWhen}`);
+      const basename = `/dao/${daochain}/${daoid}/plugins`;
+      const activeWhen = `${appInfo.activeWhen}`;
+      const path = `${basename}${activeWhen}/home`;
+      console.log(`registerApp ${appInfo.name}, path: ${path}`);
 
       if (appInfo.provider) {
         this.appInstance.cjsModules.exports = {
@@ -61,15 +63,18 @@ export const DaoPluginProvider = ({ children }) => {
         key: this.name,
         icon: <img src={appInfo.icon} className='sidebar-item-icon' />,
         title: `${appInfo.name}`,
-        path: activeWhen,
+        path: path,
       });
-
-      setPluginMenus(pluginMenus);
     };
   }
 
   const PluginOutlet = ({ children }) => {
-    return <div id='submodule'>{children}</div>;
+    return (
+      <div>
+        <div>{children}</div>
+        <div id='submodule'></div>
+      </div>
+    );
   };
 
   const loadDaoPlugins = useCallback(async () => {
@@ -109,6 +114,7 @@ export const DaoPluginProvider = ({ children }) => {
     }
 
     setloadedPlugins(loadedPlugins);
+    setPluginMenus(pluginMenus);
     setPluginLoaded(true);
   }, [daoMetaData]);
 
