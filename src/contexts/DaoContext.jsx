@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { DaoMemberProvider } from './DaoMemberContext';
 import { MetaDataProvider } from './MetaDataContext';
+import { DaoPluginProvider } from './DaoPluginContext';
 import { TokenProvider } from './TokenContext';
 import { TXProvider } from './TXContext';
 import { useInjectedProvider } from './InjectedProviderContext';
@@ -130,15 +131,17 @@ export const DaoProvider = ({ children }) => {
       }}
     >
       <MetaDataProvider>
-        <TokenProvider>
-          <DaoMemberProvider
-            daoMembers={daoMembers}
-            address={address}
-            overview={daoOverview}
-          >
-            <TXProvider>{children}</TXProvider>
-          </DaoMemberProvider>
-        </TokenProvider>
+        <DaoPluginProvider>
+          <TokenProvider>
+            <DaoMemberProvider
+              daoMembers={daoMembers}
+              address={address}
+              overview={daoOverview}
+            >
+              <TXProvider>{children}</TXProvider>
+            </DaoMemberProvider>
+          </TokenProvider>
+        </DaoPluginProvider>
       </MetaDataProvider>
     </DaoContext.Provider>
   );

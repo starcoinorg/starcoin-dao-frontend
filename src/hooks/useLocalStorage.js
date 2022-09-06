@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function useLocalStorage(key, defaultVal) {
+export function useLocalStorage(key, defaultVal) {
   // make piece of state, based off of value in localstorage
 
   const [state, setState] = useState(() => {
@@ -20,5 +20,3 @@ function useLocalStorage(key, defaultVal) {
 
   return [state, setState];
 }
-
-export default useLocalStorage;

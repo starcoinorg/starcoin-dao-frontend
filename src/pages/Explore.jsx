@@ -10,6 +10,7 @@ import MainViewLayout from '../components/mainViewLayout';
 import { useRequest } from '../hooks/useRequest';
 import axios from 'axios';
 import config from '../utils/getConfig';
+import { DaoService } from '../services/daoService';
 
 const url_prev = `${config.api}/`;
 
@@ -18,7 +19,9 @@ const Explore = () => {
   const [daoList, setDaoList] = useState([]);
   const [daos, setDaos] = useState([]);
   const [_daos, _setDaos] = useState([]);
+  const [chainDaos, setChainDaos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const daoService = new DaoService();
 
   const getAllData = async () => {
     Promise.all([
@@ -39,7 +42,7 @@ const Explore = () => {
     ]).then(res => {
       setDaos(res[0].data);
       _setDaos(res[1].data);
-      setDaos(res[0].loading);
+      setLoading(false);
     });
   };
 
@@ -54,10 +57,19 @@ const Explore = () => {
   }, []);
 
   useEffect(() => {
-    if (daos && _daos) {
-      setDaoList([...daos, ..._daos]);
+    daoService.listDaos().then(res => {
+      console.log('loaded chain daos', res);
+      setChainDaos(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (daos && _daos && chainDaos) {
+      const totalDaos = [...daos, ..._daos, ...chainDaos];
+      console.log('loaded total daos', totalDaos);
+      setDaoList(totalDaos);
     }
-  }, [daos, _daos]);
+  }, [daos, _daos, chainDaos]);
 
   return (
     <Layout>

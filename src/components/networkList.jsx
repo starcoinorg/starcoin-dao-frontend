@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BsFillCircleFill } from 'react-icons/bs';
 import { Link as RouterLink } from 'react-router-dom';
-import { Flex, Icon, Input, Box, Text } from '@chakra-ui/react';
+import { Flex, Spacer, Input, Box, Text } from '@chakra-ui/react';
 
 import { useUser } from '../contexts/UserContext';
 import ContentBox from './ContentBox';
@@ -59,9 +59,15 @@ const NetworkList = () => {
           <Box fontSize='md' mb={5}>
             🌊️️️ Easily switch between your DAOs
           </Box>
-          <TextBox as={RouterLink} to='/explore'>
-            Explore DAOs
-          </TextBox>
+          <Flex justify='space-between' alignItems='center' mb={6}>
+            <TextBox as={RouterLink} to='/explore'>
+              Explore DAOs
+            </TextBox>
+            <TextBox as={RouterLink} to='/register-dao' ml={6}>
+              Register DAO
+            </TextBox>
+            <Spacer />
+          </Flex>
         </>
       )}
       {sortedDaos.networkDaos?.length > 0 && (

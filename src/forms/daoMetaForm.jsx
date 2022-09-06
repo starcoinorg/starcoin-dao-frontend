@@ -29,51 +29,70 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import ContentBox from '../components/ContentBox';
 import TextBox from '../components/TextBox';
 import { daoPresets } from '../utils/summoning';
-import { put, themeImagePath } from '../utils/metadata';
+import { themeImagePath } from '../utils/metadata';
 import ImageUploadModal from '../modals/imageUploadModal';
+import { DaoService } from '../services/daoService';
+import { deployContract } from '../utils/stcWalletSdk';
+import { useOverlay } from '../contexts/OverlayContext';
 
 const puposes = daoPresets('0x1').map(preset => preset.presetName);
 
 const DaoMetaForm = ({ metadata, handleUpdate }) => {
-  const { address, injectedProvider, injectedChain } = useInjectedProvider();
   const [ipfsHash, setIpfsHash] = useState();
   const [loading, setLoading] = useState();
   const [uploading, setUploading] = useState();
+
+  const { address, injectedProvider } = useInjectedProvider();
   const { register, handleSubmit } = useForm();
+  const { successToast, errorToast } = useOverlay();
+
+  const daoService = new DaoService();
 
   const onSubmit = async data => {
     setLoading(true);
 
     try {
-      const messageHash = injectedProvider.utils.sha3(metadata.address);
-      const signature = await injectedProvider.eth.personal.sign(
-        messageHash,
-        address,
-      );
-
       if (ipfsHash) {
         data.avatarImg = ipfsHash;
       }
+
       data.tags = data.tags.split(',');
 
-      const updateData = {
+      const cfg = {
         ...data,
-        contractAddress: metadata.address,
-        network: injectedChain.network,
-        version: metadata.version,
-        signature,
+        address: address,
+
+        proposalConfig: {
+          voting_delay: 1 * 60 * 60 * 24,
+          voting_period: 1 * 60 * 60 * 24,
+          voting_quorum_rate: 100 / 100,
+          min_action_delay: 1 * 60 * 60 * 24,
+          min_proposal_deposit: 1 * 10 ** 18,
+        },
       };
 
-      const res = await put('dao/update', updateData);
+      const daoBlobBuf = await daoService.createDao(cfg);
+      const transactionHash = await deployContract(
+        injectedProvider,
+        daoBlobBuf,
+      );
 
-      if (res.error) {
-        throw res.error;
-      }
-
-      handleUpdate(data);
-    } catch (err) {
-      console.log('err', err);
       setLoading(false);
+      successToast({
+        title: 'Dao Summoned!',
+        description: `Your dao has been summoned. View the transaction here: ${transactionHash}`,
+      });
+
+      handleUpdate({
+        chainId: injectedProvider.chainId,
+        daoAddress: address,
+      });
+    } catch (err) {
+      setLoading(false);
+      errorToast({
+        title: 'Error Summoning Dao',
+        description: err.message,
+      });
     }
   };
 
@@ -276,7 +295,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
                 </Stack>
 
                 <Button type='submit' disabled={loading} my={4}>
-                  Save
+                  Create
                 </Button>
               </Flex>
             )}

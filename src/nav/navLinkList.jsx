@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiTrophyLine, RiLinksLine } from 'react-icons/ri';
 import { Stack } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
-// import { useMetaData } from '../contexts/MetaDataContext';
+import { useDaoPlugin } from '../contexts/DaoPluginContext';
+
 import NavLink from './navlink';
 import {
   defaultHubData,
@@ -11,30 +12,30 @@ import {
   generateDaoLinksLoading,
 } from '../utils/navLinks';
 import { getTerm } from '../utils/metadata';
-import { Plugins } from '../pages/plugins';
 
 const NavLinkList = ({ dao, view, toggleNav = null }) => {
-  // const { daoMetaData } = useMetaData();
-
   const { address } = useInjectedProvider();
+  const [navLinks, setNavLinks] = useState([]);
+  const [pluginLinks, setPluginLinks] = useState([]);
 
-  let navLinks;
-  if (dao?.chainID && dao?.daoID) {
-    navLinks =
-      dao.daoProposals && dao.daoVaults && dao.daoMetaData
-        ? generateDaoLinks(
-            dao.chainID,
-            dao.daoID,
-            dao.daoProposals,
-            dao.daoVaults,
-            dao.daoMetaData,
-          )
-        : generateDaoLinksLoading(dao.chainID, dao.daoID);
-  } else {
-    navLinks = defaultHubData;
-  }
-
-  const inDao = dao?.daoID && address;
+  useEffect(async () => {
+    if (dao?.chainID && dao?.daoID) {
+      const navLinks =
+        dao.daoProposals && dao.daoVaults && dao.daoMetaData
+          ? generateDaoLinks(
+              dao.chainID,
+              dao.daoID,
+              dao.daoProposals,
+              dao.daoVaults,
+              dao.daoMetaData,
+            )
+          : generateDaoLinksLoading(dao.chainID, dao.daoID);
+      setNavLinks(navLinks);
+      setPluginLinks(dao.pluginMenus);
+    } else {
+      setNavLinks(defaultHubData);
+    }
+  }, [dao]);
 
   return (
     <Stack
@@ -61,29 +62,20 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
             />
           );
         })}
-      {Plugins &&
-        Plugins.map(config => {
+      {pluginLinks &&
+        pluginLinks.map(config => {
           return (
             <NavLink
-              key={config.name}
-              label={config.description}
-              path={`/plugins/${config.name}`}
-              href={`/plugins/${config.name}`}
+              key={config.key}
+              label={config.title}
+              path={`${config.path}`}
+              href={`${config.path}`}
               icon={config.logo || RiLinksLine}
               view={view}
               onClick={toggleNav}
             />
           );
         })}
-      {/* {inDao ? (
-        <NavLink
-          label='Profile'
-          path={`/dao/${dao.chainID}/${dao.daoID}/profile/${address}`}
-          icon={RiTrophyLine}
-          view={view}
-          onClick={toggleNav}
-        />
-      ) : null} */}
     </Stack>
   );
 };

@@ -8,7 +8,7 @@ import React, {
 import Web3 from 'web3';
 import { SafeAppWeb3Modal } from '@gnosis.pm/safe-apps-web3modal';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
-
+import { providers } from '@starcoin/starcoin';
 import { OverlayContext } from './OverlayContext';
 import {
   deriveChainId,
@@ -16,6 +16,7 @@ import {
   getProviderOptions,
 } from '../utils/web3Modal';
 import { supportedChains } from '../utils/chain';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const defaultModal = new SafeAppWeb3Modal({
   providerOptions: getProviderOptions(),
@@ -31,6 +32,7 @@ export const InjectedProvider = ({ children }) => {
   const [injectedChain, setInjectedChain] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(defaultModal);
   const { errorToast } = useContext(OverlayContext);
+  const [network, setNetwork] = useLocalStorage('dao_fe_network', 'main');
 
   const hasListeners = useRef(null);
 
@@ -100,16 +102,6 @@ export const InjectedProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // const attemptSafeConnection = async () => {
-    //   const provider = await defaultModal.requestProvider();
-    //   if (provider?.safe) {
-    //     connectProvider();
-    //   } else if (window.localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER')) {
-    //     connectProvider();
-    //   }
-    // };
-    // attemptSafeConnection();
-
     const initialData = initialStarCoin();
     const status = () => {
       if (!initialData.isStarMaskInstalled) {
@@ -134,9 +126,15 @@ export const InjectedProvider = ({ children }) => {
           const chainInfo = await window.starcoin.request({
             method: 'chain.id',
           });
+          const provider = new providers.Web3Provider(
+            window.starcoin,
+            chainInfo.name,
+          );
 
           setAddress(newAccounts[0]);
           setInjectedChain(chainInfo.id);
+          setNetwork(chainInfo.name);
+          setInjectedProvider(provider);
         } catch (error) {
           console.error(error);
         }
@@ -150,45 +148,18 @@ export const InjectedProvider = ({ children }) => {
   // https://eips.ethereum.org/EIPS/eip-1193
 
   useEffect(() => {
-    // const handleChainChange = () => {
-    //   console.log('CHAIN CHANGE');
-    //   connectProvider();
-    // };
-    // const accountsChanged = () => {
-    //   console.log('ACCOUNT CHANGE');
-    //   connectProvider();
-    // };
-
-    // const unsub = () => {
-    //   if (injectedProvider?.currentProvider) {
-    //     injectedProvider.currentProvider.removeListener(
-    //       'accountsChanged',
-    //       handleChainChange,
-    //     );
-    //     injectedProvider.currentProvider.removeListener(
-    //       'chainChanged',
-    //       accountsChanged,
-    //     );
-    //   }
-    // };
-
-    // if (
-    //   injectedProvider?.currentProvider &&
-    //   !hasListeners.current &&
-    //   !injectedProvider?.currentProvider?.safe
-    // ) {
-    //   injectedProvider.currentProvider
-    //     .on('accountsChanged', accountsChanged)
-    //     .on('chainChanged', handleChainChange);
-    //   hasListeners.current = true;
-    // }
-    // return () => unsub();
-
     const onStarcoinEvent = () => {
       const initialData = initialStarCoin();
       if (initialData.isStarMaskInstalled) {
         const handleNewChain = chain => {
-          setInjectedChain(chain);
+          const provider = new providers.Web3Provider(
+            window.starcoin,
+            chain.name,
+          );
+
+          setInjectedChain(chain.id);
+          setNetwork(chain.name);
+          setInjectedProvider(provider);
         };
         const handleNewAccounts = accounts => {
           setAddress(accounts[0]);
