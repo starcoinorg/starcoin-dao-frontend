@@ -19,8 +19,11 @@ jobs:
       - name: Install
         run: yarn install
 
+      - name: SetSpaceSize
+        run: export NODE_OPTIONS=--max_old_space_size=4096
+
       - name: Build
-        run: NODE_OPTIONS=--max_old_space_size=1800 yarn build
+        run: yarn build
         env:
           CI: false
 
