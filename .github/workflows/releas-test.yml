@@ -20,7 +20,7 @@ jobs:
         run: yarn install
 
       - name: SetSpaceSize
-        run: export NODE_OPTIONS=--max_old_space_size=4096
+        run: export NODE_OPTIONS=--max_old_space_size=1024
 
       - name: Build
         run: yarn build
