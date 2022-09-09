@@ -83,7 +83,16 @@ const Register = () => {
             w='50%'
             textAlign='center'
           >
-            {!injectedChain ? (
+            <Box
+              fontSize={['lg', null, null, '3xl']}
+              fontFamily='heading'
+              fontWeight={700}
+              ml={10}
+            >
+              {`You need to switch your network to 
+                ${supportedChains[registerchain].name} to register this dao.`}
+            </Box>
+            {/* {!injectedChain ? (
               <>
                 <Box
                   fontSize='3xl'
@@ -99,16 +108,8 @@ const Register = () => {
                 </Flex>
               </>
             ) : (
-              <Box
-                fontSize={['lg', null, null, '3xl']}
-                fontFamily='heading'
-                fontWeight={700}
-                ml={10}
-              >
-                {`You need to switch your network to 
-                ${supportedChains[registerchain].name} to register this dao.`}
-              </Box>
-            )}
+              
+            )} */}
           </Box>
         )}
       </MainViewLayout>
