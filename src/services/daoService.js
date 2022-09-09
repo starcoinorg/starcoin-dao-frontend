@@ -30,10 +30,11 @@ class DaoService {
     // download starcoin framework
 
     this.wasmfs.fs.mkdirpSync('/workspace/freepai-plugin/sources');
-    const freepaiPluginURL =
-      process.env.NODE_ENV === 'production'
-        ? '/dapps/data/freepai-plugin.zip'
-        : '/data/freepai-plugin.zip';
+    // const freepaiPluginURL =
+    //   process.env.NODE_ENV === 'production'
+    //     ? '/dapps/data/freepai-plugin.zip'
+    //     : '/data/freepai-plugin.zip';
+    const freepaiPluginURL = '/data/freepai-plugin.zip';
     await this.git.download(freepaiPluginURL, '/workspace/freepai-plugin');
 
     // render DAO package
