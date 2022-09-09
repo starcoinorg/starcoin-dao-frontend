@@ -14,10 +14,11 @@ class DaoService {
     // download starcoin framework
     this.wasmfs.fs.mkdirpSync('/workspace/starcoin-framework/unit-test');
 
-    const starcoinFrameworkURL =
-      process.env.NODE_ENV === 'production'
-        ? '/dapps/data/starcoin-framework.zip'
-        : '/data/starcoin-framework.zip';
+    // const starcoinFrameworkURL =
+    //   process.env.NODE_ENV === 'production'
+    //     ? '/dapps/data/starcoin-framework.zip'
+    //     : '/data/starcoin-framework.zip';
+    const starcoinFrameworkURL = '/data/starcoin-framework.zip';
     await this.git.download(
       starcoinFrameworkURL,
       '/workspace/starcoin-framework',
