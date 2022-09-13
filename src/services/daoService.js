@@ -13,7 +13,7 @@ class DaoService {
   async createDao(cfg) {
     // download starcoin framework
     this.wasmfs.fs.mkdirpSync('/workspace/starcoin-framework/unit-test');
-    console.log(process.env.PUBLIC_URL);
+    console.log(process.env.PUBLIC_URL, 'uuuuuuuuuuuuuuuuuuu');
 
     // const starcoinFrameworkURL =
     //   process.env.NODE_ENV === 'production'
