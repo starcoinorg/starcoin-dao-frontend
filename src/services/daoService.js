@@ -18,7 +18,7 @@ class DaoService {
     //   process.env.NODE_ENV === 'production'
     //     ? '/dapps/data/starcoin-framework.zip'
     //     : '/data/starcoin-framework.zip';
-    const starcoinFrameworkURL = './data/starcoin-framework.zip';
+    const starcoinFrameworkURL = '/data/starcoin-framework.zip';
     await this.git.download(
       starcoinFrameworkURL,
       './workspace/starcoin-framework',
@@ -34,7 +34,7 @@ class DaoService {
     //   process.env.NODE_ENV === 'production'
     //     ? '/dapps/data/freepai-plugin.zip'
     //     : '/data/freepai-plugin.zip';
-    const freepaiPluginURL = './data/freepai-plugin.zip';
+    const freepaiPluginURL = '/data/freepai-plugin.zip';
     await this.git.download(freepaiPluginURL, './workspace/freepai-plugin');
 
     // render DAO package
