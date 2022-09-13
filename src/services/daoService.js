@@ -12,7 +12,8 @@ class DaoService {
 
   async createDao(cfg) {
     // download starcoin framework
-    await this.wasmfs.fs.mkdirpSync('/workspace/starcoin-framework/unit-test');
+    this.wasmfs.fs.mkdirpSync('/workspace/starcoin-framework/unit-test');
+    console.log(process.env.PUBLIC_URL);
 
     // const starcoinFrameworkURL =
     //   process.env.NODE_ENV === 'production'
@@ -24,12 +25,12 @@ class DaoService {
       '/workspace/starcoin-framework',
     );
 
-    const dirTree = await this.wasmfs.toJSON('/workspace/starcoin-framework');
+    const dirTree = this.wasmfs.toJSON('/workspace/starcoin-framework');
     console.log(dirTree);
 
     // download starcoin framework
 
-    await this.wasmfs.fs.mkdirpSync('/workspace/freepai-plugin/sources');
+    this.wasmfs.fs.mkdirpSync('/workspace/freepai-plugin/sources');
     // const freepaiPluginURL =
     //   process.env.NODE_ENV === 'production'
     //     ? '/dapps/data/freepai-plugin.zip'
@@ -51,16 +52,14 @@ class DaoService {
     });
 
     await mp.build();
-    console.log('buildddddddddddd');
-    const blobBuf = await this.wasmfs.fs.readFileSync(
+    const blobBuf = this.wasmfs.fs.readFileSync(
       '/workspace/my-dao/target/starcoin/release/package.blob',
     );
-    console.log('>?>>>>>>>>', blobBuf);
     return blobBuf;
   }
 
-  async renderDAOPackage(destPath, cfg) {
-    await this.wasmfs.fs.mkdirpSync(destPath);
+  renderDAOPackage(destPath, cfg) {
+    this.wasmfs.fs.mkdirpSync(destPath);
 
     window.console.info(
       'Token Address: ' + cfg.address + '::' + cfg.name + '::' + cfg.name,
@@ -68,13 +67,13 @@ class DaoService {
 
     const moveTomlPath = destPath + '/Move.toml';
     const moveTomlContent = MoveTomlTpl(cfg.name, cfg.address);
-    await this.wasmfs.fs.writeFileSync(moveTomlPath, moveTomlContent);
-    // window.console.info(moveTomlPath);
-    // window.console.info(moveTomlContent);
-    // window.console.info();
+    this.wasmfs.fs.writeFileSync(moveTomlPath, moveTomlContent);
+    window.console.info(moveTomlPath);
+    window.console.info(moveTomlContent);
+    window.console.info();
 
     const sourcesDir = destPath + '/sources';
-    await this.wasmfs.fs.mkdirpSync(sourcesDir);
+    this.wasmfs.fs.mkdirpSync(sourcesDir);
     const myTokenPath = sourcesDir + '/MyDAO.move';
     const myTokenContent = MyDAOSourceTpl(
       cfg.address,
@@ -91,7 +90,7 @@ class DaoService {
       cfg.proposalConfig.min_action_delay,
       cfg.proposalConfig.min_proposal_deposit,
     );
-    await this.wasmfs.fs.writeFileSync(myTokenPath, myTokenContent);
+    this.wasmfs.fs.writeFileSync(myTokenPath, myTokenContent);
     window.console.info(myTokenPath);
     window.console.info(myTokenContent);
     window.console.info();
