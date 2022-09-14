@@ -13,7 +13,6 @@ class DaoService {
   async createDao(cfg) {
     // download starcoin framework
     this.wasmfs.fs.mkdirpSync('/workspace/starcoin-framework/unit-test');
-    console.log(process.env.PUBLIC_URL, 'uuuuuuuuuuuuuuuuuuu');
 
     // const starcoinFrameworkURL =
     //   process.env.NODE_ENV === 'production'
@@ -62,19 +61,19 @@ class DaoService {
     this.wasmfs.fs.mkdirpSync(destPath);
 
     window.console.info(
-      'Token Address: ' + cfg.address + '::' + cfg.name + '::' + cfg.name,
+      `Token Address: ${cfg.address}::${cfg.name}::${cfg.name}`,
     );
 
-    const moveTomlPath = destPath + '/Move.toml';
+    const moveTomlPath = `${destPath}/Move.toml`;
     const moveTomlContent = MoveTomlTpl(cfg.name, cfg.address);
     this.wasmfs.fs.writeFileSync(moveTomlPath, moveTomlContent);
     window.console.info(moveTomlPath);
     window.console.info(moveTomlContent);
     window.console.info();
 
-    const sourcesDir = destPath + '/sources';
+    const sourcesDir = `${destPath}/sources`;
     this.wasmfs.fs.mkdirpSync(sourcesDir);
-    const myTokenPath = sourcesDir + '/MyDAO.move';
+    const myTokenPath = `${sourcesDir}/MyDAO.move`;
     const myTokenContent = MyDAOSourceTpl(
       cfg.address,
       cfg.name,
