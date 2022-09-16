@@ -49,7 +49,7 @@ const ProposalsList = ({ customTerms }) => {
   const searchMode = useRef(false);
 
   let { data: _proposals, loading } = useRequest(
-    `proposals?daoId=${daoid}&page=0&size=10`,
+    `proposals?daoId=${daoid}&page=0&size=100`,
     {
       method: 'get',
     },
@@ -57,7 +57,8 @@ const ProposalsList = ({ customTerms }) => {
 
   useEffect(() => {
     if (_proposals) {
-      setProposals(_proposals);
+
+      setProposals(_proposals.reverse());
     }
   }, [_proposals]);
 
