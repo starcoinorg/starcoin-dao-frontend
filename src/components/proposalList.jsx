@@ -57,7 +57,6 @@ const ProposalsList = ({ customTerms }) => {
 
   useEffect(() => {
     if (_proposals) {
-
       setProposals(_proposals.reverse());
     }
   }, [_proposals]);
@@ -69,7 +68,7 @@ const ProposalsList = ({ customTerms }) => {
       setSort(initSort);
     };
     const sameUser = prevMember.current === address;
-    if (!proposals || sameUser) return;
+    if (!proposals || sameUser) { return; }
     // const activeProposals = proposals.filter(proposal =>
     //   isProposalActive(proposal),
     // );
