@@ -24,9 +24,6 @@ class DaoService {
       '/workspace/starcoin-framework',
     );
 
-    const dirTree = this.wasmfs.toJSON('/workspace/starcoin-framework');
-    console.log(dirTree);
-
     // download starcoin framework
 
     this.wasmfs.fs.mkdirpSync('/workspace/freepai-plugin/sources');
