@@ -256,10 +256,22 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         return;
       }
       setLoading(true);
-      const accountPowerData = await getPower();
-      setAccountPowerTotal(+accountPowerData.totalVotingPower);
-      setChoiceSequenceId(sequenceId);
-      onOpen();
+      try {
+        const accountPowerData = await getPower();
+        setAccountPowerTotal(+accountPowerData.totalVotingPower);
+        setChoiceSequenceId(sequenceId);
+        onOpen();
+      } catch (err) {
+        toast({
+          title: 'Error',
+          description: 'reqeuest error',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        setLoading(false);
+      }
     } else if (_status === 1) {
       try {
         const newAccounts = await window.starcoin.request({
@@ -317,7 +329,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     <PropActionBox>
       <TopStatusBox
         status={getProposalStatus().status}
-        appendStatusText={`ends ${getTime()}`}
+        appendStatusText={`ended ${getTime()}`}
         // circleColor={voteData.isPassing ? 'green' : 'red'}
         circleColor={getProposalStatus().color}
         proposal={proposal}

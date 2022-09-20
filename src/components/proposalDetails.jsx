@@ -251,7 +251,7 @@ const ProposalDetails = ({
         >
           <Flex flexDirection='column'>
             <TextBox size='xs' mb={2}>
-              {'voting start at'}
+              {'voting start'}
             </TextBox>
             <PropCardDate
               label=''
@@ -261,7 +261,7 @@ const ProposalDetails = ({
           </Flex>
           <Flex flexDirection='column'>
             <TextBox size='xs' mb={2}>
-              {'voting end at'}
+              {'voting end'}
             </TextBox>
             <PropCardDate
               label=''

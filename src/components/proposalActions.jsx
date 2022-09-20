@@ -581,7 +581,7 @@ const ProposalActions = ({
                     size='md'
                     style={{ display: 'flex' }}
                   >
-                    <Text style={{ flex: 1 }}>{`${item.title}`}</Text>
+                    <Text mr={5} style={{ flex: 1 }}>{`${item.title}`}</Text>
                     <Tooltip label={item.subtotalVotingPower} fontSize='md'>
                       <Text
                         maxW={'50%'}
@@ -590,7 +590,11 @@ const ProposalActions = ({
                           overflow: 'hidden',
                           whiteSpace: 'nowrap',
                         }}
-                      >{`${item.subtotalVotingPower}`}</Text>
+                      >
+                        {item.subtotalVotingPower
+                          .toString()
+                          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
+                      </Text>
                     </Tooltip>
                   </TextBox>
                 </Skeleton>
