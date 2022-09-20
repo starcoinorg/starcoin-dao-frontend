@@ -46,16 +46,7 @@ const Register = () => {
       <MainViewLayout header='Register'>
         {injectedChain && !needsNetworkChange ? (
           <>
-            {!currentDao ? (
-              <Box
-                fontSize={['lg', null, null, '3xl']}
-                fontFamily='heading'
-                fontWeight={700}
-                ml={10}
-              >
-                loading...
-              </Box>
-            ) : (
+            {currentDao ? (
               <>
                 <Flex ml={6} justify='space-between' align='center' w='100%'>
                   <Flex as={RouterLink} to='/' align='center'>
@@ -70,6 +61,15 @@ const Register = () => {
                   />
                 </Box>
               </>
+            ) : (
+              <Box
+                fontSize={['lg', null, null, '3xl']}
+                fontFamily='heading'
+                fontWeight={700}
+                ml={10}
+              >
+                loading...
+              </Box>
             )}
           </>
         ) : (

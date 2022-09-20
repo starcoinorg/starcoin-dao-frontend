@@ -7,10 +7,13 @@ import Layout from '../components/layout';
 import Loading from '../components/loading';
 import MainViewLayout from '../components/mainViewLayout';
 import { useRequest } from '../hooks/useRequest';
+import { listDaos } from '../utils/dao';
 
 const Explore = () => {
   const { theme, resetTheme } = useContext(CustomThemeContext);
   const [daoList, setDaoList] = useState([]);
+  const [customList, setCustomeList] = useState([]);
+  const [customLoading, setCustomLoading] = useState(true);
 
   const { data: _daoList, loading } = useRequest('daos', {
     method: 'get',
@@ -27,21 +30,30 @@ const Explore = () => {
   }, [theme, resetTheme]);
 
   useEffect(() => {
-    if (_daoList) {
-      setDaoList(_daoList);
+    const fetchData = async () => {
+      const data = await listDaos();
+      setCustomeList(data);
+      setCustomLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!(customLoading || loading)) {
+      setDaoList([..._daoList, ...customList]);
     }
-  }, [_daoList]);
+  }, [customLoading, loading]);
 
   return (
     <Layout>
       <MainViewLayout header='Explore DAOs'>
-        {loading ? (
-          <Loading message='Fetching DAOs...' />
-        ) : (
+        {!customLoading && !loading ? (
           <>
             <ExploreFilters daoCount={daoList?.length || 0} />
             <ExploreList daoList={daoList} />
           </>
+        ) : (
+          <Loading message='Fetching DAOs...' />
         )}
       </MainViewLayout>
     </Layout>

@@ -60,6 +60,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
 
       const cfg = {
         ...data,
+        name: data.name.toUpperCase(),
         address: address,
 
         proposalConfig: {
