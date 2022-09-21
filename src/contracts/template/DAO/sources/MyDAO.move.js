@@ -28,28 +28,18 @@ const MyDAOSourceTpl = (
 
   return `
 module ${address}::${daoName} {
-    use StarcoinFramework::Signer;
-    use StarcoinFramework::Errors;
     use StarcoinFramework::Vector;
-    use StarcoinFramework::Option::{ Self, Option};
+    use StarcoinFramework::Option;
     use StarcoinFramework::DAOAccount;
     use StarcoinFramework::DAOSpace;
     use StarcoinFramework::MemberProposalPlugin::{Self, MemberProposalPlugin};
     use StarcoinFramework::InstallPluginProposalPlugin::{Self, InstallPluginProposalPlugin};
-    use FreePlugin::PluginMarketplace;
     
-    /// The info for DAO installed Plugin
-    struct InstalledWebPluginInfo has store, drop {
-        plugin_id: u64,
-        plugin_version: u64,
-    }
-
     struct ${daoName} has key, store {
         long_description: vector<u8>,
         purpose: vector<u8>,
         tags: vector<vector<u8>>,
         links: vector<vector<u8>>,
-        installed_web_plugins: vector<InstalledWebPluginInfo>,
     }
     
     const NAME: vector<u8> = b"${daoName}";
@@ -83,20 +73,11 @@ module ${address}::${daoName} {
             purpose: b"${purpose}",
             tags: tags,
             links: links,
-            installed_web_plugins: Vector::empty<InstalledWebPluginInfo>(),
         };
 
-        Vector::push_back<InstalledWebPluginInfo>(&mut dao.installed_web_plugins, InstalledWebPluginInfo{
-            plugin_id: 1,
-            plugin_version: 1,
-        });
-
-        Vector::push_back<InstalledWebPluginInfo>(&mut dao.installed_web_plugins, InstalledWebPluginInfo{
-          plugin_id: 2,
-          plugin_version: 3,
-        });
-
-        let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, b"${description}", dao, config);
+        let image_data = Option::none<vector<u8>>();
+        let image_url = Option::some<vector<u8>>(b"ipfs://QmdTwdhFi61zhRM3MtPLxuKyaqv3ePECLGsMg9pMrePv4i"); //TODO change to real image url
+        let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, image_data, image_url, b"${description}", dao, config);
         
         DAOSpace::install_plugin_with_root_cap<${daoName}, InstallPluginProposalPlugin>(&dao_root_cap, InstallPluginProposalPlugin::required_caps()); 
         DAOSpace::install_plugin_with_root_cap<${daoName}, MemberProposalPlugin>(&dao_root_cap, MemberProposalPlugin::required_caps());

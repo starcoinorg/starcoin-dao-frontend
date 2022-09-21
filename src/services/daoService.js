@@ -26,24 +26,13 @@ class DaoService {
 
     // download starcoin framework
 
-    this.wasmfs.fs.mkdirpSync('/workspace/freepai-plugin/sources');
-    // const freepaiPluginURL =
-    //   process.env.NODE_ENV === 'production'
-    //     ? '/dapps/data/freepai-plugin.zip'
-    //     : '/data/freepai-plugin.zip';
-    const freepaiPluginURL = '/data/freepai-plugin.zip';
-    await this.git.download(freepaiPluginURL, '/workspace/freepai-plugin');
-
     // render DAO package
     this.renderDAOPackage('/workspace/my-dao', cfg);
 
     const mp = new MovePackage(this.wasmfs, {
       packagePath: '/workspace/my-dao',
       test: false,
-      alias: new Map([
-        ['StarcoinFramework', '/workspace/starcoin-framework'],
-        ['FreePlugin', '/workspace/freepai-plugin'],
-      ]),
+      alias: new Map([['StarcoinFramework', '/workspace/starcoin-framework']]),
       initFunction: `${cfg.address}::${cfg.name}::initialize`,
     });
 
