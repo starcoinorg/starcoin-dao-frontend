@@ -125,6 +125,36 @@ export const getDao = async daoAddress => {
   };
 };
 
+export const getDaoInstalledPlugins = async daoId => {
+  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+
+  const installedPluginInfos = await window.starcoin.request({
+    method: 'state.list_resource',
+    params: [
+      daoAddress,
+      {
+        resource_types: [
+          '0x00000000000000000000000000000001::DAOSpace::InstalledPluginInfo',
+        ],
+        decode: true,
+      },
+    ],
+  });
+
+  let plugins = [];
+  for (const key in installedPluginInfos.resources) {
+    const pluginType = key.substring(key.indexOf('<') + 1, key.indexOf('>'));
+    const pluginId = installedPluginInfos.resources[key].json.plugin_id;
+
+    plugins.push({
+      pluginId,
+      pluginType,
+    });
+  }
+
+  return plugins;
+};
+
 export const getDaoDetail = async daoId => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
@@ -164,15 +194,13 @@ export const getDaoDetail = async daoId => {
   }
 
   let plugins = [];
-  if (daoExt.json.ext.installed_web_plugins) {
-    for (const i in daoExt.json.ext.installed_web_plugins) {
-      const plugin_info = daoExt.json.ext.installed_web_plugins[i];
-      const plugin = await getPluginInfo(
-        plugin_info.plugin_id,
-        plugin_info.plugin_version,
-      );
+  let installed_web_plugins = await getDaoInstalledPlugins(daoId);
+  if (installed_web_plugins) {
+    for (const i in installed_web_plugins) {
+      const plugin_info = installed_web_plugins[i];
+      const plugin = await getPluginInfo(plugin_info.pluginType);
 
-      if (plugin) {
+      if (plugin && plugin.js_entry_uri) {
         plugins.push(plugin);
       }
     }

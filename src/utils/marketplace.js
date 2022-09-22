@@ -60,50 +60,41 @@ export const hexVectorToStringArray = vec => {
   return rets;
 };
 
-export const getPluginInfo = async (plugin_id, version_id) => {
+export const getPluginInfo = async plugin_type => {
   try {
-    const registry = await window.starcoin.request({
+    const resp = await window.starcoin.request({
       method: 'state.get_resource',
       params: [
-        `${PluginMarketplace_Address}`,
-        `${PluginMarketplace_Address}::PluginMarketplace::PluginRegistry`,
+        `0x1`,
+        `0x1::DAOPluginMarketplace::PluginEntry<${plugin_type}>`,
         {
           decode: true,
         },
       ],
     });
 
-    for (const plugin of registry.json.plugins) {
-      if (plugin.id === plugin_id) {
-        const plugin_info = {
-          id: plugin.id,
-          name: utils.hexToString(plugin.name),
-          describe: utils.hexToString(plugin.describe),
-          git_repo: utils.hexToString(plugin.git_repo),
-        };
+    const plugin = resp.json;
+    const plugin_info = {
+      id: plugin.id,
+      name: utils.hexToString(plugin.name),
+      description: utils.hexToString(plugin.description),
+    };
 
-        for (const version of plugin.versions) {
-          if (version.number === version_id) {
-            return {
-              ...plugin_info,
-              version_number: version.number,
-              version: utils.hexToString(version.version),
-              required_caps: hexVectorToStringArray(version.required_caps),
-              export_caps: hexVectorToStringArray(version.export_caps),
-              implement_extpoints: hexVectorToStringArray(
-                version.implement_extpoints,
-              ),
-              depend_extpoints: hexVectorToStringArray(
-                version.depend_extpoints,
-              ),
-              contract_module: utils.hexToString(version.contract_module),
-              js_entry_uri: utils.hexToString(version.js_entry_uri),
-              created_at: version.created_at,
-            };
-          }
-        }
-      }
+    if (plugin.next_version_number == 1) {
+      return plugin_info;
     }
+
+    const version = plugin.versions[plugin.next_version_number - 2];
+
+    return {
+      ...plugin_info,
+      version_number: version.number,
+      version: utils.hexToString(version.tag),
+      implement_extpoints: hexVectorToStringArray(version.implement_extpoints),
+      depend_extpoints: hexVectorToStringArray(version.depend_extpoints),
+      js_entry_uri: utils.hexToString(version.js_entry_uri),
+      created_at: version.created_at,
+    };
   } catch (error) {
     console.error(error);
   }
