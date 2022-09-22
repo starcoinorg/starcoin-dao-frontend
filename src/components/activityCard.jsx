@@ -10,6 +10,7 @@ import {
   Badge,
 } from '@chakra-ui/react';
 import makeBlockie from 'ethereum-blockies-base64';
+import { format, formatDistanceToNow } from 'date-fns';
 
 import ContentBox from './ContentBox';
 import { chainByName } from '../utils/chain';
@@ -184,7 +185,11 @@ const ActivityCard = ({
                 {activity?.votingPower ? activity.votingPower : '0'}
               </Text>
               <Text as='i' fontSize='xs' ml={3}>
-                {activity?.createdAt ? timeToNow(activity.createdAt) : '--'}
+                {activity?.createdAt
+                  ? formatDistanceToNow(new Date(activity.createdAt), {
+                      addSuffix: true,
+                    })
+                  : '--'}
               </Text>
               {isLink && proposalLink ? (
                 <Box as={RouterLink} to={proposalLink} fontSize='xs' ml={3}>
