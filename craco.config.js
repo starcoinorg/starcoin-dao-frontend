@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   webpack: {
@@ -56,5 +57,23 @@ module.exports = {
         }),
       ],
     },
+
+    devServer: {
+      static: [
+        {
+          directory: path.join(__dirname, 'build'),
+          publicPath: '/',
+        },
+        {
+          directory: path.join(__dirname, 'plugins/member-plugin'),
+          publicPath: '/plugins/member-plugin',
+        },
+        {
+          directory: path.join(__dirname, 'plugins/proposal-plugin'),
+          publicPath: '/plugins/proposal-plugin',
+        },
+      ],
+    },
+
   },
 };
