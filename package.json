@@ -1,7 +1,11 @@
 {
   "name": "pokemol",
   "version": "2.0.1",
-  "private": false,
+  "private": true,
+  "workspaces": [
+    "plugins/member-plugin",
+    "plugins/proposal-plugin"
+  ],
   "dependencies": {
     "@chakra-ui/icons": "^2.0.4",
     "@chakra-ui/react": "~1.6.0",
@@ -83,6 +87,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "build:plugins": "npm run build --workspaces --if-present",
     "build": "craco --max_old_space_size=4096 build",
     "lint:fix": "eslint ./src --fix",
     "test": "craco test",
@@ -133,6 +138,7 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "cross-env": "^7.0.3"
   }
 }
