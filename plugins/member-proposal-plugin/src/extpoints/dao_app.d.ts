@@ -14,5 +14,6 @@ declare interface IApp {
 declare interface IDAO {
     name: string,
     address: string, 
+    daoType: string,
     registerApp(app: IApp)
 }

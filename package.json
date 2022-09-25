@@ -3,8 +3,8 @@
   "version": "2.0.1",
   "private": true,
   "workspaces": [
-    "plugins/member-plugin",
-    "plugins/proposal-plugin"
+    "plugins/member-proposal-plugin",
+    "plugins/install-plugin-proposal-plugin"
   ],
   "dependencies": {
     "@chakra-ui/icons": "^2.0.4",
@@ -127,6 +127,7 @@
     "@storybook/theming": "^6.1.20",
     "@types/deep-equal": "^1.0.1",
     "babel-loader": "8.2.2",
+    "cross-env": "^7.0.3",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^6.10.0",
     "eslint-config-standard": "^14.1.0",
@@ -139,6 +140,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "^1.19.1",
-    "cross-env": "^7.0.3"
+    "copy-webpack-plugin": "^11.0.0"
   }
 }

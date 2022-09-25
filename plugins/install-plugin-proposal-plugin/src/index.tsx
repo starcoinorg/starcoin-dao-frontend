@@ -27,8 +27,8 @@ export const setup = (dao: IDAO) => {
   console.log("plugin setup")
 
   dao.registerApp({
-    name: "member_app",
-    activeWhen: "/members",
+    name: "proposal_app",
+    activeWhen: "/proposals",
     provider: (props) => {
       props.dao = {
         name: dao.name,
@@ -55,7 +55,7 @@ if (!window.__GARFISH__) {
       console.log("register App:", appInfo);
       
       const provider = appInfo.provider({
-        basename: process.env.NODE_ENV === 'production' ? '/examples/subapp/react16' : '/',
+        basename: process.env.NODE_ENV === 'production' ? '/plugins/install-plugin-proposal-plugin' : '/',
         dom: document,
       });
 
