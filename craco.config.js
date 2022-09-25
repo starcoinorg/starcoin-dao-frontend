@@ -1,5 +1,25 @@
 const webpack = require('webpack');
 const path = require('path');
+const express = require('express');
+const fs = require('fs');
+const CopyPlugin = require('copy-webpack-plugin');
+
+const buildPluginCopyPatterns = function() {
+  let patterns = []
+
+  const files = fs.readdirSync(path.resolve(__dirname, 'plugins'));
+
+  files.forEach(plugin_name => {
+     patterns.push(
+      { 
+        from: "plugins/" + plugin_name + "/dist", 
+        to: path.resolve(__dirname, 'build/plugins/' + plugin_name) 
+      }
+     )
+  });
+
+  return patterns;
+}
 
 module.exports = {
   webpack: {
@@ -47,7 +67,7 @@ module.exports = {
           },
         ],
       },
-      ignoreWarnings: [/Failed to parse source map/],
+      ignoreWarnings: [/Failed to parse source map/],  
     },
     plugins: {
       add: [
@@ -55,25 +75,37 @@ module.exports = {
           Buffer: ['buffer', 'Buffer'],
           process: 'process/browser',
         }),
+        new CopyPlugin({
+          patterns: buildPluginCopyPatterns(),
+        }),
       ],
     },
+  },
+  devServer: {
+    static: [
+      {
+        directory: path.join(__dirname, 'public'),
+        publicPath: '/',
+      }
+    ],
 
-    devServer: {
-      static: [
-        {
-          directory: path.join(__dirname, 'build'),
-          publicPath: '/',
-        },
-        {
-          directory: path.join(__dirname, 'plugins/member-plugin'),
-          publicPath: '/plugins/member-plugin',
-        },
-        {
-          directory: path.join(__dirname, 'plugins/proposal-plugin'),
-          publicPath: '/plugins/proposal-plugin',
-        },
-      ],
-    },
+    setupMiddlewares: (middlewares, devServer) => {
+      if (!devServer) {
+        throw new Error('webpack-dev-server is not defined');
+      }
 
+      // config plugins router
+      try {
+        const files = fs.readdirSync(path.resolve(__dirname, 'plugins'));
+
+        files.forEach(plugin_name => {
+          devServer.app.use('/plugins/' + plugin_name, express.static(path.resolve(__dirname, 'plugins/' + plugin_name + '/dist')));
+        });
+      } catch (err) {
+        console.log(err);
+      }
+
+      return middlewares;
+    }
   },
 };

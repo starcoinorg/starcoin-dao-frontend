@@ -1,7 +1,7 @@
-import { DefinePlugin } from 'webpack';
+import { DefinePlugin, ProvidePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { getPublicPath, isDevelopment, getPort } from './util';
-const appName = 'dev/react16';
+const appName = 'member_app';
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
@@ -35,6 +35,17 @@ const webpackConfig = {
   node: false,
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
+    fallback: { 
+      crypto: require.resolve('crypto-browserify'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      stream: require.resolve('stream-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      zlib: require.resolve('browserify-zlib'),
+      process: require.resolve('process/browser'),
+      url: require.resolve("url-polyfill"),
+      assert: require.resolve("assert-polyfill")
+    }
   },
   module: {
     rules: [
@@ -101,9 +112,14 @@ const webpackConfig = {
     }),
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'global':{}
     }),
     new CopyPlugin({
       patterns: [{ from: 'public/dynamic.js', to: './' }],
+    }),
+    new ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser',
     }),
   ].concat(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
 };
