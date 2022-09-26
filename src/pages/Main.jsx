@@ -11,6 +11,7 @@ import NewsFeed from '../components/newsFeed';
 import NetworkList from '../components/networkList';
 import HausCard from '../components/hausCard';
 import TitleHeader from '../assets/img/title_header_light.png';
+import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 
 const Main = () => {
   const { address } = useInjectedProvider();
@@ -32,6 +33,66 @@ const Main = () => {
     </div>
   );
 
+  const initialClick = async () => {
+    const initialStarCoin = () => {
+      const currentUrl = new URL(window.location.href);
+      const forwarderOrigin =
+        currentUrl.hostname === 'localhost'
+          ? 'http://localhost:9032'
+          : undefined;
+
+      const isStarMaskInstalled = StarMaskOnboarding.isStarMaskInstalled();
+      const isStarMaskConnected = false;
+      const accounts = [];
+
+      let onboarding;
+      try {
+        onboarding = new StarMaskOnboarding({ forwarderOrigin });
+      } catch (error) {
+        console.error(error);
+      }
+
+      let chainInfo = {
+        chain: '',
+        network: '',
+        accounts: '',
+      };
+
+      return {
+        isStarMaskInstalled,
+        isStarMaskConnected,
+        accounts,
+        onboarding,
+        chainInfo,
+      };
+    };
+
+    const initialData = initialStarCoin();
+    const status = () => {
+      if (!initialData.isStarMaskInstalled) {
+        return 0;
+      } else if (initialData.isStarMaskConnected) {
+        initialData.onboarding?.stopOnboarding();
+        return 2;
+      } else {
+        return 1;
+      }
+    };
+
+    const _status = status();
+    if (_status === 0) {
+      initialData.onboarding.startOnboarding();
+    } else if (_status === 1) {
+      try {
+        const newAccounts = await window.starcoin.request({
+          method: 'stc_requestAccounts',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <MainViewLayout headerEl={<TitleEl />}>
       <Flex wrap='wrap'>
@@ -46,7 +107,25 @@ const Main = () => {
               <NetworkList />
             </>
           ) : (
-            <HubSignedOut />
+            <Box>
+              <Box fontSize={109}>Welcome to</Box>
+              <Box fontSize={109} color={'#7c87f7'}>
+                DAOhaus V2
+              </Box>
+              <Box fontSize={35}>Your new Hub for all Moloch DAO activity</Box>
+              <Box fontSize={27}>Interact with DAOs or Summon a new one</Box>
+              <Box fontSize={27}>Get activity feeds from all your DAOs</Box>
+              <Box fontSize={27}>Easily switch between your DAOs</Box>
+              <Box
+                onClick={() => initialClick()}
+                mb={6}
+                fontSize={38}
+                borderWidth={1}
+                borderColor={'#858EE8'}
+              >
+                Connect Wallet
+              </Box>
+            </Box>
           )}
         </Box>
         {address && (
