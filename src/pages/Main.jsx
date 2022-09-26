@@ -107,25 +107,7 @@ const Main = () => {
               <NetworkList />
             </>
           ) : (
-            <Box>
-              <Box fontSize={109}>Welcome to</Box>
-              <Box fontSize={109} color={'#7c87f7'}>
-                DAOhaus V2
-              </Box>
-              <Box fontSize={35}>Your new Hub for all Moloch DAO activity</Box>
-              <Box fontSize={27}>Interact with DAOs or Summon a new one</Box>
-              <Box fontSize={27}>Get activity feeds from all your DAOs</Box>
-              <Box fontSize={27}>Easily switch between your DAOs</Box>
-              <Box
-                onClick={() => initialClick()}
-                mb={6}
-                fontSize={38}
-                borderWidth={1}
-                borderColor={'#858EE8'}
-              >
-                Connect Wallet
-              </Box>
-            </Box>
+            <HubSignedOut />
           )}
         </Box>
         {address && (
