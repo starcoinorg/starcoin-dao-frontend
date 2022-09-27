@@ -2,10 +2,6 @@
   "name": "pokemol",
   "version": "2.0.1",
   "private": true,
-  "workspaces": [
-    "plugins/member-proposal-plugin",
-    "plugins/install-plugin-proposal-plugin"
-  ],
   "dependencies": {
     "@chakra-ui/icons": "^2.0.4",
     "@chakra-ui/react": "~1.6.0",
