@@ -82,6 +82,8 @@ module ${address}::${daoName} {
         DAOSpace::install_plugin_with_root_cap<${daoName}, InstallPluginProposalPlugin>(&dao_root_cap, InstallPluginProposalPlugin::required_caps()); 
         DAOSpace::install_plugin_with_root_cap<${daoName}, MemberProposalPlugin>(&dao_root_cap, MemberProposalPlugin::required_caps());
 
+        DAOSpace::join_member_with_root_cap(&dao_root_cap, @0x574BC81805e18893aAecDae7e2C55F92, Option::none<vector<u8>>(), Option::none<vector<u8>>(), 1000);
+
         DAOSpace::burn_root_cap(dao_root_cap);
     }
 }

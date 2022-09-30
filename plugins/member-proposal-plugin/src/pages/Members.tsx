@@ -15,7 +15,7 @@ const Members = () => {
         "",
         "ipfs://xxxxxx",
         100,
-        1000
+        0
       );
     };
 
