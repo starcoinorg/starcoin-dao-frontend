@@ -8,7 +8,7 @@ import { TokenProvider } from './TokenContext';
 import { TXProvider } from './TXContext';
 import { useInjectedProvider } from './InjectedProviderContext';
 import { useSessionStorage } from '../hooks/useSessionStorage';
-import { bigGraphQuery } from '../utils/theGraph';
+import { listDaoProposals } from '../utils/proposalData';
 import { supportedChains } from '../utils/chain';
 import { putRefreshApiVault } from '../utils/metadata';
 
@@ -58,22 +58,14 @@ export const DaoProvider = ({ children }) => {
       return;
     }
 
-    const bigQueryOptions = {
-      args: {
-        daoID: daoid.toLowerCase(),
-        chainID: daochain,
-      },
-      getSetters: [
-        { getter: 'getOverview', setter: { setDaoOverview, setDaoVaults } },
-        {
-          getter: 'getActivities',
-          setter: { setDaoProposals, setDaoActivities },
-        },
-        { getter: 'getMembers', setter: setDaoMembers },
-      ],
-    };
+    listDaoProposals(daoid)
+      .then(proposals => {
+        setDaoProposals(proposals);
+      })
+      .catch(err => {
+        console.error('Error fetching proposals', err);
+      });
 
-    // bigGraphQuery(bigQueryOptions);
     hasPerformedBatchQuery.current = true;
   }, [
     daoid,
@@ -93,22 +85,15 @@ export const DaoProvider = ({ children }) => {
   ]);
 
   const refetch = async () => {
-    const bigQueryOptions = {
-      args: {
-        daoID: daoid.toLowerCase(),
-        chainID: daochain,
-      },
-      getSetters: [
-        { getter: 'getOverview', setter: { setDaoOverview, setDaoVaults } },
-        {
-          getter: 'getActivities',
-          setter: { setDaoProposals, setDaoActivities },
-        },
-        { getter: 'getMembers', setter: setDaoMembers },
-      ],
-    };
     currentDao.current = null;
-    // bigGraphQuery(bigQueryOptions);
+
+    listDaoProposals(daoid)
+      .then(proposals => {
+        setDaoProposals(proposals);
+      })
+      .catch(err => {
+        console.error('Error fetching proposals', err);
+      });
   };
 
   const refreshAllDaoVaults = async () => {
