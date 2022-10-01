@@ -74,5 +74,5 @@ export const listDaoProposals = async daoId => {
     });
   }
 
-  return proposals;
+  return proposals.reverse();
 };
