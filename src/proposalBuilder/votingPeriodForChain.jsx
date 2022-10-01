@@ -32,6 +32,7 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 import config from '../utils/getConfig';
+import { get_access_path } from '../utils/proposalApi';
 
 const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   const [voteData, setVoteData] = useState({
@@ -52,7 +53,6 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     votePassedProcessFailed: false,
   });
   const { daochain, daoid } = useParams();
-
   const [daoData, setDaoData] = useState(null);
 
   useEffect(() => {
@@ -109,7 +109,7 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   };
 
   const toast = useToast();
-  const { requestWallet, address } = useInjectedProvider();
+  const { requestWallet, injectedProvider, address } = useInjectedProvider();
 
   const { data: _activities, loading } = useRequest('accountVotes', {
     method: 'get',
@@ -140,32 +140,9 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   };
 
   const signHandle = async choiceSequenceId => {
-    const message = JSON.stringify({
-      daoId: proposal.proposalId.daoId,
-      proposalNumber: +proposal.proposalId.proposalNumber,
-      accountAddress: address,
-      votingPower: accountPowerTotal,
-      choiceSequenceId,
-    });
-
-    const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
-    const networkId = `1`;
-    const extraParams = { networkId };
-    const getSign = async () => {
-      const sign = await window.starcoin.request({
-        method: 'personal_sign',
-        params: [msg, address, extraParams],
-      });
-
-      return sign;
-    };
-
-    const sign = await getSign();
-
     try {
-      const ret = await axios.post(castVoteUrl, {
-        signedMessageHex: sign,
-      });
+      let path = await get_access_path(injectedProvider, daoid, address);
+      console.log('get_access_path result: ', path);
 
       onClose();
       setLoading(false);
@@ -191,14 +168,6 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
         isClosable: true,
       });
     }
-  };
-
-  const voteYes = async () => {
-    setLoading(true);
-    const accountPowerData = await getPower();
-    setAccountPowerTotal(+accountPowerData.totalVotingPower);
-    setChoiceSequenceId(1);
-    onOpen();
   };
 
   const voteHandler = async sequenceId => {
@@ -250,17 +219,6 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     if (_status === 0) {
       initialData.onboarding.startOnboarding();
     } else if (_status === 2) {
-      if (window.starcoin.networkVersion !== '1') {
-        toast({
-          title: 'Error',
-          description: 'Please switch to the mainnet',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
       setLoading(true);
       try {
         const accountPowerData = await getPower();
