@@ -55,12 +55,34 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
 
   const [daoData, setDaoData] = useState(null);
 
-  const { data: dao } = useRequest(`daos/${proposal?.proposalId?.daoId || ''}`);
-  useEffect(() => {
-    if (dao) {
-      setDaoData(dao);
-    }
-  }, [dao]);
+  let isChainDao = false;
+  if (daoid && daoid.startsWith('0x')) {
+    isChainDao = true;
+  }
+
+  if (isChainDao) {
+    useEffect(() => {
+      if (daoid) {
+        setDaoData({
+          daoID: daoid,
+          daoStrategies: [
+            {
+              votingPowerName: 'default',
+            },
+          ],
+        });
+      }
+    }, [daoid]);
+  } else {
+    const { data: dao } = useRequest(
+      `daos/${proposal?.proposalId?.daoId || ''}`,
+    );
+    useEffect(() => {
+      if (dao) {
+        setDaoData(dao);
+      }
+    }, [dao]);
+  }
 
   useEffect(() => {
     if (proposal?.accountVoteSummaries?.length) {

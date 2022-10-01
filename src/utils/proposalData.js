@@ -20,22 +20,55 @@ export const listDaoProposals = async daoId => {
     proposals.push({
       id: proposalInfo.id,
       proposalId: {
+        daoId: daoId,
         proposalNumber: proposalInfo.id,
       },
       categoryId: 1,
-      votingType: 'VotingType::Binary',
+      votingType: 'YES_NO_ABSTAIN',
       title: utils.hexToString(proposalInfo.description),
-      proposer: proposalInfo.proposer,
+      description: utils.hexToString(proposalInfo.description),
+      proposalVotingChoices: [
+        {
+          sequenceId: 1,
+          title: 'YES',
+        },
+        {
+          sequenceId: 2,
+          title: 'NO',
+        },
+        {
+          sequenceId: 3,
+          title: 'NO_WITH_VETO',
+        },
+        {
+          sequenceId: 4,
+          title: 'ABSTAIN',
+        },
+      ],
+      accountVoteSummaries: [
+        {
+          choiceSequenceId: 1,
+          subtotalVotingPower: proposalInfo.yes_votes,
+        },
+        {
+          choiceSequenceId: 2,
+          subtotalVotingPower: proposalInfo.no_votes,
+        },
+        {
+          choiceSequenceId: 3,
+          subtotalVotingPower: proposalInfo.no_with_veto_votes,
+        },
+        {
+          choiceSequenceId: 4,
+          subtotalVotingPower: proposalInfo.abstain_votes,
+        },
+      ],
       submittedAt: proposalInfo.start_time,
+      submittedBy: proposalInfo.proposer,
+      votingMethod: 'CHAIN',
       votingPeriodStart: proposalInfo.start_time,
       votingPeriodEnd: proposalInfo.end_time,
-      yes_votes: proposalInfo.yes_votes,
-      no_votes: proposalInfo.no_votes,
-      abstain_votes: proposalInfo.abstain_votes,
-      no_with_veto_votes: proposalInfo.no_with_veto_votes,
-      eta: proposalInfo.eta,
-      action_delay: proposalInfo.action_delay,
-      quorum_votes: proposalInfo.quorum_votes,
+      votingTurnoutThreshold: proposalInfo.quorum_votes,
       blockHeight: proposalInfo.block_number,
       blockStateRoot: proposalInfo.state_root,
     });

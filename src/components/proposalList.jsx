@@ -49,15 +49,35 @@ const ProposalsList = ({ customTerms }) => {
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
 
-  useEffect(() => {
-    listDaoProposals(daoid)
-      .then(proposals => {
-        setProposals(proposals);
-      })
-      .catch(err => {
-        console.error('Error fetching proposals', err);
-      });
-  }, [daoid]);
+  let isChainDao = false;
+  if (daoid && daoid.startsWith('0x')) {
+    isChainDao = true;
+  }
+
+  if (isChainDao) {
+    useEffect(() => {
+      listDaoProposals(daoid)
+        .then(proposals => {
+          setProposals(proposals);
+        })
+        .catch(err => {
+          console.error('Error fetching proposals', err);
+        });
+    }, [daoid]);
+  } else {
+    let { data: _proposals, loading } = useRequest(
+      `proposals?daoId=${daoid}&page=0&size=100`,
+      {
+        method: 'get',
+      },
+    );
+
+    useEffect(() => {
+      if (_proposals) {
+        setProposals(_proposals.reverse());
+      }
+    }, [_proposals]);
+  }
 
   // proposals = [proposals];
   useEffect(() => {
