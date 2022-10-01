@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { ParaSm } from '../components/typography';
 import ExecuteQuorum from './executeQuorum';
 import { useRequest } from '../hooks/useRequest';
+import { isChainDAO } from '../utils/dao';
 
 const getVoteOptionData = (votingChoices, accountVote) => {
   if (!votingChoices) return [];
@@ -217,30 +218,28 @@ export const VotingActive = ({
 }) => {
   const { _, daoid } = useParams();
 
-  let isChainDao = false;
-  if (daoid && daoid.startsWith('0x')) {
-    isChainDao = true;
-  }
-
   let isLoading = true;
-  if (daoData && !isChainDao) {
-    let { data: _proposals, loading } = useRequest(
-      `proposals/${daoData.daoId}%2C${proposal.proposalId.proposalNumber}`,
-      {
-        method: 'get',
-        param: {
-          page: 1,
-          pageSize: 1,
-        },
-      },
-    );
 
-    if (_proposals) {
-      proposal = _proposals;
-      isLoading = !loading;
-    }
-  } else {
+  if (isChainDAO(daoid)) {
     isLoading = false;
+  } else {
+    if (daoData) {
+      let { data: _proposals, loading } = useRequest(
+        `proposals/${daoData.daoId}%2C${proposal.proposalId.proposalNumber}`,
+        {
+          method: 'get',
+          param: {
+            page: 1,
+            pageSize: 1,
+          },
+        },
+      );
+
+      if (_proposals) {
+        proposal = _proposals;
+        isLoading = loading;
+      }
+    }
   }
 
   const voteOptions = getVoteOptionData(

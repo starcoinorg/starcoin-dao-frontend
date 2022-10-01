@@ -58,7 +58,7 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   useEffect(() => {
     if (daoid) {
       setDaoData({
-        daoID: daoid,
+        daoId: daoid,
         daoStrategies: [
           {
             votingPowerName: 'default',
