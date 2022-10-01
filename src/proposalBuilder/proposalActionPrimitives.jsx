@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Flex, Progress, Text } from '@chakra-ui/react';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 
+import { useParams } from 'react-router-dom';
 import { ParaSm } from '../components/typography';
 import ExecuteQuorum from './executeQuorum';
 import { useRequest } from '../hooks/useRequest';
@@ -214,8 +215,15 @@ export const VotingActive = ({
   voteData,
   daoData,
 }) => {
-  let isLoading = false;
-  if (daoData) {
+  const { _, daoid } = useParams();
+
+  let isChainDao = false;
+  if (daoid && daoid.startsWith('0x')) {
+    isChainDao = true;
+  }
+
+  let isLoading = true;
+  if (daoData && !isChainDao) {
     let { data: _proposals, loading } = useRequest(
       `proposals/${daoData.daoId}%2C${proposal.proposalId.proposalNumber}`,
       {
@@ -231,6 +239,8 @@ export const VotingActive = ({
       proposal = _proposals;
       isLoading = !loading;
     }
+  } else {
+    isLoading = false;
   }
 
   const voteOptions = getVoteOptionData(
@@ -238,7 +248,7 @@ export const VotingActive = ({
     proposal.accountVoteSummaries,
   );
   const getNow = Date.now();
-  return isLoading ? (
+  return !isLoading ? (
     <>
       <VotingBar voteData={voteData} proposal={proposal} />
       <Text fontSize={'1.25rem'}>Vote Options:</Text>
