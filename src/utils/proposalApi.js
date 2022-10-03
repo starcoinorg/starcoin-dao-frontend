@@ -1,23 +1,32 @@
+import * as web3 from 'web3';
 import { utils, bcs } from '@starcoin/starcoin';
 import { hexlify } from '@ethersproject/bytes';
 import { nodeUrlMap } from './consts';
 
+export const ProposalState = {
+  PENDING: 1,
+  ACTIVE: 2,
+  REJECTED: 3,
+  DEFEATED: 4,
+  AGREED: 5,
+  QUEUED: 6,
+  EXECUTABLE: 7,
+  EXTRACTED: 8,
+};
+
 export async function get_access_path(provider, daoType, userAddress) {
   try {
-    const functionId = '0x1::SnapshotUtil::get_access_path';
-    const tyArgs = [daoType];
+    const function_id = '0x1::SnapshotUtil::get_access_path';
+    const type_args = [daoType];
     const args = [userAddress];
 
-    console.log('cast_vote functionId:', functionId);
-    console.log('cast_vote tyArgs:', tyArgs);
-    console.log('cast_vote args:', args);
-
     const result = await provider.callV2({
-      functionId,
-      tyArgs,
+      function_id,
+      type_args,
       args,
     });
-    return result;
+
+    return web3.utils.hexToString(result[0]);
   } catch (error) {
     console.log('provider.callV2 error:', error);
     throw error;
@@ -26,20 +35,17 @@ export async function get_access_path(provider, daoType, userAddress) {
 
 export async function get_proposal_state(provider, daoType, proposalId) {
   try {
-    const functionId = '0x1::DAOSpace::proposal_state';
-    const tyArgs = [daoType];
-    const args = [proposalId];
-
-    console.log('cast_vote functionId:', functionId);
-    console.log('cast_vote tyArgs:', tyArgs);
-    console.log('cast_vote args:', args);
+    const function_id = '0x1::DAOSpace::proposal_state';
+    const type_args = [daoType];
+    const args = ['' + proposalId];
 
     const result = await provider.callV2({
-      functionId,
-      tyArgs,
+      function_id,
+      type_args,
       args,
     });
-    return result;
+
+    return result[0];
   } catch (error) {
     console.log('provider.callV2 error:', error);
     throw error;

@@ -32,7 +32,11 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 import config from '../utils/getConfig';
-import { get_access_path, get_proposal_state } from '../utils/proposalApi';
+import {
+  get_access_path,
+  get_proposal_state,
+  ProposalState,
+} from '../utils/proposalApi';
 
 const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   const [voteData, setVoteData] = useState({
@@ -277,29 +281,52 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   }, [injectedProvider, proposal]);
 
   const getProposalStatus = () => {
-    if (proposalStatus) {
-      if (proposal.status === 'PASSED') {
-        return {
-          status: 'Passed',
-          color: 'green',
-        };
-      } else if (proposalStatus === 'FAILED') {
-        return {
-          status: 'Failed',
-          color: 'red.500',
-        };
-      } else if (proposalStatus === 'UNKNOWN') {
-        return {
-          status: 'Passed',
-          color: 'green.500',
-        };
-      }
+    if (proposalStatus === ProposalState.PENDING) {
+      return {
+        status: 'PENDING',
+        color: 'yellow',
+      };
+    } else if (proposalStatus === ProposalState.ACTIVE) {
+      return {
+        status: 'ACTIVE',
+        color: 'green',
+      };
+    } else if (proposalStatus === ProposalState.REJECTED) {
+      return {
+        status: 'REJECTED',
+        color: 'red.500',
+      };
+    } else if (proposalStatus === ProposalState.DEFEATED) {
+      return {
+        status: 'DEFEATED',
+        color: 'red.500',
+      };
+    } else if (proposalStatus === ProposalState.AGREED) {
+      return {
+        status: 'AGREED',
+        color: 'green.500',
+      };
+    } else if (proposalStatus === ProposalState.QUEUED) {
+      return {
+        status: 'QUEUED',
+        color: 'green.500',
+      };
+    } else if (proposalStatus === ProposalState.EXECUTABLE) {
+      return {
+        status: 'EXECUTABLE',
+        color: 'green.500',
+      };
+    } else if (proposalStatus === ProposalState.EXTRACTED) {
+      return {
+        status: 'EXTRACTED',
+        color: 'green.500',
+      };
+    } else {
+      return {
+        status: 'UNKOWN',
+        color: '#EB8A23',
+      };
     }
-
-    return {
-      status: 'Voting',
-      color: '#EB8A23',
-    };
   };
 
   return (
