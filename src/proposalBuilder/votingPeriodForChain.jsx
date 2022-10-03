@@ -32,7 +32,7 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 import config from '../utils/getConfig';
-import { get_access_path } from '../utils/proposalApi';
+import { get_access_path, get_proposal_state } from '../utils/proposalApi';
 
 const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   const [voteData, setVoteData] = useState({
@@ -263,19 +263,32 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     }
   }, [_activities, address]);
 
+  const [proposalStatus, setProposalStatus] = useState('UNKNOWN');
+  useEffect(async () => {
+    if (injectedProvider && proposal) {
+      const status = await get_proposal_state(
+        injectedProvider,
+        daoid,
+        proposal.id,
+      );
+
+      setProposalStatus(status);
+    }
+  }, [injectedProvider, proposal]);
+
   const getProposalStatus = () => {
-    if (proposal?.status) {
+    if (proposalStatus) {
       if (proposal.status === 'PASSED') {
         return {
           status: 'Passed',
           color: 'green',
         };
-      } else if (proposal.status === 'FAILED') {
+      } else if (proposalStatus === 'FAILED') {
         return {
           status: 'Failed',
           color: 'red.500',
         };
-      } else if (proposal.status === 'UNKNOWN') {
+      } else if (proposalStatus === 'UNKNOWN') {
         return {
           status: 'Passed',
           color: 'green.500',

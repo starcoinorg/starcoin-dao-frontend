@@ -19,27 +19,6 @@ const Members = () => {
       );
     };
 
-    useEffect(() => {
-      const initial = async () => {
-        try {
-          const newAccounts = await window.starcoin.request({
-            method: 'stc_requestAccounts',
-          });
-          const chainInfo = await window.starcoin.request({
-            method: 'chain.id',
-          });
-          const provider = new providers.Web3Provider(
-            window.starcoin,
-            chainInfo.name,
-          );
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  
-      initial();
-    }, []);
-
     const ctaButton = (
       <Button
         rightIcon={<RiAddFill />}

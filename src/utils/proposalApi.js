@@ -24,6 +24,28 @@ export async function get_access_path(provider, daoType, userAddress) {
   }
 }
 
+export async function get_proposal_state(provider, daoType, proposalId) {
+  try {
+    const functionId = '0x1::DAOSpace::proposal_state';
+    const tyArgs = [daoType];
+    const args = [proposalId];
+
+    console.log('cast_vote functionId:', functionId);
+    console.log('cast_vote tyArgs:', tyArgs);
+    console.log('cast_vote args:', args);
+
+    const result = await provider.callV2({
+      functionId,
+      tyArgs,
+      args,
+    });
+    return result;
+  } catch (error) {
+    console.log('provider.callV2 error:', error);
+    throw error;
+  }
+}
+
 export async function get_with_proof_by_root_raw(daoId) {
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
 
