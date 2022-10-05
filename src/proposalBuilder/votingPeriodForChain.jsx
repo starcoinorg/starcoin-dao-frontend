@@ -35,6 +35,8 @@ import config from '../utils/getConfig';
 import {
   get_access_path,
   get_proposal_state,
+  get_with_proof_by_root_raw,
+  cast_vote,
   ProposalState,
 } from '../utils/proposalApi';
 
@@ -103,8 +105,20 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
 
   const [isLoading, setLoading] = useState(false);
   const { submitTransaction } = useTX();
-  const getTime = () => {
+  const getStartTime = () => {
     if (validate.number(Number(proposal?.votingPeriodStart))) {
+      return formatDistanceToNow(
+        new Date(Number(proposal?.votingPeriodStart)),
+        {
+          addSuffix: true,
+        },
+      );
+    }
+    return '--';
+  };
+
+  const getEndTime = () => {
+    if (validate.number(Number(proposal?.votingPeriodEnd))) {
       return formatDistanceToNow(new Date(Number(proposal?.votingPeriodEnd)), {
         addSuffix: true,
       });
@@ -145,8 +159,27 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
 
   const signHandle = async choiceSequenceId => {
     try {
-      let path = await get_access_path(injectedProvider, daoid, address);
-      console.log('get_access_path result: ', path);
+      let access_path = await get_access_path(injectedProvider, daoid, address);
+      console.log('access_path: ', access_path);
+
+      let state_root = proposal.blockStateRoot;
+      console.log('state_root: ', state_root);
+
+      let proof = await get_with_proof_by_root_raw(
+        injectedProvider,
+        access_path,
+        state_root,
+      );
+      console.log('proof: ', proof);
+
+      let transactionHash = await cast_vote(
+        injectedProvider,
+        daoid,
+        proposal.id,
+        proof,
+        choiceSequenceId,
+      );
+      console.log('transactionHash: ', transactionHash);
 
       onClose();
       setLoading(false);
@@ -329,11 +362,19 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     }
   };
 
+  const getProposalText = () => {
+    if (proposalStatus === ProposalState.PENDING) {
+      return `will start ${getStartTime()}`;
+    }
+
+    return `ended ${getEndTime()}`;
+  };
+
   return (
     <PropActionBox>
       <TopStatusBox
         status={getProposalStatus().status}
-        appendStatusText={`ended ${getTime()}`}
+        appendStatusText={getProposalText()}
         // circleColor={voteData.isPassing ? 'green' : 'red'}
         circleColor={getProposalStatus().color}
         proposal={proposal}

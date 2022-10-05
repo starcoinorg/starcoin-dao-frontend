@@ -1,5 +1,5 @@
 import * as web3 from 'web3';
-import { utils, bcs } from '@starcoin/starcoin';
+import { providers, utils, bcs } from '@starcoin/starcoin';
 import { hexlify } from '@ethersproject/bytes';
 import { nodeUrlMap } from './consts';
 
@@ -52,21 +52,20 @@ export async function get_proposal_state(provider, daoType, proposalId) {
   }
 }
 
-export async function get_with_proof_by_root_raw(daoId) {
-  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+export async function get_with_proof_by_root_raw(
+  network,
+  access_path,
+  state_root,
+) {
+  let nodeURL = nodeUrlMap[network];
+  let provider = new providers.JsonRpcProvider(nodeURL);
 
-  const proof = await window.starcoin.request({
+  const result = await provider.request({
     method: 'state.get_with_proof_by_root_raw',
-    params: [
-      daoAddress,
-      '0x00000000000000000000000000000001::DAOSpace::GlobalProposals',
-      {
-        decode: true,
-      },
-    ],
+    params: [access_path, state_root],
   });
 
-  return proof;
+  return result;
 }
 
 export async function cast_vote(
