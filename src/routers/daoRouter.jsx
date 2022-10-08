@@ -27,7 +27,7 @@ import Notifications from '../pages/Notifications';
 import Overview from '../pages/Overview';
 import PartyFavor from '../pages/PartyFavor';
 import Profile from '../pages/Profile';
-import Proposal from '../pages/Proposal';
+import ProposalSwitch from '../pages/ProposalSwitch';
 import Proposals from '../pages/Proposals';
 import ProposalTypes from '../pages/ProposalTypes';
 import ProposalAudit from '../pages/ProposalAudit';
@@ -215,7 +215,7 @@ const DaoRouter = () => {
             <ProposalsSpam daoMetaData={daoMetaData} />
           </Route>
           <Route exact path={`${path}/proposals/:propid`}>
-            <Proposal
+            <ProposalSwitch
               overview={daoOverview}
               daoMember={daoMember}
               activities={daoActivities}

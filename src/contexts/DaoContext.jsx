@@ -8,7 +8,7 @@ import { TokenProvider } from './TokenContext';
 import { TXProvider } from './TXContext';
 import { useInjectedProvider } from './InjectedProviderContext';
 import { useSessionStorage } from '../hooks/useSessionStorage';
-import { listDaoProposals } from '../utils/proposalData';
+import { listDaoProposals } from '../utils/proposalApi';
 import { supportedChains } from '../utils/chain';
 import { putRefreshApiVault } from '../utils/metadata';
 

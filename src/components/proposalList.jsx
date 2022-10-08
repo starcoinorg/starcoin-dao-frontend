@@ -17,7 +17,7 @@ import {
   sortOptions,
   allFilter,
 } from '../utils/proposalContent';
-import { listDaoProposals } from '../utils/proposalData';
+import { listDaoProposals } from '../utils/proposalApi';
 import TextBox from './TextBox';
 import {
   handleListFilter,

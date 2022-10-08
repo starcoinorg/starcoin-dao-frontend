@@ -116,3 +116,102 @@ export async function cast_vote(
     throw error;
   }
 }
+
+function convert_proposal(daoType, proposalInfo) {
+  return {
+    id: proposalInfo.id,
+    proposalId: {
+      daoId: daoType,
+      proposalNumber: proposalInfo.id,
+    },
+    categoryId: 1,
+    votingType: 'YES_NO_ABSTAIN',
+    title: web3.utils.hexToString(proposalInfo.description),
+    description: web3.utils.hexToString(proposalInfo.description),
+    proposalVotingChoices: [
+      {
+        sequenceId: 1,
+        title: 'YES',
+      },
+      {
+        sequenceId: 2,
+        title: 'NO',
+      },
+      {
+        sequenceId: 3,
+        title: 'NO_WITH_VETO',
+      },
+      {
+        sequenceId: 4,
+        title: 'ABSTAIN',
+      },
+    ],
+    accountVoteSummaries: [
+      {
+        choiceSequenceId: 1,
+        subtotalVotingPower: proposalInfo.yes_votes,
+      },
+      {
+        choiceSequenceId: 2,
+        subtotalVotingPower: proposalInfo.no_votes,
+      },
+      {
+        choiceSequenceId: 3,
+        subtotalVotingPower: proposalInfo.no_with_veto_votes,
+      },
+      {
+        choiceSequenceId: 4,
+        subtotalVotingPower: proposalInfo.abstain_votes,
+      },
+    ],
+    submittedAt: proposalInfo.start_time,
+    submittedBy: proposalInfo.proposer,
+    votingMethod: 'CHAIN',
+    votingPeriodStart: proposalInfo.start_time,
+    votingPeriodEnd: proposalInfo.end_time,
+    votingTurnoutThreshold: proposalInfo.quorum_votes,
+    blockHeight: proposalInfo.block_number,
+    blockStateRoot: proposalInfo.state_root,
+  };
+}
+export const listDaoProposals = async daoId => {
+  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+
+  const globalProposals = await window.starcoin.request({
+    method: 'state.get_resource',
+    params: [
+      daoAddress,
+      '0x00000000000000000000000000000001::DAOSpace::GlobalProposals',
+      {
+        decode: true,
+      },
+    ],
+  });
+
+  let proposals = [];
+
+  for (const proposalInfo of globalProposals.json.proposals) {
+    proposals.push(convert_proposal(daoId, proposalInfo));
+  }
+
+  return proposals.reverse();
+};
+
+export async function get_single_proposal(provider, daoType, proposalId) {
+  try {
+    const function_id = '0x1::DAOSpace::proposal';
+    const type_args = [daoType];
+    const args = ['' + proposalId];
+
+    const result = await provider.callV2({
+      function_id,
+      type_args,
+      args,
+    });
+
+    return convert_proposal(daoType, result[0]);
+  } catch (error) {
+    console.log('provider.callV2 error:', error);
+    throw error;
+  }
+}
