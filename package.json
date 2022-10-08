@@ -20,6 +20,7 @@
     "@self.id/core": "0.4.0",
     "@self.id/web": "0.4.0",
     "@starcoin/move-js": "^0.6.1",
+    "@starcoin/starcoin": "2.1.6",
     "@yubing744/starcoin": "2.1.7",
     "@starcoin/starmask-onboarding": "^1.2.0",
     "@uiw/react-md-editor": "^3.9.4",

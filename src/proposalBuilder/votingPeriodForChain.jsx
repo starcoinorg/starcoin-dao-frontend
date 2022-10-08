@@ -127,7 +127,7 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   };
 
   const toast = useToast();
-  const { requestWallet, injectedProvider, address } = useInjectedProvider();
+  const { injectedProvider, injectedChain, address } = useInjectedProvider();
 
   const { data: _activities, loading } = useRequest('accountVotes', {
     method: 'get',
@@ -166,7 +166,7 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
       console.log('state_root: ', state_root);
 
       let proof = await get_with_proof_by_root_raw(
-        injectedProvider,
+        injectedChain.chainId,
         access_path,
         state_root,
       );

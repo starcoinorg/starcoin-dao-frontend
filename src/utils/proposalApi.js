@@ -60,10 +60,10 @@ export async function get_with_proof_by_root_raw(
   let nodeURL = nodeUrlMap[network];
   let provider = new providers.JsonRpcProvider(nodeURL);
 
-  const result = await provider.request({
-    method: 'state.get_with_proof_by_root_raw',
-    params: [access_path, state_root],
-  });
+  const result = await provider.send('state.get_with_proof_by_root_raw', [
+    access_path,
+    state_root,
+  ]);
 
   return result;
 }

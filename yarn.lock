@@ -3939,7 +3939,7 @@
     "@wasmer/wasm-transformer" "^0.10.0"
     "@wasmer/wasmfs" "^0.12.0"
 
-"@starcoin/starcoin@^2.1.6":
+"@starcoin/starcoin@2.1.6":
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/@starcoin/starcoin/-/starcoin-2.1.6.tgz#ccb8727453e24fa49523707be658c50d3d1d572e"
   integrity sha512-yK4eaRRzyCEV9xoVM99KVa5zPC7d6Q+j2l4GxqGZnaK0o9315RrIC1l0EnvciDeQypXy8uk9bBH/ccB6TySkbw==
