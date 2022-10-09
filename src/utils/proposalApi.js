@@ -215,3 +215,22 @@ export async function get_single_proposal(provider, daoType, proposalId) {
     throw error;
   }
 }
+
+export const get_member_power = async (memberAddress, daoId, state_root) => {
+  const daoType = daoId;
+  const nft = await window.starcoin.request({
+    method: 'state.get_resource',
+    params: [
+      memberAddress,
+      `0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoType}>,0x00000000000000000000000000000001::DAOSpace::DAOMemberBody<${daoType}>>`,
+      {
+        decode: true,
+        state_root: state_root,
+      },
+    ],
+  });
+
+  return {
+    totalVotingPower: nft.json.body.voting_power,
+  };
+};

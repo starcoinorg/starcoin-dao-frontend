@@ -38,6 +38,7 @@ import {
   get_with_proof_by_root_raw,
   cast_vote,
   ProposalState,
+  get_member_power,
 } from '../utils/proposalApi';
 
 const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
@@ -141,22 +142,6 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
 
   const [disabled, setDisabled] = useState(false);
 
-  const url_prev = `${config.api}/getVotingPower`;
-  const castVoteUrl = `${config.api}/castVote`;
-
-  const getPower = async () => {
-    const response = await axios(url_prev, {
-      method: 'get',
-      params: {
-        accountAddress: address,
-        daoId: proposal.proposalId.daoId,
-        proposalNumber: +proposal.proposalId.proposalNumber,
-      },
-    });
-
-    return response.data;
-  };
-
   const signHandle = async choiceSequenceId => {
     try {
       let access_path = await get_access_path(injectedProvider, daoid, address);
@@ -258,7 +243,7 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     } else if (_status === 2) {
       setLoading(true);
       try {
-        const accountPowerData = await getPower();
+        const accountPowerData = await get_member_power();
         setAccountPowerTotal(+accountPowerData.totalVotingPower);
         setChoiceSequenceId(sequenceId);
         onOpen();
