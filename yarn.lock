@@ -3939,10 +3939,10 @@
     "@wasmer/wasm-transformer" "^0.10.0"
     "@wasmer/wasmfs" "^0.12.0"
 
-"@starcoin/starcoin@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@starcoin/starcoin/-/starcoin-2.1.6.tgz#ccb8727453e24fa49523707be658c50d3d1d572e"
-  integrity sha512-yK4eaRRzyCEV9xoVM99KVa5zPC7d6Q+j2l4GxqGZnaK0o9315RrIC1l0EnvciDeQypXy8uk9bBH/ccB6TySkbw==
+"@starcoin/starcoin@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@starcoin/starcoin/-/starcoin-2.2.2.tgz#38bc039f8e3f4158f089e628da24f5210e2adfb7"
+  integrity sha512-71vXCp94X/5lI/pn01Qs23qkruKY/Y6j65sP6dcVdqIsy+f3HcV368EzXCLvTXvctqUHFcfxGIN9umqYhZqF7w==
   dependencies:
     "@ethersproject/basex" "^5.0.4"
     "@ethersproject/bignumber" "^5.0"
@@ -6157,35 +6157,6 @@
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
-
-"@yubing744/starcoin@2.1.7":
-  version "2.1.7"
-  resolved "https://registry.yarnpkg.com/@yubing744/starcoin/-/starcoin-2.1.7.tgz#42fc7df86dee8d3af04c4f2254549e61ea2566ce"
-  integrity sha512-wfjDWjR6VZ0Ze8v0P+961NBLp/Ppu42RgBxY+A4aKBRUGt90cA3zbbnkpRdyWx9Bie5cv0CDoW5D1fd4rJWyUA==
-  dependencies:
-    "@ethersproject/basex" "^5.0.4"
-    "@ethersproject/bignumber" "^5.0"
-    "@ethersproject/bytes" "^5.0.6"
-    "@ethersproject/hash" "^5.0.6"
-    "@ethersproject/keccak256" "^5.0.5"
-    "@ethersproject/logger" "^5.0.6"
-    "@ethersproject/properties" "^5.0.4"
-    "@ethersproject/sha2" "^5.0.4"
-    "@ethersproject/web" "^5.0.9"
-    "@noble/ed25519" "^1.6.0"
-    bech32 "^2.0.0"
-    ethereumjs-util "5.1.0"
-    fs "^0.0.1-security"
-    is-alphabetical "^1.0.4"
-    is-alphanumerical "^1.0.4"
-    is-decimal "^1.0.4"
-    is-hexadecimal "^1.0.4"
-    is-whitespace-character "^1.0.4"
-    is-word-character "^1.0.4"
-    js-sha3 "^0.8.0"
-    jssha "^3.2.0"
-    lodash "^4.17.21"
-    ws "7.2.3"
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.6"

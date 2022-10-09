@@ -243,7 +243,11 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     } else if (_status === 2) {
       setLoading(true);
       try {
-        const accountPowerData = await get_member_power();
+        const accountPowerData = await get_member_power(
+          address,
+          daoid,
+          proposal.state_root,
+        );
         setAccountPowerTotal(+accountPowerData.totalVotingPower);
         setChoiceSequenceId(sequenceId);
         onOpen();

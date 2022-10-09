@@ -231,6 +231,6 @@ export const get_member_power = async (memberAddress, daoId, state_root) => {
   });
 
   return {
-    totalVotingPower: nft.json.body.voting_power,
+    totalVotingPower: nft.json.nft.vec[0].body.sbt.value,
   };
 };

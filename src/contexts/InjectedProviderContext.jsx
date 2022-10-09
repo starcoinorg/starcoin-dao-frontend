@@ -8,7 +8,7 @@ import React, {
 import Web3 from 'web3';
 import { SafeAppWeb3Modal } from '@gnosis.pm/safe-apps-web3modal';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
-import { providers } from '@yubing744/starcoin';
+import { providers } from '@starcoin/starcoin';
 import { OverlayContext } from './OverlayContext';
 import {
   deriveChainId,
