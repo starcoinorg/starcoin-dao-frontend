@@ -1,11 +1,7 @@
 {
-  "name": "pokemol",
+  "name": "daospace",
   "version": "2.0.1",
   "private": true,
-  "workspaces": [
-    "plugins/member-proposal-plugin",
-    "plugins/install-plugin-proposal-plugin"
-  ],
   "dependencies": {
     "@chakra-ui/icons": "^2.0.4",
     "@chakra-ui/react": "~1.6.0",
@@ -86,14 +82,14 @@
     "web3modal": "^1.9.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build:plugins": "npm run build --workspaces --if-present",
-    "build": "craco --max_old_space_size=4096 build",
+    "start": "npm run build-plugins && craco start",
+    "build": "npm run build-plugins && craco --max_old_space_size=4096 build",
     "lint:fix": "eslint ./src --fix",
     "test": "craco test",
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "build-plugins": "pnpm --filter @daospace/*-plugin run build"
   },
   "browserslist": {
     "production": [
@@ -140,6 +136,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "^1.19.1",
-    "copy-webpack-plugin": "^11.0.0"
+    "copy-webpack-plugin": "^11.0.0",
+    "pnpm": "7.6.0"
   }
 }

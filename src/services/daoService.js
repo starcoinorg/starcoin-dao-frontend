@@ -33,7 +33,7 @@ class DaoService {
       packagePath: '/workspace/my-dao',
       test: false,
       alias: new Map([['StarcoinFramework', '/workspace/starcoin-framework']]),
-      initFunction: `${cfg.address}::${cfg.name}::initialize`,
+      initFunction: '',
     });
 
     await mp.build();

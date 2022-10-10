@@ -64,11 +64,11 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
         address: address,
 
         proposalConfig: {
-          voting_delay: 1 * 60 * 60 * 24,
-          voting_period: 1 * 60 * 60 * 24,
-          voting_quorum_rate: 100 / 100,
-          min_action_delay: 1 * 60 * 60 * 24,
-          min_proposal_deposit: 1 * 10 ** 18,
+          voting_delay: 1000 * 60 * 5,
+          voting_period: 1000 * 60 * 20,
+          voting_quorum_rate: 5,
+          min_action_delay: 1000 * 60 * 5,
+          min_proposal_deposit: 100000000,
         },
       };
 

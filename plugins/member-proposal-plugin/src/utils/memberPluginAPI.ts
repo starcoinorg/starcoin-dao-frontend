@@ -3,13 +3,15 @@ import {hexlify} from '@ethersproject/bytes'
 import {getProvder} from "./stcWalletSdk";
 import {nodeUrlMap} from "./consts";
 
-export async function createMemberProposal(daoType:string, description:string, member:string, init_sbt:number, action_delay: number) {
+export async function createMemberProposal(daoType:string, description:string, member:string, image_data:string, image_url:string, init_sbt:number, action_delay: number) {
     try {
-        const functionId = '0x1::MemberProposalPlugin::create_proposal'
+        const functionId = '0x1::MemberProposalPlugin::create_proposal_entry'
         const tyArgs = [daoType]
         const args = [
             description,
             member,
+            image_data,
+            image_url,
             init_sbt,
             action_delay
         ]
