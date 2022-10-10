@@ -49,12 +49,8 @@ export const DaoProvider = ({ children }) => {
     if (daoProposals || daoActivities || daoOverview || daoMembers) {
       return;
     }
-    if (
-      !daoid ||
-      !daochain ||
-      !daoNetworkData ||
-      hasPerformedBatchQuery.current
-    ) {
+
+    if (!daoid || !daochain || hasPerformedBatchQuery.current) {
       return;
     }
 

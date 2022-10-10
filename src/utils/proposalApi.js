@@ -52,6 +52,31 @@ export async function get_proposal_state(provider, daoType, proposalId) {
   }
 }
 
+export async function get_proposal_state_text(provider, daoType, proposalId) {
+  const state = await get_proposal_state(provider, daoType, proposalId);
+
+  switch (state) {
+    case ProposalState.PENDING:
+      return 'Pending';
+    case ProposalState.ACTIVE:
+      return 'Active';
+    case ProposalState.REJECTED:
+      return 'Rejected';
+    case ProposalState.DEFEATED:
+      return 'Defeated';
+    case ProposalState.AGREED:
+      return 'Agreed';
+    case ProposalState.QUEUED:
+      return 'Queued';
+    case ProposalState.EXECUTABLE:
+      return 'Executable';
+    case ProposalState.EXTRACTED:
+      return 'Extracted';
+    default:
+      return 'Unknown';
+  }
+}
+
 export async function get_with_proof_by_root_raw(
   network,
   access_path,
@@ -118,12 +143,15 @@ export async function cast_vote(
 }
 
 function convert_proposal(daoType, proposalInfo) {
+  const minion_address = daoType.substring(0, daoType.indexOf('::'));
+
   return {
     id: proposalInfo.id,
     proposalId: {
       daoId: daoType,
       proposalNumber: proposalInfo.id,
     },
+    minionAddress: minion_address,
     categoryId: 1,
     votingType: 'YES_NO_ABSTAIN',
     title: web3.utils.hexToString(proposalInfo.description),

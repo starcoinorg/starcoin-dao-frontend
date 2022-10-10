@@ -6,13 +6,16 @@ import { Flex, Box, Stack, Link, Icon, IconButton } from '@chakra-ui/react';
 import { useTX } from '../contexts/TXContext';
 import ActivitiesFeed from '../components/activitiesFeed';
 import MainViewLayout from '../components/mainViewLayout';
-import ProposalActions from '../components/proposalActions';
-import ProposalDetails from '../components/proposalDetails';
+import ProposalActionsForChain from '../components/proposalActionsForChain';
+import ProposalDetailsForChain from '../components/proposalDetailsForChain';
 import TextBox from '../components/TextBox';
 import { getProposalHistories } from '../utils/activities';
 import { getTerm, getTitle } from '../utils/metadata';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
-import { get_single_proposal } from '../utils/proposalApi';
+import {
+  get_proposal_state_text,
+  get_single_proposal,
+} from '../utils/proposalApi';
 
 const ProposalForChain = ({
   activities,
@@ -30,8 +33,23 @@ const ProposalForChain = ({
   const [proposal, setProposal] = useState(null);
   const { injectedProvider, injectedChain, address } = useInjectedProvider();
 
+  const handleRefreshDao = () => {
+    const skipVaults = true;
+    refreshDao(skipVaults);
+  };
+
+  const loadProposal = async () => {
+    const proposal = await get_single_proposal(injectedProvider, daoid, propid);
+    proposal.status = await get_proposal_state_text(
+      injectedProvider,
+      daoid,
+      propid,
+    );
+    return proposal;
+  };
+
   useEffect(() => {
-    get_single_proposal(injectedProvider, daoid, propid)
+    loadProposal()
       .then(proposal => {
         setProposal(proposal);
       })
@@ -39,11 +57,6 @@ const ProposalForChain = ({
         console.error('Error fetching proposals', err);
       });
   }, [daoid, daochain, propid]);
-
-  const handleRefreshDao = () => {
-    const skipVaults = true;
-    refreshDao(skipVaults);
-  };
 
   return (
     <MainViewLayout header='Proposal' customTerms={customTerms} isDao>
@@ -72,7 +85,7 @@ const ProposalForChain = ({
                 </TextBox>
               </Flex>
             </Link>
-            <ProposalDetails
+            <ProposalDetailsForChain
               proposal={proposal}
               overview={overview}
               hideMinionExecuteButton={hideMinionExecuteButton}
@@ -98,7 +111,7 @@ const ProposalForChain = ({
               />
             </Flex>
             <Stack pt={6} spacing={6}>
-              <ProposalActions
+              <ProposalActionsForChain
                 proposal={proposal}
                 overview={overview}
                 daoMember={daoMember}
