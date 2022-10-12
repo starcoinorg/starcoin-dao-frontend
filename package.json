@@ -83,13 +83,15 @@
   },
   "scripts": {
     "start": "npm run build-plugins && craco start",
-    "build": "npm run build-plugins && craco --max_old_space_size=4096 build",
+    "build": "npm run build-plugins & npm run build-plugins-build && craco --max_old_space_size=4096 build",
     "lint:fix": "eslint ./src --fix",
     "test": "craco test",
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "build-plugins": "npm --filter @daospace/*-plugin run install & npm --filter @daospace/*-plugin run build"
+    "build-plugins": "npm --filter @daospace/*-plugin run install",
+    "build-plugins-build": "npm --filter @daospace/*-plugin run build"
+    
   },
   "browserslist": {
     "production": [
