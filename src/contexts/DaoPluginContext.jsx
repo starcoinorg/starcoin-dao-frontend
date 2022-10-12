@@ -10,6 +10,7 @@ import React, {
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
+import { useDaoAction } from './DaoActionContext';
 
 export const DaoPluginContext = createContext();
 
@@ -17,10 +18,12 @@ export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const { registerAction }  = useDaoAction();
 
   const [loadedPlugins, setloadedPlugins] = useState([]);
   const [pluginMenus, setPluginMenus] = useState([]);
   const [pluginLoaded, setPluginLoaded] = useState(false);
+  
 
   const adapterURI = res => {
     if (res.startsWith('ipfs://')) {
@@ -68,6 +71,10 @@ export const DaoPluginProvider = ({ children }) => {
         title: `${appInfo.name}`,
         path: path,
       });
+    };
+
+    registerAction = async (action) => {
+      registerAction(action);
     };
   }
 

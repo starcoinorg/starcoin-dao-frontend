@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
 import { IDAO } from './extpoints/dao_app';
+import MemberProposalAction from './actions/member_proposal_action';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -39,6 +40,8 @@ export const setup = (dao: IDAO) => {
       return provider(props)
     },
   })
+
+  dao.registerAction(new MemberProposalAction(dao))
 }
 
 export const teardown = () => {
@@ -60,6 +63,10 @@ if (!window.__GARFISH__) {
       });
 
       provider.render();
+    },
+    registerAction: async function(action): Promise<string> {
+      console.log("register Action:", action);
+      return "ok"
     }
   }
 
