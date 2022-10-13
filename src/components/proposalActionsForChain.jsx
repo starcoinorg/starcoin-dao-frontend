@@ -37,6 +37,8 @@ import { LOCAL_ABI } from '../utils/abi';
 import { supportedChains } from '../utils/chain';
 import { earlyExecuteMinionType } from '../utils/minionUtils';
 import { useRequest } from '../hooks/useRequest';
+import { useDaoAction } from '../contexts/DaoActionContext';
+import { queue_proposal_action } from '../utils/proposalApi';
 
 const MotionBox = motion(Box);
 
@@ -80,6 +82,7 @@ const ProposalActionsForChain = ({
   const { canInteract, interactErrors } = useCanInteract({
     checklist: ['canSponsorAndVote'],
   });
+  const { executeAction } = useDaoAction();
   const [enoughDeposit, setEnoughDeposit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nextProposalToProcess, setNextProposal] = useState(null);
@@ -277,21 +280,29 @@ const ProposalActionsForChain = ({
     setLoading(false);
   };
 
+  const queueProposal = async proposal => {
+    setLoading(true);
+
+    console.log('proposal:', proposal);
+
+    await queue_proposal_action(
+      injectedProvider,
+      daoid,
+      proposal.proposalId.proposalNumber,
+    );
+
+    setLoading(false);
+  };
+
   const processProposal = async proposal => {
     setLoading(true);
-    const getTx = proposal => {
-      if (proposal.whitelist) {
-        return TX.PROCESS_WL_PROPOSAL;
-      }
-      if (proposal.guildkick) {
-        return TX.PROCESS_GK_PROPOSAL;
-      }
-      return TX.PROCESS_PROPOSAL;
-    };
-    await submitTransaction({
-      args: [proposal.proposalIndex],
-      tx: getTx(proposal),
+
+    console.log('proposal:', proposal);
+
+    await executeAction('0x1::MemberProposalPlugin::MemberProposalAction', {
+      proposalId: proposal.proposalId.proposalNumber,
     });
+
     setLoading(false);
   };
 
@@ -610,6 +621,19 @@ const ProposalActionsForChain = ({
             <Flex justify='center' pt='10px'>
               <Flex direction='column'>
                 <Button
+                  onClick={() => queueProposal(proposal)}
+                  isLoading={loading}
+                >
+                  Queue
+                </Button>
+              </Flex>
+            </Flex>
+          )}
+
+          {proposal?.status === 'Executable' && (
+            <Flex justify='center' pt='10px'>
+              <Flex direction='column'>
+                <Button
                   onClick={() => processProposal(proposal)}
                   isLoading={loading}
                 >
@@ -619,36 +643,6 @@ const ProposalActionsForChain = ({
             </Flex>
           )}
 
-          {((proposal?.status === 'Executable' && proposal?.minionAddress) ||
-            earlyExecuteMinionType(proposal)) && (
-            <Stack mt='15px' justify='center'>
-              {(proposal?.status === 'Executable' && proposal?.minionAddress) ||
-              (quorumNeeded && voteData.totalYes >= quorumNeeded) ? (
-                <MinionExecute
-                  hideMinionExecuteButton={hideMinionExecuteButton}
-                  minionAction={minionAction}
-                  proposal={proposal}
-                  early={
-                    earlyExecuteMinionType(proposal) &&
-                    voteData.totalYes >= quorumNeeded &&
-                    proposal?.status === 'Executable'
-                  }
-                />
-              ) : (
-                quorumNeeded &&
-                isMinionProposalType(proposal) && (
-                  <Text size='sm' textAlign='center' maxW='60%' m='auto'>
-                    {proposal?.minion?.minQuorum}% quorum or{' '}
-                    {utils.commify(quorumNeeded)} shares needed for Early
-                    Execution
-                  </Text>
-                )
-              )}
-            </Stack>
-          )}
-          {proposal?.executed && proposal?.minionExecuteActionTx && (
-            <CrossChainMinionExecute chainID={daochain} proposal={proposal} />
-          )}
           {proposal?.escrow &&
             (proposal?.status === 'Failed' ||
               proposal?.status === 'Cancelled') && (

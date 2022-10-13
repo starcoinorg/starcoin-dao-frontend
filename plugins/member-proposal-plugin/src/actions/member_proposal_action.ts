@@ -10,8 +10,8 @@ class MemberProposalAction {
     this.name = '0x1::MemberProposalPlugin::MemberProposalAction';
   }
 
-  async execute(proposalId) {
-    return executeMemberProposal(this.dao.daoType, proposalId)
+  async execute(params: any) {
+    return executeMemberProposal(this.dao.daoType, params.proposalId)
   }
 }
 

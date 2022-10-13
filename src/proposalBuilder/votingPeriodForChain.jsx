@@ -118,6 +118,15 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     return '--';
   };
 
+  const getEtaTime = () => {
+    if (validate.number(Number(proposal?.eta))) {
+      return formatDistanceToNow(new Date(Number(proposal?.eta)), {
+        addSuffix: true,
+      });
+    }
+    return '--';
+  };
+
   const getEndTime = () => {
     if (validate.number(Number(proposal?.votingPeriodEnd))) {
       return formatDistanceToNow(new Date(Number(proposal?.votingPeriodEnd)), {
@@ -354,6 +363,8 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   const getProposalText = () => {
     if (proposalStatus === ProposalState.PENDING) {
       return `will start ${getStartTime()}`;
+    } else if (proposalStatus === ProposalState.QUEUED) {
+      return `can be executed after ${getEtaTime()}`;
     }
 
     return `ended ${getEndTime()}`;

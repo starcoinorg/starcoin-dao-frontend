@@ -10,8 +10,8 @@ const Members = () => {
     const openProposalSelector = () => {
       createMemberProposal(
         dao.daoType,
-        'Apply add xxxx as member',
-        '0x9711320238d0Ab3d42848A20d54b6b00',
+        'Apply add 0x76Ac08692318fd25E2E5e5c37662530B as member',
+        '0x76Ac08692318fd25E2E5e5c37662530B',
         "",
         "ipfs://xxxxxx",
         100,

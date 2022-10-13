@@ -142,6 +142,49 @@ export async function cast_vote(
   }
 }
 
+export async function queue_proposal_action(provider, daoType, proposal_id) {
+  try {
+    const functionId = '0x1::DAOSpace::queue_proposal_action_entry';
+    const tyArgs = [daoType];
+    const args = [proposal_id];
+
+    console.log('queue_proposal_action functionId:', functionId);
+    console.log('queue_proposal_action tyArgs:', tyArgs);
+    console.log('queue_proposal_action args:', args);
+
+    const nodeUrl = nodeUrlMap[window.starcoin.networkVersion];
+    console.log('nodeUrl:', nodeUrl);
+
+    const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(
+      functionId,
+      tyArgs,
+      args,
+      nodeUrl,
+    );
+    // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+    const payloadInHex = (function() {
+      const se = new bcs.BcsSerializer();
+      scriptFunction.serialize(se);
+      return hexlify(se.getBytes());
+    })();
+    const txParams = {
+      data: payloadInHex,
+      expiredSecs: 10,
+    };
+
+    console.log('txParams:', txParams);
+
+    console.log('provider:', provider);
+    const transactionHash = await provider
+      .getSigner()
+      .sendUncheckedTransaction(txParams);
+    return transactionHash;
+  } catch (error) {
+    console.log('queue_proposal_action error:', error);
+    throw error;
+  }
+}
+
 function convert_proposal(daoType, proposalInfo) {
   const minion_address = daoType.substring(0, daoType.indexOf('::'));
 
@@ -197,6 +240,7 @@ function convert_proposal(daoType, proposalInfo) {
     votingMethod: 'CHAIN',
     votingPeriodStart: proposalInfo.start_time,
     votingPeriodEnd: proposalInfo.end_time,
+    eta: proposalInfo.eta, // eta is the time when the proposal can be executed
     votingTurnoutThreshold: proposalInfo.quorum_votes,
     blockHeight: proposalInfo.block_number,
     blockStateRoot: proposalInfo.state_root,

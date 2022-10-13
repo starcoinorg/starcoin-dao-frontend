@@ -13,7 +13,7 @@ declare interface IApp {
 
 declare interface IAction {
     name: string,
-    execute: (proposalId: string) => Promise<string>;
+    execute: (params: any) => Promise<string>;
 }
 
 declare interface IDAO {
