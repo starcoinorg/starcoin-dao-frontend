@@ -18,12 +18,11 @@ export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
-  const { registerAction }  = useDaoAction();
+  const { registerAction } = useDaoAction();
 
   const [loadedPlugins, setloadedPlugins] = useState([]);
   const [pluginMenus, setPluginMenus] = useState([]);
   const [pluginLoaded, setPluginLoaded] = useState(false);
-  
 
   const adapterURI = res => {
     if (res.startsWith('ipfs://')) {
@@ -73,7 +72,7 @@ export const DaoPluginProvider = ({ children }) => {
       });
     };
 
-    registerAction = async (action) => {
+    registerAction = async action => {
       registerAction(action);
     };
   }
