@@ -364,7 +364,7 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
     if (proposalStatus === ProposalState.PENDING) {
       return `will start ${getStartTime()}`;
     } else if (proposalStatus === ProposalState.QUEUED) {
-      return `can be executed after ${getEtaTime()}`;
+      return `can be executed ${getEtaTime()}`;
     }
 
     return `ended ${getEndTime()}`;

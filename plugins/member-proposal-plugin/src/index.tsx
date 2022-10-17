@@ -51,9 +51,9 @@ export const teardown = () => {
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
   const dao = {
-    name: "MOVEFUNSDAO",
-    address: "0x2db2016e13bf7d307c4f9f100e3e4b10", 
-    daoType: '0x2db2016e13bf7d307c4f9f100e3e4b10::MOVEFUNSDAO::MOVEFUNSDAO',
+    name: "TestDAO",
+    address: "0x4e375BB50D5B32a965B6E783E55a7cef", 
+    daoType: '0x4e375BB50D5B32a965B6E783E55a7cef::TESTDAO::TESTDAO',
     registerApp: function(appInfo) {
       console.log("register App:", appInfo);
       
@@ -71,4 +71,8 @@ if (!window.__GARFISH__) {
   }
 
   setup(dao);
+
+  window.starcoin.request({
+    method: 'stc_requestAccounts',
+  })
 }

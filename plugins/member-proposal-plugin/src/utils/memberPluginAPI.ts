@@ -3,6 +3,42 @@ import {hexlify} from '@ethersproject/bytes'
 import {getProvder} from "./stcWalletSdk";
 import {nodeUrlMap} from "./consts";
 
+const parseOffer = offer => {
+  console.log('offer', offer)
+  const { offered, time_lock } = offer;
+  return {
+    for_user: offer.for,
+    offered_image_data: offered.image_data,
+    offered_image_url: offered.image_url,
+    init_sbt: offered.init_sbt,
+    to_address: offered.to_address,
+    time_lock,
+  };
+};
+
+export const listOffers = async (daoId:string) => {
+  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+
+  const globalCheckpoints = await window.starcoin.request({
+    method: 'state.get_resource',
+    params: [
+      daoAddress,
+      `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::OfferMemeber<${daoId}>>`,
+      {
+        decode: true,
+      },
+    ],
+  });
+
+  let offers = [];
+
+  for (const offer of globalCheckpoints.json.offers) {
+    offers.push(parseOffer(offer));
+  }
+
+  return offers.reverse();
+};
+
 export async function createMemberProposal(
     daoType:string, 
     description:string, 
@@ -93,3 +129,41 @@ export async function executeMemberProposal(daoType:string, proposalId:string): 
         throw error
     }
 }
+
+export async function doAccecptOffer(daoType:string): Promise<string> {
+    try {
+        const functionId = '0x1::DAOSpace::join_member_entry'
+        const tyArgs = [daoType]
+        const args = []
+
+        console.log("doAccecptOffer tyArgs:", tyArgs);
+        console.log("doAccecptOffer args:", args);
+        console.log("window.starcoin:", window.starcoin);
+
+        const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+        console.log("nodeUrl:", nodeUrl);
+
+        const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
+        // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+        const payloadInHex = (function () {
+            const se = new bcs.BcsSerializer()
+            scriptFunction.serialize(se)
+            return hexlify(se.getBytes())
+        })()
+        const txParams = {
+            data: payloadInHex,
+            expiredSecs: 10
+        }
+
+        console.log("txParams:", txParams);
+        const starcoinProvider = await getProvder();
+
+        console.log("starcoinProvider:", starcoinProvider);
+        const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+        return transactionHash
+    } catch (error) {
+        console.log("doAccecptOffer error:", error);
+        throw error
+    }
+}
+
