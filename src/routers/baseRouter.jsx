@@ -12,6 +12,7 @@ import Register from '../pages/Register';
 import Summon from '../pages/Summon';
 import SummonPartyFavor from '../pages/SummonPartyFavor';
 import Layout from '../components/layout';
+import Checkpoints from '../pages/Checkpoints';
 
 const BaseRouter = () => {
   return (
@@ -51,6 +52,9 @@ const BaseRouter = () => {
       </Route>
       <Route exact path='/summon-party-favor/:poapId'>
         <SummonPartyFavor />
+      </Route>
+      <Route exact path='/checkpoints'>
+        <Checkpoints />
       </Route>
       <Route exact path='/register-dao'>
         <Register />

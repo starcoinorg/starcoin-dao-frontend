@@ -63,6 +63,9 @@ const NetworkList = () => {
             <TextBox as={RouterLink} to='/explore'>
               Explore DAOs
             </TextBox>
+            <TextBox as={RouterLink} to='/checkpoints' ml={6}>
+              Checkpoints
+            </TextBox>
             <TextBox as={RouterLink} to='/register-dao' ml={6}>
               Register DAO
             </TextBox>
