@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Flex, Spinner, Button, HStack, Stack, Link } from '@chakra-ui/react';
 
 import MyMemberInviteCard from './myMemberInviteCard';
-import { listUserOffers, doAccecptOffer } from '../utils/memberPluginAPI';
+import { listAllOffers, doAccecptOffer } from '../utils/memberPluginAPI';
 
 const MyMemberInviteList = ({ daoId }) => {
-  const [myOffers, setMyOffers] = useState([]);
+  const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('');
 
@@ -23,8 +23,8 @@ const MyMemberInviteList = ({ daoId }) => {
   useEffect(() => {
     const getMyOffers = async () => {
       try {
-        const offers = await listUserOffers(daoId, address);
-        setMyOffers(offers);
+        const offers = await listAllOffers(daoId, address);
+        setOffers(offers);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -43,11 +43,12 @@ const MyMemberInviteList = ({ daoId }) => {
   return (
     <Flex as={Stack} direction='column' spacing={4} w='100%'>
       {!loading ? (
-        Object.keys(myOffers).length > 0 ? (
-          Object.values(myOffers)
+        Object.keys(offers).length > 0 ? (
+          Object.values(offers)
             .slice(0, 10)
             .map(offer => (
               <MyMemberInviteCard
+                key={offer.for_user}
                 offer={offer}
                 onAcceptOffer={event =>
                   handleAccecptOffer(event, offer)

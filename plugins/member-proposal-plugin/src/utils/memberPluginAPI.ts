@@ -2,6 +2,7 @@ import {utils, bcs} from "@starcoin/starcoin"
 import {hexlify} from '@ethersproject/bytes'
 import {getProvder} from "./stcWalletSdk";
 import {nodeUrlMap} from "./consts";
+import { utils as web3Utils } from 'web3'
 
 const parseOffer = offer => {
   console.log('offer', offer)
@@ -16,7 +17,7 @@ const parseOffer = offer => {
   };
 };
 
-export const listOffers = async (daoId:string) => {
+export const listAllOffers = async (daoId:string) => {
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
 
   const globalCheckpoints = await window.starcoin.request({
@@ -37,6 +38,55 @@ export const listOffers = async (daoId:string) => {
   }
 
   return offers.reverse();
+};
+
+export const listUserOffers = async (daoId:string, address: string) => {
+    const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+  
+    const globalCheckpoints = await window.starcoin.request({
+      method: 'state.get_resource',
+      params: [
+        daoAddress,
+        `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::OfferMemeber<${daoId}>>`,
+        {
+          decode: true,
+        },
+      ],
+    });
+  
+    let offers = [];
+  
+    for (const offer of globalCheckpoints.json.offers) {
+        if (offer.for === address) {
+            offers.push(parseOffer(offer));
+        }
+    }
+  
+    return offers.reverse();
+};
+
+export const getMemberNFT = async (daoId:string, address: string) => {
+    const identifierNFT = await window.starcoin.request({
+      method: 'state.get_resource',
+      params: [
+        address,
+        `0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoId}>, 0x00000000000000000000000000000001::DAOSpace::DAOMemberBody<${daoId}>>`,
+        {
+          decode: true,
+        },
+      ],
+    });
+  
+    if (identifierNFT) {
+      return {
+        id: identifierNFT.json.nft.vec[0].id,
+        nft_name: web3Utils.hexToString(identifierNFT.json.nft.vec[0].base_meta.name),
+        image_data: web3Utils.hexToString(identifierNFT.json.nft.vec[0].base_meta.image_data),
+        init_sbt: identifierNFT.json.nft.vec[0].body.sbt.value,
+      }
+    }
+
+    return null;
 };
 
 export async function createMemberProposal(
