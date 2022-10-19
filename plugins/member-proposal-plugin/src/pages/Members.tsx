@@ -1,6 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { RiAddFill } from 'react-icons/ri';
-import { Flex, Stack, Button, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
+import { 
+  Flex,
+  Stack,
+  Button,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  useDisclosure,
+  FormLabel,
+  Input,
+} from '@chakra-ui/react';
 import MainViewLayout from '../components/mainViewLayout';
 import { createMemberProposal } from '../utils/memberPluginAPI';
 import { useDao } from '../contexts/DaoContext';
@@ -23,11 +43,16 @@ const Members = () => {
       );
     };
     
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const initialRef = React.useRef(null)
+    const finalRef = React.useRef(null)
+
     const ctaButton = (
       <Button
         rightIcon={<RiAddFill />}
         title={'Members'}
-        onClick={openProposalSelector}
+        onClick={onOpen}
       >
         New Member
       </Button>
@@ -38,26 +63,57 @@ const Members = () => {
         header='Members'
         headerEl={ctaButton}
       >
-      <Tabs size='md' variant='enclosed'>
-        <TabList>
-          <Tab>My Profile</Tab>
-          <Tab>All Invite</Tab>
-          <Tab>My Invite</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <Flex as={Stack} direction='column' spacing={4} w='100%'>
-              <MemberCard daoId={dao.daoType}/>
-            </Flex>
-          </TabPanel>
-          <TabPanel>
-            <MemberInviteList daoId={dao.daoType} />
-          </TabPanel>
-          <TabPanel>
-            <MyMemberInviteList daoId={dao.daoType} />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+        <Tabs size='md' variant='enclosed'>
+          <TabList>
+            <Tab>My Profile</Tab>
+            <Tab>All Invite</Tab>
+            <Tab>My Invite</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <Flex as={Stack} direction='column' spacing={4} w='100%'>
+                <MemberCard daoId={dao.daoType}/>
+              </Flex>
+            </TabPanel>
+            <TabPanel>
+              <MemberInviteList daoId={dao.daoType} />
+            </TabPanel>
+            <TabPanel>
+              <MyMemberInviteList daoId={dao.daoType} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+
+        <Modal
+          initialFocusRef={initialRef}
+          finalFocusRef={finalRef}
+          isOpen={isOpen}
+          onClose={onClose}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Create your account</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+              <FormControl>
+                <FormLabel>First name</FormLabel>
+                <Input ref={initialRef} placeholder='First name' />
+              </FormControl>
+
+              <FormControl mt={4}>
+                <FormLabel>Last name</FormLabel>
+                <Input placeholder='Last name' />
+              </FormControl>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme='blue' mr={3} onClick={openProposalSelector}>
+                Save
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </MainViewLayout>
     );
 }

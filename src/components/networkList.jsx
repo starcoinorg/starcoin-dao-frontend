@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { BsFillCircleFill } from 'react-icons/bs';
 import { Link as RouterLink } from 'react-router-dom';
 import { Flex, Spacer, Input, Box, Text } from '@chakra-ui/react';
 
