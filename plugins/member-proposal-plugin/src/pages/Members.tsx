@@ -20,31 +20,124 @@ import {
   useDisclosure,
   FormLabel,
   Input,
+  useToast,
 } from '@chakra-ui/react';
+
+import ImageUploader from "react-images-upload";
 import MainViewLayout from '../components/mainViewLayout';
 import { createMemberProposal } from '../utils/memberPluginAPI';
 import { useDao } from '../contexts/DaoContext';
 import MemberCard from '../components/memberCard';
 import MemberInviteList from '../components/memberInviteList';
 import MyMemberInviteList from '../components/myMemberInviteList';
+import { fileToBase64 } from '../utils/fileUtils';
+import { isValidateAddress } from '../utils/stcWalletSdk';
 
 const Members = () => {
     const { dao } = useDao();
-    const nftData = `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6Y2M9Imh0dHA6Ly93ZWIucmVzb3VyY2Uub3JnL2NjLyIgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIiB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIiB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB3aWR0aD0iMTUwcHgiIGhlaWdodD0iMTUwcHgiIHZpZXdCb3g9IjAgMCAxNTAgMTUwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBtZWV0IiBpZD0ic3ZnX2RvY3VtZW50IiBzdHlsZT0iem9vbTogMTsiPjwhLS0gQ3JlYXRlZCB3aXRoIG1hY1NWRyAtIGh0dHBzOi8vbWFjc3ZnLm9yZy8gLSBodHRwczovL2dpdGh1Yi5jb20vZHN3YXJkMi9tYWNzdmcvIC0tPjx0aXRsZSBpZD0ic3ZnX2RvY3VtZW50X3RpdGxlIj5VbnRpdGxlZC5zdmc8L3RpdGxlPjxkZWZzIGlkPSJzdmdfZG9jdW1lbnRfZGVmcyI+PC9kZWZzPjxnIGlkPSJtYWluX2dyb3VwIj48cmVjdCBpZD0iYmFja2dyb3VuZF9yZWN0IiBmaWxsPSIjMTU4OGYxIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE1MHB4IiBoZWlnaHQ9IjE1MHB4Ij48L3JlY3Q+PC9nPjwvc3ZnPg==`;
-    const openProposalSelector = () => {
-      createMemberProposal(
-        dao.daoType,
-        'Apply add 0x51b928B489cB8eFEaF11D530B42cBcDA as member',
-        '0x51b928B489cB8eFEaF11D530B42cBcDA',
-        nftData,
-        "ipfs://xxxxxx",
-        100,
-        0
-      );
-    };
-    
+    const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure()
 
+    const [memberAddress, setMemberAddress] = React.useState('')
+    const handleMemberAddressChange = (event) => setMemberAddress(event.target.value)
+
+    const [nftImages, setNFTImages] = useState<Array<File>>();
+    const onDrop = pictures => {
+      setNFTImages(pictures);
+    };
+
+    const [initSBT, setInitSBT] = React.useState(0);
+    const handleInitSBTChange = (event) => setInitSBT(event.target.value)
+
+    const openProposalSelector = async () => {
+      if (memberAddress == '') {
+        toast({
+          title: 'Tips',
+          description: "The member address is required.",
+          status: 'error',
+          duration: 9000,
+          position: 'top-right',
+          isClosable: true,
+        })
+
+        return;
+      }
+
+      if (!isValidateAddress(memberAddress)) {
+        toast({
+          title: 'Tips',
+          description: "The member address is invalid.",
+          status: 'error',
+          duration: 9000,
+          position: 'top-right',
+          isClosable: true,
+        })
+
+        return
+      }
+
+      if (nftImages == null || nftImages.length == 0) {
+        toast({
+          title: 'Tips',
+          description: "Please select NFT image.",
+          status: 'error',
+          duration: 9000,
+          position: 'top-right',
+          isClosable: true,
+        })
+
+        return;
+      }
+
+      if (initSBT < 0) {
+        toast({
+          title: 'Tips',
+          description: "The initial SBT must great or equal zero.",
+          status: 'error',
+          duration: 9000,
+          position: 'top-right',
+          isClosable: true,
+        })
+
+        return;
+      }
+
+      try {
+        const nftData = await fileToBase64(nftImages[0]);
+        console.log('nftData', nftData);
+
+        const transactionHash = await createMemberProposal(
+          dao.daoType,
+          `Apply add ${memberAddress} as member`,
+          memberAddress,
+          nftData,
+          "ipfs://xxxxxx",
+          initSBT,
+          0
+        );
+
+        onClose();
+
+        toast({
+          title: 'Tips',
+          description: `Create member proposal success, transactionHash: ${transactionHash}`,
+          status: 'success',
+          duration: 9000,
+          position: 'top-right',
+          isClosable: true,
+        })
+      } catch (error) {
+        toast({
+          title: 'Tips',
+          description: `Create member proposal failed, error: ${error.message}`,
+          status: 'error',
+          duration: 9000,
+          position: 'top-right',
+          isClosable: true,
+        })
+      }
+    };
+    
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
 
@@ -92,23 +185,47 @@ const Members = () => {
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Create your account</ModalHeader>
+            <ModalHeader>Add Member Proposal</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl>
-                <FormLabel>First name</FormLabel>
-                <Input ref={initialRef} placeholder='First name' />
+                <FormLabel>Member Address:</FormLabel>
+                <Input 
+                  ref={initialRef} 
+                  placeholder='Member Address' 
+                  value={memberAddress}
+                  onChange={handleMemberAddressChange}
+                />
               </FormControl>
 
               <FormControl mt={4}>
-                <FormLabel>Last name</FormLabel>
-                <Input placeholder='Last name' />
+                <FormLabel>Member NFT image:</FormLabel>
+                <ImageUploader
+                  withIcon={true}
+                  withPreview={true}
+                  singleImage={true}
+                  onChange={onDrop}
+                  imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+                  maxFileSize={5242880}
+                />
               </FormControl>
+
+              <FormControl>
+                <FormLabel>Init SBT:</FormLabel>
+                <Input 
+                  ref={initialRef} 
+                  placeholder='Init SBT'
+                  type={'number'}
+                  value={initSBT}
+                  onChange={handleInitSBTChange}
+                />
+              </FormControl>
+
             </ModalBody>
 
             <ModalFooter>
               <Button colorScheme='blue' mr={3} onClick={openProposalSelector}>
-                Save
+                Create Proposal
               </Button>
               <Button onClick={onClose}>Cancel</Button>
             </ModalFooter>

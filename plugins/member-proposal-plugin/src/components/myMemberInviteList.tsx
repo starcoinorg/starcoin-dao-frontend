@@ -56,7 +56,7 @@ const MyMemberInviteList = ({ daoId }) => {
             ))
         ) : (
           <Flex mt='100px' w='100%' justify='center'>
-            No Offer.
+            No Invite.
           </Flex>
         )
       ) : (
