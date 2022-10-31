@@ -52,6 +52,8 @@ export function AppLoader() {
             asyncScripts: asyncScripts,
           };
         };
+
+        window.currentGarfishApp = appInstance;
       },
     };
   };
