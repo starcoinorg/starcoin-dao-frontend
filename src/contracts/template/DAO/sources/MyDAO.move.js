@@ -1,6 +1,7 @@
 const MyDAOSourceTpl = (
   address,
   daoName,
+  logo_image_data,
   description,
   long_description,
   purpose,
@@ -75,8 +76,8 @@ module ${address}::${daoName} {
             links: links,
         };
 
-        let image_data = Option::none<vector<u8>>();
-        let image_url = Option::some<vector<u8>>(b"ipfs://QmdTwdhFi61zhRM3MtPLxuKyaqv3ePECLGsMg9pMrePv4i"); //TODO change to real image url
+        let image_data = Option::some<vector<u8>>(b"${logo_image_data}");
+        let image_url = Option::none<vector<u8>>();
         let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, image_data, image_url, b"${description}", dao, config);
         
         DAOSpace::install_plugin_with_root_cap<${daoName}, InstallPluginProposalPlugin>(&dao_root_cap, InstallPluginProposalPlugin::required_caps()); 
