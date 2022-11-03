@@ -7,6 +7,12 @@
 
 ```bash
 yarn install
+
+cd plugins/member-proposal-plugin
+yarn
+
+cd plugins/install-plugin-proposal-plugin
+yarn
 ```
 
 2. Run a dev server
