@@ -70,7 +70,7 @@
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.35.0",
-    "webpack-cli": "^4.6.0",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.2.1"
   },
   "dependenciesMeta": {
@@ -81,6 +81,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "debug": "cross-env NODE_ENV=development webpack --progress",
-    "build": "cross-env NODE_ENV=production webpack --progress"
+    "build": "cross-env NODE_ENV=production webpack --progress",
+    "install": "npm install"
   }
 }
