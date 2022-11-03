@@ -8,8 +8,10 @@ import ContentBox from './ContentBox';
 import { chainByNetworkId } from '../utils/chain';
 import { numberWithCommas } from '../utils/general';
 import { pokemolUrlExplore, themeImagePath } from '../utils/metadata';
+import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 
 const ExploreCard = ({ dao }) => {
+  const { injectedChain, network } = useInjectedProvider();
   const { state, dispatch } = useContext(ExploreContext);
   const [daoData, setDaoData] = useState({});
 
@@ -19,7 +21,8 @@ const ExploreCard = ({ dao }) => {
         tags: dao?.tags?.split(',') || '',
         avatarImg: dao?.logoUrl || '',
         description: dao?.description || '',
-        network: 'MAIN',
+        network: network,
+        chainID: injectedChain?.chainId || '',
         name: dao?.name || '',
       },
       id: dao?.daoId || '',
@@ -67,7 +70,11 @@ const ExploreCard = ({ dao }) => {
   return (
     <ContentBox
       as={daoData?.meta?.version === '1' ? Link : RouterLink}
-      to={daoData?.meta?.version === '1' ? null : `/dao/0x1/${daoData.id}`}
+      to={
+        daoData?.meta?.version === '1'
+          ? null
+          : `/dao/${daoData?.meta?.chainID}/${daoData.id}`
+      }
       href={daoData?.meta?.version === '1' ? pokemolUrlExplore(daoData) : null}
       w={['100%', '100%', '100%', '340px', '340px']}
       mt={5}

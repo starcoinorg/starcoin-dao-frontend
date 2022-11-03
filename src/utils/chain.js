@@ -1,3 +1,8 @@
+import * as web3 from 'web3';
+import { providers, utils, bcs } from '@starcoin/starcoin';
+import { hexlify } from '@ethersproject/bytes';
+import { nodeUrlMap } from './consts';
+
 // the REACT_APP_RPC_URI can use any provider url,
 // however, you should use getRpcUrl() in order access REACT_APP_RPC_URI
 // as it needs to maintain backward compatability with the rivet provider
@@ -665,3 +670,26 @@ export const getScanKey = chainID => {
   }
   return null;
 };
+
+export async function get_chain_info(network) {
+  let nodeURL = nodeUrlMap[network];
+  let provider = new providers.JsonRpcProvider(nodeURL);
+
+  const result = await provider.send('chain.info', []);
+
+  return result;
+}
+
+export async function get_block_by_hash(network, block_hash) {
+  let nodeURL = nodeUrlMap[network];
+  let provider = new providers.JsonRpcProvider(nodeURL);
+
+  const result = await provider.send('chain.get_block_by_hash', [
+    block_hash,
+    {
+      raw: true,
+    },
+  ]);
+
+  return result;
+}

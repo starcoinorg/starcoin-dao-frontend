@@ -20,7 +20,7 @@
     "@self.id/core": "0.4.0",
     "@self.id/web": "0.4.0",
     "@starcoin/move-js": "^0.6.1",
-    "@starcoin/starcoin": "^2.1.6",
+    "@starcoin/starcoin": "2.2.2",
     "@starcoin/starmask-onboarding": "^1.2.0",
     "@uiw/react-md-editor": "^3.9.4",
     "@walletconnect/web3-provider": "^1.6.5",
@@ -63,6 +63,7 @@
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.14.2",
     "react-icons": "^4.1.0",
+    "react-images-upload": "^1.2.8",
     "react-markdown": "^8.0.3",
     "react-player": "^2.8.2",
     "react-router-dom": "^5.2.0",
@@ -90,7 +91,6 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "build-plugins": "pnpm --filter @daospace/*-plugin run build"
-    
   },
   "browserslist": {
     "production": [

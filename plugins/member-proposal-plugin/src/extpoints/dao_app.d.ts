@@ -11,9 +11,15 @@ declare interface IApp {
     provider: Provider
 }
 
+declare interface IAction {
+    name: string,
+    execute: (params: any) => Promise<string>;
+}
+
 declare interface IDAO {
     name: string,
     address: string, 
     daoType: string,
     registerApp(app: IApp)
+    registerAction(action: IAction)
 }

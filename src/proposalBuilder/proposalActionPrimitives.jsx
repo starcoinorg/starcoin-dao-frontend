@@ -2,9 +2,11 @@ import React from 'react';
 import { Box, Button, Flex, Progress, Text } from '@chakra-ui/react';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 
+import { useParams } from 'react-router-dom';
 import { ParaSm } from '../components/typography';
 import ExecuteQuorum from './executeQuorum';
 import { useRequest } from '../hooks/useRequest';
+import { isChainDAO } from '../utils/dao';
 
 const getVoteOptionData = (votingChoices, accountVote) => {
   if (!votingChoices) return [];
@@ -214,22 +216,29 @@ export const VotingActive = ({
   voteData,
   daoData,
 }) => {
-  let isLoading = false;
-  if (daoData) {
-    let { data: _proposals, loading } = useRequest(
-      `proposals/${daoData.daoId}%2C${proposal.proposalId.proposalNumber}`,
-      {
-        method: 'get',
-        param: {
-          page: 1,
-          pageSize: 1,
-        },
-      },
-    );
+  const { _, daoid } = useParams();
 
-    if (_proposals) {
-      proposal = _proposals;
-      isLoading = !loading;
+  let isLoading = true;
+
+  if (isChainDAO(daoid)) {
+    isLoading = false;
+  } else {
+    if (daoData) {
+      let { data: _proposals, loading } = useRequest(
+        `proposals/${daoData.daoId}%2C${proposal.proposalId.proposalNumber}`,
+        {
+          method: 'get',
+          param: {
+            page: 1,
+            pageSize: 1,
+          },
+        },
+      );
+
+      if (_proposals) {
+        proposal = _proposals;
+        isLoading = loading;
+      }
     }
   }
 
@@ -238,7 +247,7 @@ export const VotingActive = ({
     proposal.accountVoteSummaries,
   );
   const getNow = Date.now();
-  return isLoading ? (
+  return !isLoading ? (
     <>
       <VotingBar voteData={voteData} proposal={proposal} />
       <Text fontSize={'1.25rem'}>Vote Options:</Text>

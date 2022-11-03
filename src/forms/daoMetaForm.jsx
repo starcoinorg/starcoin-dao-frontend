@@ -30,31 +30,42 @@ import ContentBox from '../components/ContentBox';
 import TextBox from '../components/TextBox';
 import { daoPresets } from '../utils/summoning';
 import { themeImagePath } from '../utils/metadata';
-import ImageUploadModal from '../modals/imageUploadModal';
+import ImageUploader from 'react-images-upload';
 import { DaoService } from '../services/daoService';
 import { deployContract } from '../utils/stcWalletSdk';
 import { useOverlay } from '../contexts/OverlayContext';
 
+import { fileToBase64 } from '../utils/fileUtils';
 const puposes = daoPresets('0x1').map(preset => preset.presetName);
 
 const DaoMetaForm = ({ metadata, handleUpdate }) => {
-  const [ipfsHash, setIpfsHash] = useState();
   const [loading, setLoading] = useState();
-  const [uploading, setUploading] = useState();
-
   const { address, injectedProvider } = useInjectedProvider();
   const { register, handleSubmit } = useForm();
   const { successToast, errorToast } = useOverlay();
+
+  const [nftImages, setNFTImages] = useState();
+  const onDrop = pictures => {
+    setNFTImages(pictures);
+  };
 
   const daoService = new DaoService();
 
   const onSubmit = async data => {
     setLoading(true);
 
+    if (nftImages == null || nftImages.length == 0) {
+      errorToast({
+        title: 'Create DAO Error Tips',
+        description: 'Please select DAO logo image.',
+      });
+
+      return;
+    }
+
     try {
-      if (ipfsHash) {
-        data.avatarImg = ipfsHash;
-      }
+      const nftData = await fileToBase64(nftImages[0]);
+      console.log('nftData', nftData);
 
       data.tags = data.tags.split(',');
 
@@ -62,6 +73,7 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
         ...data,
         name: data.name.toUpperCase(),
         address: address,
+        logoImageData: nftData,
 
         proposalConfig: {
           voting_delay: 1000 * 60 * 5,
@@ -112,26 +124,17 @@ const DaoMetaForm = ({ metadata, handleUpdate }) => {
                 w='100%'
               >
                 <FormControl id='avatarImg' mb={4}>
+                  <TextBox size='xs' mb={2}>
+                    Logo
+                  </TextBox>
                   <HStack spacing={4}>
-                    {ipfsHash || metadata.avatarImg ? (
-                      <>
-                        <Image
-                          src={themeImagePath(ipfsHash || metadata.avatarImg)}
-                          alt='brand image'
-                          w='50px'
-                          h='50px'
-                        />
-                      </>
-                    ) : null}
-
-                    <ImageUploadModal
-                      ipfsHash={ipfsHash}
-                      setIpfsHash={setIpfsHash}
-                      setUploading={setUploading}
-                      uploading={uploading}
-                      matchMeta={metadata?.avatarImg}
-                      setLabel='Upload Avatar'
-                      changeLabel='Change Avatar'
+                    <ImageUploader
+                      withIcon={true}
+                      withPreview={true}
+                      singleImage={true}
+                      onChange={onDrop}
+                      imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                      maxFileSize={5242880}
                     />
                   </HStack>
                 </FormControl>

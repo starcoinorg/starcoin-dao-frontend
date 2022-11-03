@@ -4,11 +4,12 @@ import { useParams } from 'react-router-dom';
 import { DaoMemberProvider } from './DaoMemberContext';
 import { MetaDataProvider } from './MetaDataContext';
 import { DaoPluginProvider } from './DaoPluginContext';
+import { DaoActionProvider } from './DaoActionContext';
 import { TokenProvider } from './TokenContext';
 import { TXProvider } from './TXContext';
 import { useInjectedProvider } from './InjectedProviderContext';
 import { useSessionStorage } from '../hooks/useSessionStorage';
-import { bigGraphQuery } from '../utils/theGraph';
+import { listDaoProposals } from '../utils/proposalApi';
 import { supportedChains } from '../utils/chain';
 import { putRefreshApiVault } from '../utils/metadata';
 
@@ -49,31 +50,19 @@ export const DaoProvider = ({ children }) => {
     if (daoProposals || daoActivities || daoOverview || daoMembers) {
       return;
     }
-    if (
-      !daoid ||
-      !daochain ||
-      !daoNetworkData ||
-      hasPerformedBatchQuery.current
-    ) {
+
+    if (!daoid || !daochain || hasPerformedBatchQuery.current) {
       return;
     }
 
-    const bigQueryOptions = {
-      args: {
-        daoID: daoid.toLowerCase(),
-        chainID: daochain,
-      },
-      getSetters: [
-        { getter: 'getOverview', setter: { setDaoOverview, setDaoVaults } },
-        {
-          getter: 'getActivities',
-          setter: { setDaoProposals, setDaoActivities },
-        },
-        { getter: 'getMembers', setter: setDaoMembers },
-      ],
-    };
+    listDaoProposals(daoid)
+      .then(proposals => {
+        setDaoProposals(proposals);
+      })
+      .catch(err => {
+        console.error('Error fetching proposals', err);
+      });
 
-    // bigGraphQuery(bigQueryOptions);
     hasPerformedBatchQuery.current = true;
   }, [
     daoid,
@@ -93,22 +82,15 @@ export const DaoProvider = ({ children }) => {
   ]);
 
   const refetch = async () => {
-    const bigQueryOptions = {
-      args: {
-        daoID: daoid.toLowerCase(),
-        chainID: daochain,
-      },
-      getSetters: [
-        { getter: 'getOverview', setter: { setDaoOverview, setDaoVaults } },
-        {
-          getter: 'getActivities',
-          setter: { setDaoProposals, setDaoActivities },
-        },
-        { getter: 'getMembers', setter: setDaoMembers },
-      ],
-    };
     currentDao.current = null;
-    // bigGraphQuery(bigQueryOptions);
+
+    listDaoProposals(daoid)
+      .then(proposals => {
+        setDaoProposals(proposals);
+      })
+      .catch(err => {
+        console.error('Error fetching proposals', err);
+      });
   };
 
   const refreshAllDaoVaults = async () => {
@@ -131,17 +113,19 @@ export const DaoProvider = ({ children }) => {
       }}
     >
       <MetaDataProvider>
-        <DaoPluginProvider>
-          <TokenProvider>
-            <DaoMemberProvider
-              daoMembers={daoMembers}
-              address={address}
-              overview={daoOverview}
-            >
-              <TXProvider>{children}</TXProvider>
-            </DaoMemberProvider>
-          </TokenProvider>
-        </DaoPluginProvider>
+        <DaoActionProvider>
+          <DaoPluginProvider>
+            <TokenProvider>
+              <DaoMemberProvider
+                daoMembers={daoMembers}
+                address={address}
+                overview={daoOverview}
+              >
+                <TXProvider>{children}</TXProvider>
+              </DaoMemberProvider>
+            </TokenProvider>
+          </DaoPluginProvider>
+        </DaoActionProvider>
       </MetaDataProvider>
     </DaoContext.Provider>
   );

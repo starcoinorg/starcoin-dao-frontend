@@ -236,3 +236,13 @@ export const getDaoDetail = async daoId => {
     createdOnChain: null,
   };
 };
+
+export const isChainDAO = async daoId => {
+  let isChainDao = false;
+
+  if (daoId && daoId.startsWith('0x')) {
+    isChainDao = true;
+  }
+
+  return isChainDao;
+};

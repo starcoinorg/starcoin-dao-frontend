@@ -87,9 +87,8 @@ export const InjectedProvider = ({ children }) => {
     }
 
     let chainInfo = {
-      chain: '',
-      network: '',
-      accounts: '',
+      name: '',
+      chainId: 0,
     };
 
     return {
@@ -123,16 +122,22 @@ export const InjectedProvider = ({ children }) => {
           const newAccounts = await window.starcoin.request({
             method: 'stc_requestAccounts',
           });
-          const chainInfo = await window.starcoin.request({
+          const chain = await window.starcoin.request({
             method: 'chain.id',
           });
+
+          let chainInfo = {
+            chainId: chain.id,
+            name: chain.name,
+          };
+
           const provider = new providers.Web3Provider(
             window.starcoin,
-            chainInfo.name,
+            chainInfo,
           );
 
           setAddress(newAccounts[0]);
-          setInjectedChain(chainInfo.id);
+          setInjectedChain(chainInfo);
           setNetwork(chainInfo.name);
           setInjectedProvider(provider);
         } catch (error) {
@@ -152,12 +157,9 @@ export const InjectedProvider = ({ children }) => {
       const initialData = initialStarCoin();
       if (initialData.isStarMaskInstalled) {
         const handleNewChain = chain => {
-          const provider = new providers.Web3Provider(
-            window.starcoin,
-            chain.name,
-          );
+          const provider = new providers.Web3Provider(window.starcoin, chain);
 
-          setInjectedChain(chain.id);
+          setInjectedChain(chain);
           setNetwork(chain.name);
           setInjectedProvider(provider);
         };
@@ -196,6 +198,7 @@ export const InjectedProvider = ({ children }) => {
         requestWallet,
         disconnectDapp,
         injectedChain,
+        network,
         address,
         web3Modal,
       }}
@@ -210,22 +213,16 @@ export const useInjectedProvider = () => {
     requestWallet,
     disconnectDapp,
     injectedChain,
+    network,
     address,
     web3Modal,
   } = useContext(InjectedProviderContext);
-  // console.log({
-  //   injectedProvider,
-  //   requestWallet,
-  //   disconnectDapp,
-  //   injectedChain,
-  //   address,
-  //   web3Modal,
-  // });
   return {
     injectedProvider,
     requestWallet,
     disconnectDapp,
     injectedChain,
+    network,
     web3Modal,
     address,
   };

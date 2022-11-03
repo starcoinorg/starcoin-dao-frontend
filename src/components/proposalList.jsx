@@ -17,6 +17,7 @@ import {
   sortOptions,
   allFilter,
 } from '../utils/proposalContent';
+import { listDaoProposals } from '../utils/proposalApi';
 import TextBox from './TextBox';
 import {
   handleListFilter,
@@ -48,18 +49,35 @@ const ProposalsList = ({ customTerms }) => {
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
 
-  let { data: _proposals, loading } = useRequest(
-    `proposals?daoId=${daoid}&page=0&size=100`,
-    {
-      method: 'get',
-    },
-  );
+  let isChainDao = false;
+  if (daoid && daoid.startsWith('0x')) {
+    isChainDao = true;
+  }
 
-  useEffect(() => {
-    if (_proposals) {
-      setProposals(_proposals.reverse());
-    }
-  }, [_proposals]);
+  if (isChainDao) {
+    useEffect(() => {
+      listDaoProposals(daoid)
+        .then(proposals => {
+          setProposals(proposals);
+        })
+        .catch(err => {
+          console.error('Error fetching proposals', err);
+        });
+    }, [daoid]);
+  } else {
+    let { data: _proposals, loading } = useRequest(
+      `proposals?daoId=${daoid}&page=0&size=100`,
+      {
+        method: 'get',
+      },
+    );
+
+    useEffect(() => {
+      if (_proposals) {
+        setProposals(_proposals.reverse());
+      }
+    }, [_proposals]);
+  }
 
   // proposals = [proposals];
   useEffect(() => {

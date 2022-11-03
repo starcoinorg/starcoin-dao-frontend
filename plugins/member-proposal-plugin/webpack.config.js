@@ -6,7 +6,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const CopyPlugin = require('copy-webpack-plugin');
 
 const webpackConfig = {
-  devtool: isDevelopment ? 'source-map' : false,
+  devtool: 'source-map',
   entry: {
     main: './src/index.tsx',
   },

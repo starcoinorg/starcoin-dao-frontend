@@ -5,18 +5,24 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  useMemo,
+  memo,
 } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
+import { useDaoAction } from './DaoActionContext';
 
 export const DaoPluginContext = createContext();
+
+const PluginOutlet = memo(() => {
+  return <div id='submodule'></div>;
+});
 
 export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const { registerAction } = useDaoAction();
 
   const [loadedPlugins, setloadedPlugins] = useState([]);
   const [pluginMenus, setPluginMenus] = useState([]);
@@ -69,16 +75,11 @@ export const DaoPluginProvider = ({ children }) => {
         path: path,
       });
     };
-  }
 
-  const PluginOutlet = ({ children }) => {
-    return (
-      <div>
-        <div>{children}</div>
-        <div id='submodule'></div>
-      </div>
-    );
-  };
+    registerAction = async action => {
+      registerAction(action);
+    };
+  }
 
   const loadDaoPlugins = useCallback(async () => {
     if (!daoMetaData) {

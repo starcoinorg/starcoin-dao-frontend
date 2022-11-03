@@ -32,8 +32,16 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import axios from 'axios';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
 import config from '../utils/getConfig';
+import {
+  get_access_path,
+  get_proposal_state,
+  get_with_proof_by_root_raw,
+  cast_vote,
+  ProposalState,
+  get_member_power,
+} from '../utils/proposalApi';
 
-const VotingPeriod = ({ proposal, canInteract, isMember }) => {
+const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   const [voteData, setVoteData] = useState({
     hasVoted: null,
     votedYes: false,
@@ -52,37 +60,20 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     votePassedProcessFailed: false,
   });
   const { daochain, daoid } = useParams();
-
   const [daoData, setDaoData] = useState(null);
 
-  let isChainDao = false;
-  if (daoid && daoid.startsWith('0x')) {
-    isChainDao = true;
-  }
-
-  if (isChainDao) {
-    useEffect(() => {
-      if (daoid) {
-        setDaoData({
-          daoID: daoid,
-          daoStrategies: [
-            {
-              votingPowerName: 'default',
-            },
-          ],
-        });
-      }
-    }, [daoid]);
-  } else {
-    const { data: dao } = useRequest(
-      `daos/${proposal?.proposalId?.daoId || ''}`,
-    );
-    useEffect(() => {
-      if (dao) {
-        setDaoData(dao);
-      }
-    }, [dao]);
-  }
+  useEffect(() => {
+    if (daoid) {
+      setDaoData({
+        daoId: daoid,
+        daoStrategies: [
+          {
+            votingPowerName: 'default',
+          },
+        ],
+      });
+    }
+  }, [daoid]);
 
   useEffect(() => {
     if (proposal?.accountVoteSummaries?.length) {
@@ -115,8 +106,29 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
 
   const [isLoading, setLoading] = useState(false);
   const { submitTransaction } = useTX();
-  const getTime = () => {
+  const getStartTime = () => {
     if (validate.number(Number(proposal?.votingPeriodStart))) {
+      return formatDistanceToNow(
+        new Date(Number(proposal?.votingPeriodStart)),
+        {
+          addSuffix: true,
+        },
+      );
+    }
+    return '--';
+  };
+
+  const getEtaTime = () => {
+    if (validate.number(Number(proposal?.eta))) {
+      return formatDistanceToNow(new Date(Number(proposal?.eta)), {
+        addSuffix: true,
+      });
+    }
+    return '--';
+  };
+
+  const getEndTime = () => {
+    if (validate.number(Number(proposal?.votingPeriodEnd))) {
       return formatDistanceToNow(new Date(Number(proposal?.votingPeriodEnd)), {
         addSuffix: true,
       });
@@ -125,7 +137,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
   };
 
   const toast = useToast();
-  const { requestWallet, address } = useInjectedProvider();
+  const { injectedProvider, injectedChain, address } = useInjectedProvider();
 
   const { data: _activities, loading } = useRequest('accountVotes', {
     method: 'get',
@@ -139,49 +151,29 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
 
   const [disabled, setDisabled] = useState(false);
 
-  const url_prev = `${config.api}/getVotingPower`;
-  const castVoteUrl = `${config.api}/castVote`;
-
-  const getPower = async () => {
-    const response = await axios(url_prev, {
-      method: 'get',
-      params: {
-        accountAddress: address,
-        daoId: proposal.proposalId.daoId,
-        proposalNumber: +proposal.proposalId.proposalNumber,
-      },
-    });
-
-    return response.data;
-  };
-
   const signHandle = async choiceSequenceId => {
-    const message = JSON.stringify({
-      daoId: proposal.proposalId.daoId,
-      proposalNumber: +proposal.proposalId.proposalNumber,
-      accountAddress: address,
-      votingPower: accountPowerTotal,
-      choiceSequenceId,
-    });
-
-    const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
-    const networkId = `1`;
-    const extraParams = { networkId };
-    const getSign = async () => {
-      const sign = await window.starcoin.request({
-        method: 'personal_sign',
-        params: [msg, address, extraParams],
-      });
-
-      return sign;
-    };
-
-    const sign = await getSign();
-
     try {
-      const ret = await axios.post(castVoteUrl, {
-        signedMessageHex: sign,
-      });
+      let access_path = await get_access_path(injectedProvider, daoid, address);
+      console.log('access_path: ', access_path);
+
+      let state_root = proposal.blockStateRoot;
+      console.log('state_root: ', state_root);
+
+      let proof = await get_with_proof_by_root_raw(
+        injectedChain.chainId,
+        access_path,
+        state_root,
+      );
+      console.log('proof: ', proof);
+
+      let transactionHash = await cast_vote(
+        injectedProvider,
+        daoid,
+        proposal.id,
+        proof,
+        choiceSequenceId,
+      );
+      console.log('transactionHash: ', transactionHash);
 
       onClose();
       setLoading(false);
@@ -207,14 +199,6 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         isClosable: true,
       });
     }
-  };
-
-  const voteYes = async () => {
-    setLoading(true);
-    const accountPowerData = await getPower();
-    setAccountPowerTotal(+accountPowerData.totalVotingPower);
-    setChoiceSequenceId(1);
-    onOpen();
   };
 
   const voteHandler = async sequenceId => {
@@ -266,20 +250,13 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     if (_status === 0) {
       initialData.onboarding.startOnboarding();
     } else if (_status === 2) {
-      if (window.starcoin.networkVersion !== '1') {
-        toast({
-          title: 'Error',
-          description: 'Please switch to the mainnet',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
       setLoading(true);
       try {
-        const accountPowerData = await getPower();
+        const accountPowerData = await get_member_power(
+          address,
+          daoid,
+          proposal.state_root,
+        );
         setAccountPowerTotal(+accountPowerData.totalVotingPower);
         setChoiceSequenceId(sequenceId);
         onOpen();
@@ -321,37 +298,83 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     }
   }, [_activities, address]);
 
+  const [proposalStatus, setProposalStatus] = useState('UNKNOWN');
+  useEffect(async () => {
+    if (injectedProvider && proposal) {
+      const status = await get_proposal_state(
+        injectedProvider,
+        daoid,
+        proposal.id,
+      );
+
+      setProposalStatus(status);
+    }
+  }, [injectedProvider, proposal]);
+
   const getProposalStatus = () => {
-    if (proposal?.status) {
-      if (proposal.status === 'PASSED') {
-        return {
-          status: 'Passed',
-          color: 'green',
-        };
-      } else if (proposal.status === 'FAILED') {
-        return {
-          status: 'Failed',
-          color: 'red.500',
-        };
-      } else if (proposal.status === 'UNKNOWN') {
-        return {
-          status: 'Passed',
-          color: 'green.500',
-        };
-      }
+    if (proposalStatus === ProposalState.PENDING) {
+      return {
+        status: 'PENDING',
+        color: 'yellow',
+      };
+    } else if (proposalStatus === ProposalState.ACTIVE) {
+      return {
+        status: 'ACTIVE',
+        color: 'green',
+      };
+    } else if (proposalStatus === ProposalState.REJECTED) {
+      return {
+        status: 'REJECTED',
+        color: 'red.500',
+      };
+    } else if (proposalStatus === ProposalState.DEFEATED) {
+      return {
+        status: 'DEFEATED',
+        color: 'red.500',
+      };
+    } else if (proposalStatus === ProposalState.AGREED) {
+      return {
+        status: 'AGREED',
+        color: 'green.500',
+      };
+    } else if (proposalStatus === ProposalState.QUEUED) {
+      return {
+        status: 'QUEUED',
+        color: 'green.500',
+      };
+    } else if (proposalStatus === ProposalState.EXECUTABLE) {
+      return {
+        status: 'EXECUTABLE',
+        color: 'green.500',
+      };
+    } else if (proposalStatus === ProposalState.EXTRACTED) {
+      return {
+        status: 'EXTRACTED',
+        color: 'green.500',
+      };
+    } else {
+      return {
+        status: 'UNKOWN',
+        color: '#EB8A23',
+      };
+    }
+  };
+
+  const getProposalText = () => {
+    if (proposalStatus === ProposalState.PENDING) {
+      return `will start ${getStartTime()}`;
+    } else if (proposalStatus === ProposalState.QUEUED) {
+      return `can be executed ${getEtaTime()}`;
     }
 
-    return {
-      status: 'Voting',
-      color: '#EB8A23',
-    };
+    return `ended ${getEndTime()}`;
   };
 
   return (
     <PropActionBox>
       <TopStatusBox
         status={getProposalStatus().status}
-        appendStatusText={`ended ${getTime()}`}
+        appendStatusText={getProposalText()}
         // circleColor={voteData.isPassing ? 'green' : 'red'}
         circleColor={getProposalStatus().color}
         proposal={proposal}
@@ -439,4 +462,5 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
     </PropActionBox>
   );
 };
-export default VotingPeriod;
+
+export default VotingPeriodForChain;

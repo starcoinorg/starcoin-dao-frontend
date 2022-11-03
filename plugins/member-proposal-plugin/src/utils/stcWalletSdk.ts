@@ -21,3 +21,8 @@ export async function getProvder() {
   const provider = new providers.Web3Provider(window.starcoin, network)
   return provider;
 }
+
+export function isValidateAddress(address: string) {
+  const pattern = /^0x[0-9a-fA-F]{32}$/g;
+  return pattern.test(address);
+}
