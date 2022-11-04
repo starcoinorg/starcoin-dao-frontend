@@ -27,8 +27,8 @@ export const setup = (dao: IDAO) => {
   console.log("plugin setup")
 
   dao.registerApp({
-    name: "proposal_app",
-    activeWhen: "/proposals",
+    name: "plugin_management",
+    activeWhen: "/plugin_management",
     provider: (props) => {
       props.dao = {
         name: dao.name,
@@ -48,14 +48,14 @@ export const teardown = () => {
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
   const dao = {
-    name: "HappyDAO",
-    address: "0xb2C024cb35CDab873868Af39346a846A", 
-    daoType: '0xb2C024cb35CDab873868Af39346a846A::HappyDAO::HappyDAO',
+    name: "TestDAO",
+    address: "0x4e375BB50D5B32a965B6E783E55a7cef", 
+    daoType: '0x4e375BB50D5B32a965B6E783E55a7cef::TESTDAO::TESTDAO',
     registerApp: function(appInfo) {
       console.log("register App:", appInfo);
       
       const provider = appInfo.provider({
-        basename: process.env.NODE_ENV === 'production' ? '/plugins/install-plugin-proposal-plugin' : '/',
+        basename: process.env.NODE_ENV === 'production' ? '/plugins/member-proposal-plugin' : '/',
         dom: document,
       });
 
@@ -64,4 +64,8 @@ if (!window.__GARFISH__) {
   }
 
   setup(dao);
+
+  window.starcoin.request({
+    method: 'stc_requestAccounts',
+  })
 }

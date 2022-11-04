@@ -1,5 +1,5 @@
 import React from 'react';
-import Proposals from './pages/Proposals';
+import PluginManagement from './pages/PluginManagement';
 import { ChakraProvider } from '@chakra-ui/react'
 import { OverlayProvider } from './contexts/OverlayContext'
 import { DaoProvider } from './contexts/DaoContext'
@@ -15,7 +15,7 @@ const App = () => {
         <ChakraProvider>
           <DaoProvider initDao={appInfo.dao}>
             <OverlayProvider>
-              <Proposals/>
+              <PluginManagement/>
             </OverlayProvider>
           </DaoProvider>
         </ChakraProvider>
