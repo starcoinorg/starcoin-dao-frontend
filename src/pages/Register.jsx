@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { BiArrowBack } from 'react-icons/bi';
 import { useHistory, useParams, Link as RouterLink } from 'react-router-dom';
 import { Flex, Icon, Box, Button } from '@chakra-ui/react';
@@ -8,7 +8,9 @@ import { useUser } from '../contexts/UserContext';
 import DaoMetaForm from '../forms/daoMetaForm';
 import Layout from '../components/layout';
 import MainViewLayout from '../components/mainViewLayout';
-import { supportedChains } from '../utils/chain';
+import { Step, Steps, useSteps } from 'chakra-ui-steps';
+import DaoAccountCreate from '../forms/daoAccountCreate';
+import DaoDeploy from '../forms/daoDeploy';
 
 const Register = () => {
   const { registerchain, daoid } = useParams();
@@ -17,6 +19,7 @@ const Register = () => {
   const { address, injectedChain, requestWallet } = useInjectedProvider();
   const [currentDao, setCurrentDao] = useState();
   const [needsNetworkChange, setNeedsNetworkChange] = useState();
+  const [blob, setBlob] = useState();
 
   useEffect(() => {
     if (address && injectedChain) {
@@ -27,7 +30,13 @@ const Register = () => {
         longDescription: '',
         purpose: '',
         summonerAddress: address,
+        members: address,
         version: '2.1',
+        voting_delay: 5,
+        voting_period: 20,
+        voting_quorum_rate: 5,
+        min_action_delay: 5,
+        min_proposal_deposit: 100000000,
       });
 
       setNeedsNetworkChange(injectedChain.chain_id !== registerchain);
@@ -41,6 +50,51 @@ const Register = () => {
     history.push(`/dao/${ret.chainId}/${ret.daoAddress}`);
   };
 
+  const { nextStep, prevStep, setStep, reset, activeStep } = useSteps({
+    initialStep: 0,
+  });
+
+  const steps = [
+    {
+      label: 'Create Dao Account',
+      content: (
+        <DaoAccountCreate
+          next={v => {
+            currentDao.address = v;
+            nextStep();
+            console.log(currentDao);
+          }}
+        />
+      ),
+    },
+    {
+      label: 'Create Dao',
+      content: (
+        <DaoMetaForm
+          handleUpdate={handleUpdate}
+          metadata={currentDao}
+          next={v => {
+            setBlob(v);
+            nextStep();
+          }}
+        />
+      ),
+    },
+    {
+      label: 'Deploy',
+      content: (
+        <DaoDeploy
+          blob={blob}
+          handleUpdate={() => {
+            handleUpdate({
+              chainId: injectedChain.chainId,
+              daoAddress: currentDao.address,
+            });
+          }}
+        ></DaoDeploy>
+      ),
+    },
+  ];
   return (
     <Layout>
       <MainViewLayout header='Register'>
@@ -48,18 +102,22 @@ const Register = () => {
           <>
             {currentDao ? (
               <>
-                <Flex ml={6} justify='space-between' align='center' w='100%'>
-                  <Flex as={RouterLink} to='/' align='center'>
+                <Flex flexDir='column' width='100%'>
+                  <Flex as={RouterLink} to='/' align='center' mr={4} mb={4}>
                     <Icon as={BiArrowBack} color='secondary.500' mr={2} />
                     Back
                   </Flex>
+
+                  <Steps activeStep={activeStep} width='100%'>
+                    {steps.map(({ label, content }) => (
+                      <Step label={label} key={label}>
+                        <Box w='100%' mt={4} mb={4} display='flex'>
+                          {content}
+                        </Box>
+                      </Step>
+                    ))}
+                  </Steps>
                 </Flex>
-                <Box w='40%'>
-                  <DaoMetaForm
-                    handleUpdate={handleUpdate}
-                    metadata={currentDao}
-                  />
-                </Box>
               </>
             ) : (
               <Box
@@ -89,27 +147,8 @@ const Register = () => {
               fontWeight={700}
               ml={10}
             >
-              {`You need to switch your network to 
-                ${supportedChains[registerchain].name} to register this dao.`}
+              {`You need to switch your network to to register this dao.`}
             </Box>
-            {/* {!injectedChain ? (
-              <>
-                <Box
-                  fontSize='3xl'
-                  fontFamily='heading'
-                  fontWeight={700}
-                  mb={10}
-                >
-                  Connect your wallet to register your dao.
-                </Box>
-
-                <Flex direction='column' align='center'>
-                  <Button onClick={requestWallet}>Connect Wallet</Button>
-                </Flex>
-              </>
-            ) : (
-              
-            )} */}
           </Box>
         )}
       </MainViewLayout>
