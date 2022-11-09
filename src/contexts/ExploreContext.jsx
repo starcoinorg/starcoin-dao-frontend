@@ -6,6 +6,7 @@ import { exploreChainQuery } from '../utils/theGraph';
 import { getApiMetadata } from '../utils/metadata';
 import { SORT_OPTIONS, EXPLORE_FILTER_OPTIONS } from '../utils/exploreContent';
 import { supportedChains } from '../utils/chain';
+import { listDaos } from '../utils/dao';
 
 export const ExploreContext = createContext();
 
@@ -80,15 +81,18 @@ export const ExploreContextProvider = ({ children }) => {
   const hasLoadedExploreData = true;
 
   useEffect(() => {
-    if (!exploreDaos.chains.length) {
-      // exploreChainQuery({
-      //   query: EXPLORER_DAOS,
-      //   supportedChains,
-      //   endpointType: 'subgraph_url',
-      //   apiFetcher: getApiMetadata,
-      //   reactSetter: setExploreDaos,
-      // });
-    }
+    const fetchData = async () => {
+      const data = await listDaos({
+        withPlugins: false,
+      });
+
+      setExploreDaos({
+        chains: [],
+        data: data,
+      });
+    };
+
+    fetchData();
   }, [exploreDaos, setExploreDaos]);
 
   return (
