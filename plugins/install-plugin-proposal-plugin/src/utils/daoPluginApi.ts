@@ -196,3 +196,150 @@ export async function installPluginProposal(
       throw error
   }
 }
+
+export async function unInstallPluginProposal(
+  daoType:string,
+  pluginType: string,
+  description: string, 
+  action_delay: number,
+) :Promise<string>  {
+  try {
+      const tokens = pluginType.split('::');
+      const functionId = `${tokens[0]}::${tokens[1]}::install_plugin_proposal_entry`
+      const tyArgs = [daoType]
+      const args = [
+        description,
+        action_delay,
+      ]
+
+      console.log("createMemberProposal tyArgs:", tyArgs);
+      console.log("createMemberProposal args:", args);
+      console.log("window.starcoin:", window.starcoin);
+
+      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      console.log("nodeUrl:", nodeUrl);
+
+      const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
+      // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+      const payloadInHex = (function () {
+          const se = new bcs.BcsSerializer()
+          scriptFunction.serialize(se)
+          return hexlify(se.getBytes())
+      })()
+
+      const txParams = {
+          data: payloadInHex,
+          expiredSecs: 10
+      }
+
+      console.log("txParams:", txParams);
+      const starcoinProvider = await getProvder();
+
+      console.log("starcoinProvider:", starcoinProvider);
+      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      return transactionHash
+  } catch (error) {
+      console.log("installPluginProposal error:", error);
+      throw error
+  }
+}
+
+export async function starPlugin(
+  pluginType: string,
+) :Promise<string>  {
+  try {
+      const functionId = `0x1::DAOPluginMarketplace::star_plugin`
+      const tyArgs = [pluginType]
+      const args = []
+
+      console.log("createMemberProposal tyArgs:", tyArgs);
+      console.log("createMemberProposal args:", args);
+      console.log("window.starcoin:", window.starcoin);
+
+      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      console.log("nodeUrl:", nodeUrl);
+
+      const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
+      // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+      const payloadInHex = (function () {
+          const se = new bcs.BcsSerializer()
+          scriptFunction.serialize(se)
+          return hexlify(se.getBytes())
+      })()
+
+      const txParams = {
+          data: payloadInHex,
+          expiredSecs: 10
+      }
+
+      console.log("txParams:", txParams);
+      const starcoinProvider = await getProvder();
+
+      console.log("starcoinProvider:", starcoinProvider);
+      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      return transactionHash
+  } catch (error) {
+      console.log("installPluginProposal error:", error);
+      throw error
+  }
+}
+
+export async function unstarPlugin(
+  pluginType: string,
+) :Promise<string>  {
+  try {
+      const functionId = `0x1::DAOPluginMarketplace::unstar_plugin`
+      const tyArgs = [pluginType]
+      const args = []
+
+      console.log("createMemberProposal tyArgs:", tyArgs);
+      console.log("createMemberProposal args:", args);
+      console.log("window.starcoin:", window.starcoin);
+
+      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      console.log("nodeUrl:", nodeUrl);
+
+      const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
+      // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+      const payloadInHex = (function () {
+          const se = new bcs.BcsSerializer()
+          scriptFunction.serialize(se)
+          return hexlify(se.getBytes())
+      })()
+
+      const txParams = {
+          data: payloadInHex,
+          expiredSecs: 10
+      }
+
+      console.log("txParams:", txParams);
+      const starcoinProvider = await getProvder();
+
+      console.log("starcoinProvider:", starcoinProvider);
+      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      return transactionHash
+  } catch (error) {
+      console.log("installPluginProposal error:", error);
+      throw error
+  }
+}
+
+export async function hasStarPlugin(pluginType: string,) {
+  try {
+    const function_id = '0x1::DAOPluginMarketplace::has_star_plugin';
+    const type_args = [pluginType];
+    const args = [];
+
+    const starcoinProvider = await getProvder();
+    const result = await starcoinProvider.callV2({
+      function_id,
+      type_args,
+      args,
+    });
+
+    return web3Utils.hexToString(result[0]);
+  } catch (error) {
+    console.log('provider.callV2 error:', error);
+    throw error;
+  }
+}
