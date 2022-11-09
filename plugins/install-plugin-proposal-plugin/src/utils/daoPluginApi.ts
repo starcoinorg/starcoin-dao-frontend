@@ -1,4 +1,8 @@
-import { utils } from 'web3';
+import {utils, bcs} from "@starcoin/starcoin"
+import {hexlify} from '@ethersproject/bytes'
+import {getProvder} from "./stcWalletSdk";
+import {nodeUrlMap} from "./consts";
+import { utils as web3Utils } from 'web3'
 
 export interface IPlugin {
   id: string,
@@ -18,7 +22,7 @@ export const hexVectorToStringArray = (vec):Array<string> => {
   let rets = new Array<string>();
 
   for (const i in vec) {
-    const item = utils.hexToString(vec[i]);
+    const item = web3Utils.hexToString(vec[i]);
     rets.push(item);
   }
 
@@ -72,8 +76,8 @@ const decodePlugin = (pluginType, plugin): IPlugin => {
   const plugin_info = {
     id: plugin.id,
     type: pluginType,
-    name: utils.hexToString(plugin.name),
-    description: utils.hexToString(plugin.description),
+    name: web3Utils.hexToString(plugin.name),
+    description: web3Utils.hexToString(plugin.description),
     star: 0,
   };
 
@@ -86,11 +90,11 @@ const decodePlugin = (pluginType, plugin): IPlugin => {
   return {
     ...plugin_info,
     version_number: version.number,
-    version: utils.hexToString(version.tag),
+    version: web3Utils.hexToString(version.tag),
     star: version.star,
     implement_extpoints: hexVectorToStringArray(version.implement_extpoints),
     depend_extpoints: hexVectorToStringArray(version.depend_extpoints),
-    js_entry_uri: utils.hexToString(version.js_entry_uri),
+    js_entry_uri: web3Utils.hexToString(version.js_entry_uri),
     created_at: version.created_at,
   };
 }
@@ -144,4 +148,51 @@ export const listPlugins = async (startIndex:number, count: number) => {
 
 export const isPluginInstalled = (installedPluginIds: Array<string>, pluginId: string): boolean => {
   return installedPluginIds.indexOf(pluginId) >= 0;
+}
+
+export async function installPluginProposal(
+  daoType:string,
+  pluginType: string,
+  description: string, 
+  action_delay: number,
+) :Promise<string>  {
+  try {
+      const tokens = pluginType.split('::');
+      const functionId = `${tokens[0]}::${tokens[1]}::install_plugin_proposal_entry`
+      const tyArgs = [daoType]
+      const args = [
+        description,
+        action_delay,
+      ]
+
+      console.log("createMemberProposal tyArgs:", tyArgs);
+      console.log("createMemberProposal args:", args);
+      console.log("window.starcoin:", window.starcoin);
+
+      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      console.log("nodeUrl:", nodeUrl);
+
+      const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
+      // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+      const payloadInHex = (function () {
+          const se = new bcs.BcsSerializer()
+          scriptFunction.serialize(se)
+          return hexlify(se.getBytes())
+      })()
+
+      const txParams = {
+          data: payloadInHex,
+          expiredSecs: 10
+      }
+
+      console.log("txParams:", txParams);
+      const starcoinProvider = await getProvder();
+
+      console.log("starcoinProvider:", starcoinProvider);
+      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      return transactionHash
+  } catch (error) {
+      console.log("installPluginProposal error:", error);
+      throw error
+  }
 }
