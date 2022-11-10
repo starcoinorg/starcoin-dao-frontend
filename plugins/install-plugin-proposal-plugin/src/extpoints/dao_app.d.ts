@@ -8,6 +8,7 @@ declare function Provider(this: any, appInfo: any, props: any) : Promise<{
 declare interface IApp {
     name: string,
     activeWhen: string,
+    icon: string,
     provider: Provider
 }
 

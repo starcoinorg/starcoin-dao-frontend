@@ -59,6 +59,8 @@ export const DaoPluginProvider = ({ children }) => {
       const path = `${basename}${activeWhen}/home`;
       console.log(`registerApp ${appInfo.name}, path: ${path}`);
 
+      const icon = props => <img src={appInfo.icon} {...props} />;
+
       if (appInfo.provider) {
         this.appInstance.cjsModules.exports = {
           provider: appInfo.provider,
@@ -75,7 +77,7 @@ export const DaoPluginProvider = ({ children }) => {
 
       pluginMenus.push({
         key: this.name,
-        icon: <img src={appInfo.icon} className='sidebar-item-icon' />,
+        icon: icon,
         title: `${appInfo.name}`,
         path: path,
       });

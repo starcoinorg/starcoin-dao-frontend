@@ -70,7 +70,7 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
               label={config.title}
               path={`${config.path}`}
               href={config.href}
-              icon={config.logo || RiLinksLine}
+              icon={config.icon || RiLinksLine}
               view={view}
               onClick={toggleNav}
             />
