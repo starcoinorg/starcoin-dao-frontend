@@ -27,7 +27,7 @@ export const setup = (dao: IDAO) => {
   console.log("plugin setup")
 
   dao.registerApp({
-    name: "plugin_management",
+    name: "plugins",
     activeWhen: "/plugin_management",
     provider: (props) => {
       props.dao = {

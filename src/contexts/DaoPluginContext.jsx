@@ -12,6 +12,11 @@ import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
 import { useDaoAction } from './DaoActionContext';
 
+export const SupportInnerPluginNames = [
+  'inner-plugin://install-plugin-proposal-plugin',
+  'inner-plugin://member-proposal-plugin',
+];
+
 export const DaoPluginContext = createContext();
 
 const PluginOutlet = memo(() => {
@@ -97,6 +102,13 @@ export const DaoPluginProvider = ({ children }) => {
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
       console.log('plugin_info:', plugin_info);
+
+      if (
+        plugin_info.js_entry_uri.startsWith('inner-plugin://') &&
+        SupportInnerPluginNames.indexOf(plugin_info.js_entry_uri) < 0
+      ) {
+        continue;
+      }
 
       const app = await Garfish.loadApp(plugin_info.name, {
         cache: true,
