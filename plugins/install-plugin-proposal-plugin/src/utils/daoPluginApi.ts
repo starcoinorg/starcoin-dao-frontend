@@ -153,6 +153,8 @@ export const isPluginInstalled = (installedPluginIds: Array<string>, pluginId: s
 export async function installPluginProposal(
   daoType:string,
   pluginType: string,
+  title: string,
+  introduction: string,
   description: string, 
   action_delay: number,
 ) :Promise<string>  {
@@ -161,6 +163,8 @@ export async function installPluginProposal(
       const functionId = `${tokens[0]}::${tokens[1]}::install_plugin_proposal_entry`
       const tyArgs = [daoType]
       const args = [
+        title,
+        introduction,
         description,
         action_delay,
       ]

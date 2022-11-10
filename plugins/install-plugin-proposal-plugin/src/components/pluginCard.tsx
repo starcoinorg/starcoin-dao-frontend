@@ -17,46 +17,35 @@ const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
 
   useEffect(() => {
     const loadStarPlugin = async () => {
-      const stared = await hasStarPlugin(plugin_info.type);
-      setStar(stared);
+      //const stared = await hasStarPlugin(plugin_info.type);
+      //setStar(stared);
+      setStar(true);
     };
 
     loadStarPlugin();
   }, [daoId, plugin_info]);
 
   const onUninstallPlugin = async () => {
-    try {
-      const transactionHash = await unInstallPluginProposal(daoId, plugin_info.type, 
-        `Apply uninstall plugin ${plugin_info.name}`,
-        0);
-
-      toast({
-        title: 'Tips',
-        description: `Create uninstall plugin proposal success, transactionHash: ${transactionHash}`,
-        status: 'success',
-        duration: 9000,
-        position: 'top-right',
-        isClosable: true,
-      })
-    } catch (err) {
-      console.log(err);
-
-      toast({
-        title: 'Tips',
-        description: `Create uninstall plugin proposal failed, error: ${err.message}`,
-        status: 'error',
-        duration: 9000,
-        position: 'top-right',
-        isClosable: true,
-      })
-    }
+    toast({
+      title: 'Tips',
+      description: `Under development, stay tuned`,
+      status: 'error',
+      duration: 9000,
+      position: 'top-right',
+      isClosable: true,
+    })
   }
 
   const onInstallPlugin = async () => {
     try {
-      const transactionHash = await installPluginProposal(daoId, plugin_info.type, 
+      const transactionHash = await installPluginProposal(
+        daoId, 
+        plugin_info.type, 
         `Apply install plugin ${plugin_info.name}`,
-        0);
+        `Apply install plugin ${plugin_info.name}`,
+        `Apply install plugin ${plugin_info.name}`,
+        0
+      );
 
       toast({
         title: 'Tips',
@@ -101,10 +90,6 @@ const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
       <Stack spacing={4}>
         <Flex as={HStack} spacing={2} align='center'>
           <Heading>{ plugin_info?.name }</Heading>
-          <Spacer />
-          <Button leftIcon={<AiOutlineStar />} size='xs' colorScheme='orange' variant='solid' onClick={onSwitchStar}>
-            Star {starCount}
-          </Button>
         </Flex>
         <Flex as={HStack} spacing={2} align='center'>
           <Text variant='value'>{ plugin_info?.description }</Text>
