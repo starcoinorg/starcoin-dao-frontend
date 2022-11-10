@@ -5,21 +5,19 @@ const fs = require('fs');
 const CopyPlugin = require('copy-webpack-plugin');
 
 const buildPluginCopyPatterns = function() {
-  let patterns = []
+  let patterns = [];
 
   const files = fs.readdirSync(path.resolve(__dirname, 'plugins'));
 
   files.forEach(plugin_name => {
-     patterns.push(
-      { 
-        from: "plugins/" + plugin_name + "/dist", 
-        to: path.resolve(__dirname, 'build/plugins/' + plugin_name) 
-      }
-     )
+    patterns.push({
+      from: 'plugins/' + plugin_name + '/dist',
+      to: path.resolve(__dirname, 'build/plugins/' + plugin_name),
+    });
   });
 
   return patterns;
-}
+};
 
 module.exports = {
   webpack: {
@@ -45,20 +43,20 @@ module.exports = {
           },
           {
             test: /\.m?js$/,
-            enforce: "pre",
+            enforce: 'pre',
             use: [
               {
-                loader: "source-map-loader",
+                loader: 'source-map-loader',
                 options: {
                   filterSourceMappingUrl: (url, resourcePath) => {
                     if (/broker-source-map-url\.js$/i.test(url)) {
                       return false;
                     }
-    
+
                     if (/keep-source-mapping-url\.js$/i.test(resourcePath)) {
-                      return "skip";
+                      return 'skip';
                     }
-    
+
                     return true;
                   },
                 },
@@ -67,7 +65,7 @@ module.exports = {
           },
         ],
       },
-      ignoreWarnings: [/Failed to parse source map/],  
+      ignoreWarnings: [/Failed to parse source map/],
     },
     plugins: {
       add: [
@@ -86,7 +84,7 @@ module.exports = {
       {
         directory: path.join(__dirname, 'public'),
         publicPath: '/',
-      }
+      },
     ],
 
     setupMiddlewares: (middlewares, devServer) => {
@@ -99,13 +97,18 @@ module.exports = {
         const files = fs.readdirSync(path.resolve(__dirname, 'plugins'));
 
         files.forEach(plugin_name => {
-          devServer.app.use('/plugins/' + plugin_name, express.static(path.resolve(__dirname, 'plugins/' + plugin_name + '/dist')));
+          devServer.app.use(
+            '/plugins/' + plugin_name,
+            express.static(
+              path.resolve(__dirname, 'plugins/' + plugin_name + '/dist'),
+            ),
+          );
         });
       } catch (err) {
         console.log(err);
       }
 
       return middlewares;
-    }
+    },
   },
 };
