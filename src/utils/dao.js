@@ -164,6 +164,11 @@ export const getDaoDetail = async (daoId, withPlugins = true) => {
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
   const daoInfo = await getDao(daoAddress);
 
+  let tags = ['DAO'];
+  let links = {};
+  let long_description = '';
+
+  /*
   const resourceType = `0x00000000000000000000000000000001::DAOSpace::DAOExt<${daoTypeTag}>`;
   const daoExt = await window.starcoin.request({
     method: 'state.get_resource',
@@ -176,7 +181,7 @@ export const getDaoDetail = async (daoId, withPlugins = true) => {
     ],
   });
 
-  let tags = ['DAO'];
+  
   if (daoExt.json.ext.tags) {
     for (const i in daoExt.json.ext.tags) {
       const encodedTag = daoExt.json.ext.tags[i];
@@ -185,7 +190,6 @@ export const getDaoDetail = async (daoId, withPlugins = true) => {
     }
   }
 
-  let links = {};
   if (daoExt.json.ext.links) {
     for (const i in daoExt.json.ext.links) {
       const encodedLink = daoExt.json.ext.links[i];
@@ -196,6 +200,11 @@ export const getDaoDetail = async (daoId, withPlugins = true) => {
       }
     }
   }
+
+  if (daoExt.json.ext.long_description) {
+    long_description = utils.hexToString(daoExt.json.ext.long_description);
+  }
+  */
 
   let plugins = [];
 
@@ -211,11 +220,6 @@ export const getDaoDetail = async (daoId, withPlugins = true) => {
         }
       }
     }
-  }
-
-  let long_description = '';
-  if (daoExt.json.ext.long_description) {
-    long_description = utils.hexToString(daoExt.json.ext.long_description);
   }
 
   return {

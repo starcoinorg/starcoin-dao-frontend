@@ -7,6 +7,7 @@ import React, {
   useCallback,
   memo,
 } from 'react';
+import { RiLinksLine } from 'react-icons/ri';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
@@ -59,7 +60,10 @@ export const DaoPluginProvider = ({ children }) => {
       const path = `${basename}${activeWhen}/home`;
       console.log(`registerApp ${appInfo.name}, path: ${path}`);
 
-      const icon = props => <img src={appInfo.icon} {...props} />;
+      let appIcon = appInfo.icon;
+      if (typeof appInfo.icon === 'string') {
+        appIcon = props => <img src={appInfo.icon} {...props} />;
+      }
 
       if (appInfo.provider) {
         this.appInstance.cjsModules.exports = {
@@ -77,7 +81,7 @@ export const DaoPluginProvider = ({ children }) => {
 
       pluginMenus.push({
         key: this.name,
-        icon: icon,
+        icon: appIcon,
         title: `${appInfo.name}`,
         path: path,
       });
