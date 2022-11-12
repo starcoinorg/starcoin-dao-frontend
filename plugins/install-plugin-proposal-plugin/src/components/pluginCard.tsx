@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AiOutlineStar } from "react-icons/ai";
 import { Box, Flex, Button, HStack, Stack, Tag, Text, Heading, Spacer, useToast  } from '@chakra-ui/react';
-
+import ContentBox from './contentBox';
 import { installPluginProposal, unInstallPluginProposal, starPlugin, unstarPlugin, hasStarPlugin, IPlugin } from '../utils/daoPluginApi';
 
 type PluginCardProps = {
@@ -86,7 +86,7 @@ const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
   }
 
   return (
-    <Box w='40%' p='6' borderWidth='1px' borderColor='whiteAlpha.200' rounded='lg' color='mode.900'>
+    <ContentBox >
       <Stack spacing={4}>
         <Flex as={HStack} spacing={2} align='center'>
           <Heading>{ plugin_info?.name }</Heading>
@@ -114,7 +114,7 @@ const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
           }
         </Flex>
       </Stack>
-    </Box>
+    </ContentBox>
   );
 };
 

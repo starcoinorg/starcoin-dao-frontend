@@ -1,5 +1,6 @@
 import React from 'react';
 import { IconType } from 'react-icons';
+import { Dict } from "@chakra-ui/utils";
 
 declare function Provider(this: any, appInfo: any, props: any) : Promise<{
     render: (appInfo: any) => any;
@@ -18,10 +19,11 @@ declare interface IAction {
     execute: (params: any) => Promise<string>;
 }
 
-declare interface IDAO {
+declare interface IDaoPluginContext {
     name: string,
     address: string, 
     daoType: string,
-    registerApp(app: IApp)
-    registerAction(action: IAction)
+    theme?: Dict;
+    registerApp(app: IApp);
+    registerAction(action: IAction);
 }

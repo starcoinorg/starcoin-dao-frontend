@@ -1,5 +1,5 @@
 import Garfish from 'garfish';
-import React, {
+import {
   useContext,
   createContext,
   useEffect,
@@ -7,11 +7,11 @@ import React, {
   useCallback,
   memo,
 } from 'react';
-import { RiLinksLine } from 'react-icons/ri';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
 import { useDaoAction } from './DaoActionContext';
+import { useCustomTheme } from './CustomThemeContext';
 
 export const SupportInnerPluginNames = [
   'inner-plugin://install-plugin-proposal-plugin',
@@ -28,6 +28,7 @@ export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const { theme } = useCustomTheme();
   const { registerAction } = useDaoAction();
 
   const [loadedPlugins, setloadedPlugins] = useState([]);
@@ -47,11 +48,12 @@ export const DaoPluginProvider = ({ children }) => {
   };
 
   class PluginContext {
-    constructor(appInstance, name, address, daoType) {
+    constructor(appInstance, name, address, daoType, theme) {
       this.appInstance = appInstance;
       this.name = name;
       this.address = address;
       this.daoType = daoType;
+      this.theme = theme;
     }
 
     registerApp = async appInfo => {
@@ -129,6 +131,7 @@ export const DaoPluginProvider = ({ children }) => {
         plugin_info.name,
         daoMetaData.daoAddress,
         daoMetaData.daoId,
+        theme,
       );
       plugin?.setup(ctx);
 

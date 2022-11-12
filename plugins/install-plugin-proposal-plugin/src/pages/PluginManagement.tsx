@@ -46,17 +46,24 @@ const PluginManagement = () => {
             <Tab>Recommended</Tab>
             <Tab>All</Tab>
           </TabList>
-          <TabPanels>
+          <TabPanels 
+            w={['100%', null, null, '100%', '80%']}
+            pr={[0, null, null, null, 6]}
+            pb={6}>
             <TabPanel>
-              <Flex as={Stack} direction='column' spacing={4} w='100%'>
+              <Flex as={Stack} direction='column' spacing={4}>
                 <InstalledPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds} />
               </Flex>
             </TabPanel>
             <TabPanel>
+              <Flex as={Stack} direction='column' spacing={4}>
                 <RecommendedPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
+              </Flex>
             </TabPanel>
             <TabPanel>
-                <AllPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
+                <Flex as={Stack} direction='column' spacing={4}>
+                  <AllPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
+                </Flex>
             </TabPanel>
           </TabPanels>
         </Tabs>

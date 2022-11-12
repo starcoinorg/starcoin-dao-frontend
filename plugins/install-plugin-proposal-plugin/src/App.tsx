@@ -3,16 +3,16 @@ import PluginManagement from './pages/PluginManagement';
 import { ChakraProvider } from '@chakra-ui/react'
 import { OverlayProvider } from './contexts/OverlayContext'
 import { DaoProvider } from './contexts/DaoContext'
-import { SubAppContext } from './root';
+import { SubAppContext, AppInfo } from './root';
 
 const App = () => {
   return (
     <SubAppContext.Consumer>
-    {(appInfo) => {
+    {(appInfo: AppInfo) => {
       console.log("appInfo", appInfo);
 
       return (
-        <ChakraProvider>
+        <ChakraProvider theme={appInfo.theme}>
           <DaoProvider initDao={appInfo.dao}>
             <OverlayProvider>
               <PluginManagement/>

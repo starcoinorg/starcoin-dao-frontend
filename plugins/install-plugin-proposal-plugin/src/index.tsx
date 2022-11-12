@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
 import { VscExtensions } from "react-icons/vsc";
-import { IDAO } from './extpoints/dao_app';
+import { IDaoPluginContext } from './extpoints/dao_app';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -24,18 +24,19 @@ export const provider = (props) => {
    };
 };
 
-export const setup = (dao: IDAO) => {
+export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
-  dao.registerApp({
+  ctx.registerApp({
     name: "plugins",
     activeWhen: "/plugin_management",
     icon: VscExtensions,
     provider: (props) => {
+      props.theme = ctx.theme;
       props.dao = {
-        name: dao.name,
-        address: dao.address,
-        daoType: dao.daoType,
+        name: ctx.name,
+        address: ctx.address,
+        daoType: ctx.daoType,
       }
 
       return provider(props)
@@ -49,7 +50,7 @@ export const teardown = () => {
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
-  const dao = {
+  const ctx = {
     name: "StarcoinDAO",
     address: "0x00000000000000000000000000000001", 
     daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
@@ -65,7 +66,7 @@ if (!window.__GARFISH__) {
     }
   }
 
-  setup(dao);
+  setup(ctx);
 
   window.starcoin.request({
     method: 'stc_requestAccounts',
