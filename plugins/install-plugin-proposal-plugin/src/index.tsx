@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
 import { VscExtensions } from "react-icons/vsc";
-import { IDaoPluginContext } from './extpoints/dao_app';
+import { IDaoPluginContext, IAction } from './extpoints/dao_app';
+import { providers } from "@starcoin/starcoin"
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -37,7 +38,15 @@ export const setup = (ctx: IDaoPluginContext) => {
         name: ctx.name,
         address: ctx.address,
         daoType: ctx.daoType,
-      }
+      };
+
+      props.getInjectProvider = function() {
+        return ctx.getInjectedProvider();
+      };
+
+      props.getWalletAddress = function() {
+        return ctx.getWalletAddress();
+      };
 
       return provider(props)
     },
@@ -50,6 +59,8 @@ export const teardown = () => {
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
+  let walletAddress = "";
+
   const ctx = {
     name: "StarcoinDAO",
     address: "0x00000000000000000000000000000001", 
@@ -63,12 +74,31 @@ if (!window.__GARFISH__) {
       });
 
       provider.render();
+    },
+    registerAction: function(action: IAction) {
+
+    },
+    getInjectedProvider: function(): providers.JsonRpcProvider|undefined {
+      return new providers.Web3Provider(window.starcoin);
+    },
+    getWalletAddress: function(): string {
+      return walletAddress;
     }
   }
 
-  setup(ctx);
+  async function init() {
+    setup(ctx);
 
-  window.starcoin.request({
-    method: 'stc_requestAccounts',
-  })
+    window.starcoin.request({
+      method: 'stc_requestAccounts',
+    })
+
+    const newAccounts = await window.starcoin.request({
+      method: 'stc_requestAccounts',
+    });
+
+    walletAddress = newAccounts[0];
+  };
+  
+  init();
 }

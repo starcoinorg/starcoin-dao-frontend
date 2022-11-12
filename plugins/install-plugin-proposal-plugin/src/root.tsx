@@ -7,10 +7,12 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { Dict } from "@chakra-ui/utils";
+import { providers } from "@starcoin/starcoin"
 import App from './App';
 import './App.less';
 
 export const prefixCls = 'sub-app-react16';
+
 export type AppInfo = {
   appName: string;
   dom: Element | ShadowRoot | Document;
@@ -19,7 +21,10 @@ export type AppInfo = {
   props: Record<string, any>;
   theme?: Dict;
   dao: Record<string, any>;
+  getInjectedProvider(): providers.JsonRpcProvider | undefined;
+  getWalletAddress(): string | undefined;
 };
+
 export const SubAppContext = createContext<AppInfo>({} as AppInfo);
 
 const RootComponent = (appInfo) => {
