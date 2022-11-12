@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { FaUsers } from "react-icons/fa";
 import RootComponent from './root';
-import { IDAO } from './extpoints/dao_app';
+import { IDaoPluginContext } from './extpoints/dao_app';
 import MemberProposalAction from './actions/member_proposal_action';
 
 // 在首次加载和执行时会触发该函数
@@ -25,25 +25,25 @@ export const provider = (props) => {
    };
 };
 
-export const setup = (dao: IDAO) => {
+export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
-  dao.registerApp({
+  ctx.registerApp({
     name: "member_app",
     activeWhen: "/members",
     icon: FaUsers,
     provider: (props) => {
       props.dao = {
-        name: dao.name,
-        address: dao.address,
-        daoType: dao.daoType,
+        name: ctx.name,
+        address: ctx.address,
+        daoType: ctx.daoType,
       }
 
       return provider(props)
     },
   })
 
-  dao.registerAction(new MemberProposalAction(dao))
+  ctx.registerAction(new MemberProposalAction(ctx))
 }
 
 export const teardown = () => {
