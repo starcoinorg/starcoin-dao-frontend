@@ -13,10 +13,12 @@ import DaoAccountCreate from '../forms/daoAccountCreate';
 import DaoDeploy from '../forms/daoDeploy';
 
 const Register = () => {
-  const { registerchain, daoid } = useParams();
+  const { registerchain } = useParams();
   const { refetchUserHubDaos } = useUser();
   const history = useHistory();
-  const { address, injectedChain, requestWallet } = useInjectedProvider();
+  const { address, injectedChain } = useInjectedProvider();
+
+  const [daoAddress, setDaoAddress] = useState('');
   const [currentDao, setCurrentDao] = useState();
   const [needsNetworkChange, setNeedsNetworkChange] = useState();
   const [blob, setBlob] = useState();
@@ -24,13 +26,13 @@ const Register = () => {
   useEffect(() => {
     if (address && injectedChain) {
       setCurrentDao({
-        address: daoid,
+        address: daoAddress,
         name: '',
         description: '',
         longDescription: '',
         purpose: '',
         summonerAddress: address,
-        members: address,
+        members: [],
         version: '2.1',
         voting_delay: 5,
         voting_period: 20,
@@ -41,7 +43,7 @@ const Register = () => {
 
       setNeedsNetworkChange(injectedChain.chain_id !== registerchain);
     }
-  }, [address, injectedChain]);
+  }, [daoAddress, address, injectedChain]);
 
   const handleUpdate = async ret => {
     refetchUserHubDaos();
@@ -60,7 +62,7 @@ const Register = () => {
       content: (
         <DaoAccountCreate
           next={v => {
-            currentDao.address = v;
+            setDaoAddress(v);
             nextStep();
             console.log(currentDao);
           }}

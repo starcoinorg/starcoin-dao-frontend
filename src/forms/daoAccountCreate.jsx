@@ -1,9 +1,11 @@
-import { Flex, Button, Spinner } from '@chakra-ui/react';
+import { Flex, Button, Center, Spinner } from '@chakra-ui/react';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { utils, bcs } from '@starcoin/starcoin';
 import { nodeUrlMap } from '../utils/consts';
 import { hexlify } from '@ethersproject/bytes';
+import ContentBox from '../components/ContentBox';
 import { getTxnData, getEventsByTxnHash } from '../utils/sdk';
+import { getDAOAccountCap } from '../utils/dao';
 import { sleep } from '../utils/common';
 import { useState } from 'react';
 
@@ -12,14 +14,9 @@ const DaoAccountCreate = ({ next }) => {
   const [loading, setLoading] = useState(false);
 
   const hasHaveCap = async () => {
-    const result = await injectedProvider.getResources(address);
-
-    console.log(result);
-
-    let capAddress =
-      result['0x00000000000000000000000000000001::DAOAccount::DAOAccountCap'];
-
-    return capAddress ? capAddress['dao_address'] : undefined;
+    const cap = await getDAOAccountCap(injectedProvider, address);
+    console.log('DAOAccountCap:', cap);
+    return cap ? cap['dao_address'] : undefined;
   };
 
   const onClick = async () => {
@@ -82,13 +79,15 @@ const DaoAccountCreate = ({ next }) => {
 
   return (
     <Flex w='100%' display='flex'>
-      {!loading ? (
-        <Button mx='auto' size='sm' onClick={onClick} mt={10}>
-          Create Dao Account
-        </Button>
-      ) : (
-        <Spinner size='sm' mx='auto' mt={10} />
-      )}
+      <Flex as={ContentBox} w='50%' margin='0 auto'>
+        {!loading ? (
+          <Button mx='auto' size='sm' onClick={onClick} mt={10}>
+            Create Dao Account
+          </Button>
+        ) : (
+          <Spinner size='sm' mx='auto' mt={10} />
+        )}
+      </Flex>
     </Flex>
   );
 };

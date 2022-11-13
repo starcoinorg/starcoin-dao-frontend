@@ -115,6 +115,20 @@ const DaoMetaForm = ({ metadata, next }) => {
           as='form'
           onSubmit={handleSubmit(onSubmit)}
         >
+          <FormControl id='daoAddress' mb={4}>
+            <TextBox size='xs' mb={2}>
+              address
+            </TextBox>
+            <Flex>
+              <Input
+                ref={register({ required: true })}
+                defaultValue={metadata.address}
+                disabled={true}
+                name='address'
+              />
+            </Flex>
+          </FormControl>
+
           <FormControl id='avatarImg' mb={4}>
             <HStack spacing={4}>
               {ipfsHash || metadata.avatarImg ? (
