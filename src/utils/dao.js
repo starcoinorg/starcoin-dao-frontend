@@ -79,7 +79,11 @@ export const hasMinion = (minions, minionType) => {
   return false;
 };
 
-export const listDaos = async () => {
+export const listDaos = async _opts => {
+  const opts = {
+    ..._opts,
+  };
+
   const daoEntrys = await window.starcoin.request({
     method: 'state.list_resource',
     params: [
@@ -98,7 +102,7 @@ export const listDaos = async () => {
   let daos = [];
   for (const key in daoEntrys.resources) {
     const daoId = key.substring(key.indexOf('<') + 1, key.indexOf('>'));
-    const dao = await getDaoDetail(daoId);
+    const dao = await getDaoDetail(daoId, opts.withPlugins);
     daos.push(dao);
   }
 
@@ -155,11 +159,16 @@ export const getDaoInstalledPlugins = async daoId => {
   return plugins;
 };
 
-export const getDaoDetail = async daoId => {
+export const getDaoDetail = async (daoId, withPlugins = true) => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
   const daoInfo = await getDao(daoAddress);
 
+  let tags = ['DAO'];
+  let links = {};
+  let long_description = '';
+
+  /*
   const resourceType = `0x00000000000000000000000000000001::DAOSpace::DAOExt<${daoTypeTag}>`;
   const daoExt = await window.starcoin.request({
     method: 'state.get_resource',
@@ -172,7 +181,7 @@ export const getDaoDetail = async daoId => {
     ],
   });
 
-  let tags = ['DAO'];
+  
   if (daoExt.json.ext.tags) {
     for (const i in daoExt.json.ext.tags) {
       const encodedTag = daoExt.json.ext.tags[i];
@@ -181,7 +190,6 @@ export const getDaoDetail = async daoId => {
     }
   }
 
-  let links = {};
   if (daoExt.json.ext.links) {
     for (const i in daoExt.json.ext.links) {
       const encodedLink = daoExt.json.ext.links[i];
@@ -193,22 +201,25 @@ export const getDaoDetail = async daoId => {
     }
   }
 
-  let plugins = [];
-  let installed_web_plugins = await getDaoInstalledPlugins(daoId);
-  if (installed_web_plugins) {
-    for (const i in installed_web_plugins) {
-      const plugin_info = installed_web_plugins[i];
-      const plugin = await getPluginInfo(plugin_info.pluginType);
-
-      if (plugin && plugin.js_entry_uri) {
-        plugins.push(plugin);
-      }
-    }
-  }
-
-  let long_description = '';
   if (daoExt.json.ext.long_description) {
     long_description = utils.hexToString(daoExt.json.ext.long_description);
+  }
+  */
+
+  let plugins = [];
+
+  if (withPlugins) {
+    let installed_web_plugins = await getDaoInstalledPlugins(daoId);
+    if (installed_web_plugins) {
+      for (const i in installed_web_plugins) {
+        const plugin_info = installed_web_plugins[i];
+        const plugin = await getPluginInfo(plugin_info.pluginType);
+
+        if (plugin && plugin.js_entry_uri) {
+          plugins.push(plugin);
+        }
+      }
+    }
   }
 
   return {

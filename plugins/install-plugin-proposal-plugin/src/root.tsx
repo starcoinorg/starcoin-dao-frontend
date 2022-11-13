@@ -1,5 +1,4 @@
 import React, { createContext } from 'react';
-import { PropsInfo } from '@garfish/bridge-react';
 import {
   BrowserRouter,
   Switch,
@@ -7,13 +6,27 @@ import {
   MemoryRouter,
   Redirect,
 } from 'react-router-dom';
+import { Dict } from "@chakra-ui/utils";
+import { providers } from "@starcoin/starcoin"
 import App from './App';
 import './App.less';
+import { SubAppProvider } from './contexts/SubAppContext';
 
 export const prefixCls = 'sub-app-react16';
-export const SubAppContext = createContext<PropsInfo>({} as PropsInfo);
 
-const RootComponent = (appInfo) => {
+export type AppInfo = {
+  appName: string;
+  dom: Element | ShadowRoot | Document;
+  basename: string;
+  appRenderInfo: Record<string, any>;
+  props: Record<string, any>;
+  theme?: Dict;
+  dao: Record<string, any>;
+  getInjectedProvider(): providers.JsonRpcProvider;
+  getWalletAddress(): string;
+};
+
+const RootComponent = (appInfo: AppInfo) => {
   const routes = (
     <Switch>
       <Route exact path="/" component={() => <Redirect to="/home" />} />
@@ -23,13 +36,18 @@ const RootComponent = (appInfo) => {
     </Switch>
   );
   return (
-    <SubAppContext.Provider value={{ ...appInfo }}>
+    <SubAppProvider value={{
+      initDao: appInfo.dao,
+      initTheme: appInfo.theme,
+      getInjectedProvider: appInfo.getInjectedProvider,
+      getWalletAddress: appInfo.getWalletAddress,
+     }}>
         {location.pathname.includes('loadApp') ? (
           <MemoryRouter> {routes} </MemoryRouter>
         ) : (
           <BrowserRouter basename={appInfo.basename}>{routes}</BrowserRouter>
         )}
-    </SubAppContext.Provider>
+    </SubAppProvider>
   );
 };
 

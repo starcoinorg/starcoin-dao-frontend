@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
-import { IDAO } from './extpoints/dao_app';
+import { VscExtensions } from "react-icons/vsc";
+import { IDaoPluginContext, IAction } from './extpoints/dao_app';
+import { providers } from "@starcoin/starcoin"
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -23,18 +25,28 @@ export const provider = (props) => {
    };
 };
 
-export const setup = (dao: IDAO) => {
+export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
-  dao.registerApp({
-    name: "proposal_app",
-    activeWhen: "/proposals",
+  ctx.registerApp({
+    name: "plugins",
+    activeWhen: "/plugin_management",
+    icon: VscExtensions,
     provider: (props) => {
+      props.theme = ctx.theme;
       props.dao = {
-        name: dao.name,
-        address: dao.address,
-        daoType: dao.daoType,
-      }
+        name: ctx.name,
+        address: ctx.address,
+        daoType: ctx.daoType,
+      };
+
+      props.getInjectedProvider = function() {
+        return ctx.getInjectedProvider();
+      };
+
+      props.getWalletAddress = async function() {
+        return await ctx.getWalletAddress();
+      };
 
       return provider(props)
     },
@@ -47,10 +59,12 @@ export const teardown = () => {
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
-  const dao = {
-    name: "HappyDAO",
-    address: "0xb2C024cb35CDab873868Af39346a846A", 
-    daoType: '0xb2C024cb35CDab873868Af39346a846A::HappyDAO::HappyDAO',
+  let walletAddress = "";
+
+  const ctx = {
+    name: "StarcoinDAO",
+    address: "0x00000000000000000000000000000001", 
+    daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
     registerApp: function(appInfo) {
       console.log("register App:", appInfo);
       
@@ -60,8 +74,21 @@ if (!window.__GARFISH__) {
       });
 
       provider.render();
+    },
+    registerAction: function(action: IAction) {
+
+    },
+    getInjectedProvider: function(): providers.JsonRpcProvider|undefined {
+      return new providers.Web3Provider(window.starcoin);
+    },
+    getWalletAddress: async function(): Promise<string> {
+      const newAccounts = await window.starcoin.request({
+        method: 'stc_requestAccounts',
+      });
+
+      return newAccounts[0];
     }
   }
 
-  setup(dao);
+  setup(ctx);
 }

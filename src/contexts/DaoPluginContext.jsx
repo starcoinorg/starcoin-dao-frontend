@@ -1,5 +1,5 @@
 import Garfish from 'garfish';
-import React, {
+import {
   useContext,
   createContext,
   useEffect,
@@ -11,6 +11,13 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
 import { useDaoAction } from './DaoActionContext';
+import { useCustomTheme } from './CustomThemeContext';
+import { useInjectedProvider } from './InjectedProviderContext';
+
+export const SupportInnerPluginNames = [
+  'inner-plugin://install-plugin-proposal-plugin',
+  'inner-plugin://member-proposal-plugin',
+];
 
 export const DaoPluginContext = createContext();
 
@@ -22,6 +29,8 @@ export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const { injectedProvider, address } = useInjectedProvider();
+  const { theme } = useCustomTheme();
   const { registerAction } = useDaoAction();
 
   const [loadedPlugins, setloadedPlugins] = useState([]);
@@ -41,11 +50,12 @@ export const DaoPluginProvider = ({ children }) => {
   };
 
   class PluginContext {
-    constructor(appInstance, name, address, daoType) {
+    constructor(appInstance, name, address, daoType, theme) {
       this.appInstance = appInstance;
       this.name = name;
       this.address = address;
       this.daoType = daoType;
+      this.theme = theme;
     }
 
     registerApp = async appInfo => {
@@ -53,6 +63,11 @@ export const DaoPluginProvider = ({ children }) => {
       const activeWhen = `${appInfo.activeWhen}`;
       const path = `${basename}${activeWhen}/home`;
       console.log(`registerApp ${appInfo.name}, path: ${path}`);
+
+      let appIcon = appInfo.icon;
+      if (typeof appInfo.icon === 'string') {
+        appIcon = props => <img src={appInfo.icon} {...props} />;
+      }
 
       if (appInfo.provider) {
         this.appInstance.cjsModules.exports = {
@@ -70,7 +85,7 @@ export const DaoPluginProvider = ({ children }) => {
 
       pluginMenus.push({
         key: this.name,
-        icon: <img src={appInfo.icon} className='sidebar-item-icon' />,
+        icon: appIcon,
         title: `${appInfo.name}`,
         path: path,
       });
@@ -79,6 +94,14 @@ export const DaoPluginProvider = ({ children }) => {
     registerAction = async action => {
       registerAction(action);
     };
+
+    getInjectedProvider() {
+      return injectedProvider;
+    }
+
+    getWalletAddress() {
+      return address;
+    }
   }
 
   const loadDaoPlugins = useCallback(async () => {
@@ -98,6 +121,13 @@ export const DaoPluginProvider = ({ children }) => {
       const plugin_info = daoPlugins[i];
       console.log('plugin_info:', plugin_info);
 
+      if (
+        plugin_info.js_entry_uri.startsWith('inner-plugin://') &&
+        SupportInnerPluginNames.indexOf(plugin_info.js_entry_uri) < 0
+      ) {
+        continue;
+      }
+
       const app = await Garfish.loadApp(plugin_info.name, {
         cache: true,
         preCompiled: true,
@@ -111,6 +141,7 @@ export const DaoPluginProvider = ({ children }) => {
         plugin_info.name,
         daoMetaData.daoAddress,
         daoMetaData.daoId,
+        theme,
       );
       plugin?.setup(ctx);
 

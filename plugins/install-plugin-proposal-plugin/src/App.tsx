@@ -1,27 +1,18 @@
 import React from 'react';
-import Proposals from './pages/Proposals';
-import { ChakraProvider } from '@chakra-ui/react'
-import { OverlayProvider } from './contexts/OverlayContext'
-import { DaoProvider } from './contexts/DaoContext'
-import { SubAppContext } from './root';
+import PluginManagement from './pages/PluginManagement';
+import { ChakraProvider } from '@chakra-ui/react';
+import { OverlayProvider } from './contexts/OverlayContext';
+import { useSubAppContext } from './contexts/SubAppContext';
 
 const App = () => {
-  return (
-    <SubAppContext.Consumer>
-    {(appInfo) => {
-      console.log("appInfo", appInfo);
+  const { theme } = useSubAppContext();
 
-      return (
-        <ChakraProvider>
-          <DaoProvider initDao={appInfo.dao}>
-            <OverlayProvider>
-              <Proposals/>
-            </OverlayProvider>
-          </DaoProvider>
-        </ChakraProvider>
-      )
-    }}
-    </SubAppContext.Consumer>
+  return (
+    <ChakraProvider theme={theme}>
+      <OverlayProvider>
+        <PluginManagement/>
+      </OverlayProvider>
+    </ChakraProvider>
   )
 };
 

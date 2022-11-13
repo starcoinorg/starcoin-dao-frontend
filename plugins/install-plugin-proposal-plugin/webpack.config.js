@@ -6,7 +6,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const CopyPlugin = require('copy-webpack-plugin');
 
 const webpackConfig = {
-  devtool: isDevelopment ? 'source-map' : false,
+  devtool: 'source-map',
   entry: {
     main: './src/index.tsx',
   },
@@ -35,7 +35,7 @@ const webpackConfig = {
   node: false,
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
-    fallback: { 
+    fallback: {
       crypto: require.resolve('crypto-browserify'),
       http: require.resolve('stream-http'),
       https: require.resolve('https-browserify'),
@@ -43,9 +43,9 @@ const webpackConfig = {
       os: require.resolve('os-browserify/browser'),
       zlib: require.resolve('browserify-zlib'),
       process: require.resolve('process/browser'),
-      url: require.resolve("url-polyfill"),
-      assert: require.resolve("assert-polyfill")
-    }
+      url: require.resolve('url-polyfill'),
+      assert: require.resolve('assert-polyfill'),
+    },
   },
   module: {
     rules: [
@@ -112,7 +112,7 @@ const webpackConfig = {
     }),
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'global':{}
+      global: {},
     }),
     new CopyPlugin({
       patterns: [{ from: 'public/dynamic.js', to: './' }],

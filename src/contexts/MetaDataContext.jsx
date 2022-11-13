@@ -34,88 +34,6 @@ export const MetaDataProvider = ({ children }) => {
 
   const daoService = new DaoService();
 
-  let isChainDao = false;
-  if (daoid && daoid.startsWith('0x')) {
-    isChainDao = true;
-  }
-
-  //  We're essentially calling the same function 3 times here.
-  //  I have to keep them separate so that the useEffect has
-  //  access to relevant state. I can investigate the useCallback/Effect pattern
-  //  of handling this in the future.
-
-  useEffect(() => {
-    if (userHubDaos) {
-      const daoMeta = userHubDaos
-        ?.find(network => network.networkID === daochain)
-        ?.data.find(dao => {
-          return dao.meta?.contractAddress === daoid;
-        })?.meta;
-
-      if (daoMeta && shouldUpdateTheme.current) {
-        if (daoMeta.customThemeConfig) {
-          updateTheme(daoMeta.customThemeConfig);
-        } else {
-          resetTheme();
-        }
-        if (daoMeta.customTermsConfig) {
-          setCustomTerms(daoMeta.customTermsConfig);
-        }
-        setDaoMetaData(daoMeta);
-        dispatchPropConfig({ action: 'INIT', payload: daoMeta });
-        shouldUpdateTheme.current = false;
-      }
-    }
-  }, [userHubDaos, daochain, daoid]);
-
-  useEffect(() => {
-    const getApiMetadata = async () => {
-      try {
-        const data = await fetchMetaData(daoid);
-        if (shouldUpdateTheme.current && !daoMetaData) {
-          if (data.customThemeConfig) {
-            updateTheme(data.customThemeConfig);
-          } else {
-            resetTheme();
-          }
-          if (data.customTermsConfig) {
-            setCustomTerms(data.customTermsConfig);
-          }
-          setDaoMetaData(data);
-          dispatchPropConfig({ action: 'INIT', payload: data });
-          shouldUpdateTheme.current = false;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    if (daoid && !isChainDao) {
-      getApiMetadata();
-    }
-  }, [daoid]);
-
-  const fetchApiMetadata = async () => {
-    try {
-      const data = await fetchMetaData(daoid);
-      if (shouldUpdateTheme.current && !daoMetaData) {
-        if (data.customThemeConfig) {
-          updateTheme(data.customThemeConfig);
-        } else {
-          resetTheme();
-        }
-        if (data.customTermsConfig) {
-          setCustomTerms(data.customTermsConfig);
-        }
-
-        setDaoMetaData(data);
-        dispatchPropConfig({ action: 'INIT', payload: data });
-        shouldUpdateTheme.current = false;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const fetchData = useCallback(async () => {
     try {
       const data = await daoService.getDao(daoid);
@@ -144,7 +62,6 @@ export const MetaDataProvider = ({ children }) => {
 
   const refetchMetaData = () => {
     shouldUpdateTheme.current = true;
-    fetchApiMetadata();
     refetchUserHubDaos();
   };
 

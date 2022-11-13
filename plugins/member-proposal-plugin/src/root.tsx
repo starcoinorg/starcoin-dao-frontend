@@ -1,5 +1,4 @@
 import React, { createContext } from 'react';
-import { PropsInfo } from '@garfish/bridge-react';
 import {
   BrowserRouter,
   Switch,
@@ -7,11 +6,21 @@ import {
   MemoryRouter,
   Redirect,
 } from 'react-router-dom';
+import { Dict } from "@chakra-ui/utils";
 import App from './App';
 import './App.less';
 
 export const prefixCls = 'sub-app-react16';
-export const SubAppContext = createContext<PropsInfo>({} as PropsInfo);
+export type AppInfo = {
+  appName: string;
+  dom: Element | ShadowRoot | Document;
+  basename: string;
+  appRenderInfo: Record<string, any>;
+  props: Record<string, any>;
+  theme?: Dict;
+  dao: Record<string, any>;
+};
+export const SubAppContext = createContext<AppInfo>({} as AppInfo);
 
 const RootComponent = (appInfo) => {
   const routes = (
