@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Spinner, Stack } from '@chakra-ui/react';
+import { Flex, Center, Spinner, Stack } from '@chakra-ui/react';
 import { useSubAppContext } from '../contexts/SubAppContext';
 import PluginCard from './pluginCard';
 import { listPlugins, isPluginInstalled, IPlugin } from '../utils/daoPluginApi';
@@ -15,7 +15,7 @@ const RecommendedPluginList = ({ daoId, installedPluginIds }) => {
         const plugins = await listPlugins(injectedProvider, 0, 20);
         if (plugins.length > 0) {
           plugins.sort((a: IPlugin, b: IPlugin) => {
-            return b.star - a.star;
+            return b.star_count - a.star_count;
           });
         }
 
@@ -50,7 +50,9 @@ const RecommendedPluginList = ({ daoId, installedPluginIds }) => {
           </Flex>
         )
       ) : (
-        <Spinner size='xl' />
+        <Center mt='100px' w='100%'>
+          <Spinner size='xl' />
+        </Center>
       )}
     </Flex>
   );

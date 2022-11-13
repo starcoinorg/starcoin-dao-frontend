@@ -1,6 +1,5 @@
 import {providers, utils, bcs} from "@starcoin/starcoin"
 import {hexlify} from '@ethersproject/bytes'
-import {getProvder} from "./stcWalletSdk";
 import {nodeUrlMap} from "./consts";
 import { utils as web3Utils } from 'web3'
 
@@ -11,7 +10,7 @@ export interface IPlugin {
   description: string,
   version_number?: number,
   version?: string,
-  star: number,
+  star_count: number,
   implement_extpoints?: Array<string>,
   depend_extpoints?: Array<string>,
   js_entry_uri?: string,
@@ -75,7 +74,7 @@ const decodePlugin = (pluginType, plugin): IPlugin => {
     type: pluginType,
     name: web3Utils.hexToString(plugin.name),
     description: web3Utils.hexToString(plugin.description),
-    star: 0,
+    star_count: plugin.star_count,
   };
 
   if (plugin.next_version_number == 1) {
@@ -88,7 +87,6 @@ const decodePlugin = (pluginType, plugin): IPlugin => {
     ...plugin_info,
     version_number: version.number,
     version: web3Utils.hexToString(version.tag),
-    star: version.star,
     implement_extpoints: hexVectorToStringArray(version.implement_extpoints),
     depend_extpoints: hexVectorToStringArray(version.depend_extpoints),
     js_entry_uri: web3Utils.hexToString(version.js_entry_uri),
@@ -190,66 +188,19 @@ export async function installPluginProposal(
   }
 }
 
-export async function unInstallPluginProposal(
-  daoType:string,
-  pluginType: string,
-  description: string, 
-  action_delay: number,
-) :Promise<string>  {
-  try {
-      const tokens = pluginType.split('::');
-      const functionId = `${tokens[0]}::${tokens[1]}::install_plugin_proposal_entry`
-      const tyArgs = [daoType]
-      const args = [
-        description,
-        action_delay,
-      ]
-
-      console.log("createMemberProposal tyArgs:", tyArgs);
-      console.log("createMemberProposal args:", args);
-      console.log("window.starcoin:", window.starcoin);
-
-      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
-      console.log("nodeUrl:", nodeUrl);
-
-      const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
-      // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
-      const payloadInHex = (function () {
-          const se = new bcs.BcsSerializer()
-          scriptFunction.serialize(se)
-          return hexlify(se.getBytes())
-      })()
-
-      const txParams = {
-          data: payloadInHex,
-          expiredSecs: 10
-      }
-
-      console.log("txParams:", txParams);
-      const starcoinProvider = await getProvder();
-
-      console.log("starcoinProvider:", starcoinProvider);
-      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
-      return transactionHash
-  } catch (error) {
-      console.log("installPluginProposal error:", error);
-      throw error
-  }
-}
-
 export async function starPlugin(
+  provider: providers.JsonRpcProvider,
   pluginType: string,
 ) :Promise<string>  {
   try {
-      const functionId = `0x1::DAOPluginMarketplace::star_plugin`
+      const functionId = `0x1::DAOPluginMarketplace::star_plugin_entry`
       const tyArgs = [pluginType]
       const args = []
 
       console.log("createMemberProposal tyArgs:", tyArgs);
       console.log("createMemberProposal args:", args);
-      console.log("window.starcoin:", window.starcoin);
 
-      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      const nodeUrl = nodeUrlMap[provider.network.chainId];
       console.log("nodeUrl:", nodeUrl);
 
       const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
@@ -266,10 +217,7 @@ export async function starPlugin(
       }
 
       console.log("txParams:", txParams);
-      const starcoinProvider = await getProvder();
-
-      console.log("starcoinProvider:", starcoinProvider);
-      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      const transactionHash = await provider.getSigner().sendUncheckedTransaction(txParams)
       return transactionHash
   } catch (error) {
       console.log("installPluginProposal error:", error);
@@ -278,18 +226,18 @@ export async function starPlugin(
 }
 
 export async function unstarPlugin(
+  provider: providers.JsonRpcProvider,
   pluginType: string,
 ) :Promise<string>  {
   try {
-      const functionId = `0x1::DAOPluginMarketplace::unstar_plugin`
+      const functionId = `0x1::DAOPluginMarketplace::unstar_plugin_entry`
       const tyArgs = [pluginType]
       const args = []
 
       console.log("createMemberProposal tyArgs:", tyArgs);
       console.log("createMemberProposal args:", args);
-      console.log("window.starcoin:", window.starcoin);
 
-      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      const nodeUrl = nodeUrlMap[provider.network.chainId];
       console.log("nodeUrl:", nodeUrl);
 
       const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
@@ -306,10 +254,7 @@ export async function unstarPlugin(
       }
 
       console.log("txParams:", txParams);
-      const starcoinProvider = await getProvder();
-
-      console.log("starcoinProvider:", starcoinProvider);
-      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      const transactionHash = await provider.getSigner().sendUncheckedTransaction(txParams)
       return transactionHash
   } catch (error) {
       console.log("installPluginProposal error:", error);
@@ -317,22 +262,19 @@ export async function unstarPlugin(
   }
 }
 
-export async function hasStarPlugin(pluginType: string,) {
+export async function hasStarPlugin(provider: providers.JsonRpcProvider, walletAddress, pluginType: string): Promise<boolean> {
   try {
-    const function_id = '0x1::DAOPluginMarketplace::has_star_plugin';
-    const type_args = [pluginType];
-    const args = [];
+    const resp = await provider.send('state.get_resource', [
+      walletAddress,
+      `0x1::DAOPluginMarketplace::Star<${pluginType}>`,
+      {
+        decode: true,
+      },
+    ]);
 
-    const starcoinProvider = await getProvder();
-    const result = await starcoinProvider.callV2({
-      function_id,
-      type_args,
-      args,
-    });
-
-    return web3Utils.hexToString(result[0]);
-  } catch (error) {
-    console.log('provider.callV2 error:', error);
-    throw error;
+    return resp;
+  } catch (e) {
+    console.log(e);
+    throw new Error('get star info error');
   }
 }

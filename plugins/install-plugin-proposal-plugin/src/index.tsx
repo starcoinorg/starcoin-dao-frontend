@@ -44,8 +44,8 @@ export const setup = (ctx: IDaoPluginContext) => {
         return ctx.getInjectedProvider();
       };
 
-      props.getWalletAddress = function() {
-        return ctx.getWalletAddress();
+      props.getWalletAddress = async function() {
+        return await ctx.getWalletAddress();
       };
 
       return provider(props)
@@ -81,20 +81,14 @@ if (!window.__GARFISH__) {
     getInjectedProvider: function(): providers.JsonRpcProvider|undefined {
       return new providers.Web3Provider(window.starcoin);
     },
-    getWalletAddress: function(): string {
-      return walletAddress;
+    getWalletAddress: async function(): Promise<string> {
+      const newAccounts = await window.starcoin.request({
+        method: 'stc_requestAccounts',
+      });
+
+      return newAccounts[0];
     }
   }
 
-  async function init() {
-    setup(ctx);
-
-    const newAccounts = await window.starcoin.request({
-      method: 'stc_requestAccounts',
-    });
-
-    walletAddress = newAccounts[0];
-  };
-  
-  init();
+  setup(ctx);
 }

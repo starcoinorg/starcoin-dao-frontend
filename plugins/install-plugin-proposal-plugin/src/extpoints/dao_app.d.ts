@@ -28,5 +28,5 @@ declare interface IDaoPluginContext {
     registerApp(app: IApp);
     registerAction(action: IAction);
     getInjectedProvider(): providers.JsonRpcProvider;
-    getWalletAddress(): string;
+    getWalletAddress(): Promise<string>;
 }
