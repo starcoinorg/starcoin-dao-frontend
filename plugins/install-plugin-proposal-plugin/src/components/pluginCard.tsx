@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineStar } from "react-icons/ai";
-import { Box, Flex, Button, HStack, Stack, Tag, Text, Heading, Spacer, useToast  } from '@chakra-ui/react';
+import { Flex, Button, HStack, Stack, Tag, Text, Heading, Spacer, useToast  } from '@chakra-ui/react';
 import ContentBox from './contentBox';
+import { useSubAppContext } from '../contexts/SubAppContext';
 import { installPluginProposal, unInstallPluginProposal, starPlugin, unstarPlugin, hasStarPlugin, IPlugin } from '../utils/daoPluginApi';
 
 type PluginCardProps = {
@@ -11,6 +11,7 @@ type PluginCardProps = {
 }
 
 const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
+  const { injectedProvider } = useSubAppContext();
   const [star, setStar] = useState(false);
   const [starCount, setStarCount] = useState(plugin_info.star);
   const toast = useToast();
@@ -39,6 +40,7 @@ const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
   const onInstallPlugin = async () => {
     try {
       const transactionHash = await installPluginProposal(
+        injectedProvider,
         daoId, 
         plugin_info.type, 
         `Apply install plugin ${plugin_info.name}`,

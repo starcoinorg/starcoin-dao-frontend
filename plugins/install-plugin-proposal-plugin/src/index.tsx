@@ -40,7 +40,7 @@ export const setup = (ctx: IDaoPluginContext) => {
         daoType: ctx.daoType,
       };
 
-      props.getInjectProvider = function() {
+      props.getInjectedProvider = function() {
         return ctx.getInjectedProvider();
       };
 
@@ -88,10 +88,6 @@ if (!window.__GARFISH__) {
 
   async function init() {
     setup(ctx);
-
-    window.starcoin.request({
-      method: 'stc_requestAccounts',
-    })
 
     const newAccounts = await window.starcoin.request({
       method: 'stc_requestAccounts',

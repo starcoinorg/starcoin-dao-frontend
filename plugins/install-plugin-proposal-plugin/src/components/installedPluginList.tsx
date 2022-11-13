@@ -1,29 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Spinner, Button, HStack, Stack, Link } from '@chakra-ui/react';
-
+import { Flex, Spinner, Stack } from '@chakra-ui/react';
+import { useSubAppContext } from '../contexts/SubAppContext';
 import PluginCard from './pluginCard';
 import { getDaoInstalledPlugins, isPluginInstalled, IPlugin } from '../utils/daoPluginApi';
 
 const InstalledPluginList = ({ daoId, installedPluginIds }) => {
+  const { injectedProvider } = useSubAppContext();
   const [installedPlugins, setInstalledPlugins] = useState<Array<IPlugin>>([]);
   const [loading, setLoading] = useState(true);
-  const [address, setAddress] = useState('');
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const newAccounts = await window.starcoin.request({
-        method: 'stc_requestAccounts',
-      });
-      setAddress(newAccounts[0]);
-    };
-
-    getAddress();
-  }, [daoId]);
-
+  
   useEffect(() => {
     const loadPlugins = async () => {
       try {
-        const plugins = await getDaoInstalledPlugins(daoId);
+        const plugins = await getDaoInstalledPlugins(injectedProvider, daoId);
         setInstalledPlugins(plugins);
         setLoading(false);
       } catch (err) {

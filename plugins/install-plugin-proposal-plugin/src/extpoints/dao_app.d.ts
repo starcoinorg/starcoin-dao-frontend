@@ -27,6 +27,6 @@ declare interface IDaoPluginContext {
     theme?: Dict|undefined;
     registerApp(app: IApp);
     registerAction(action: IAction);
-    getInjectedProvider(): providers.JsonRpcProvider | undefined;
-    getWalletAddress(): string | undefined;
+    getInjectedProvider(): providers.JsonRpcProvider;
+    getWalletAddress(): string;
 }
