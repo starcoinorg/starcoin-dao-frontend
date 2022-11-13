@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { providers } from "@starcoin/starcoin"
 import { Dict } from "@chakra-ui/utils";
 
@@ -37,7 +37,20 @@ export const SubAppProvider = ({ children, value: { initDao, initTheme, getInjec
   });
 
   const [injectedProvider, ___] = useState<providers.JsonRpcProvider>(getInjectedProvider());
-  const [walletAddress, ____] = useState<string>(getWalletAddress());
+  const [walletAddress, setWalletAddress] = useState<string>("");
+
+  useEffect(() => {
+    const loadWalletAddress = async () => {
+      try {
+        const address = await getWalletAddress();
+        setWalletAddress(address);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    loadWalletAddress();
+  }, [injectedProvider]);
 
   return (
     <SubAppContext.Provider

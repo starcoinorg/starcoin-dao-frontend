@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Spinner, Stack } from '@chakra-ui/react';
+import { Flex, Center, Spinner, Stack } from '@chakra-ui/react';
 import { useSubAppContext } from '../contexts/SubAppContext';
 import PluginCard from './pluginCard';
 import { getDaoInstalledPlugins, isPluginInstalled, IPlugin } from '../utils/daoPluginApi';
@@ -44,7 +44,9 @@ const InstalledPluginList = ({ daoId, installedPluginIds }) => {
           </Flex>
         )
       ) : (
-        <Spinner size='xl' />
+        <Center mt='100px' w='100%'>
+          <Spinner size='xl' />
+        </Center>
       )}
     </Flex>
   );
