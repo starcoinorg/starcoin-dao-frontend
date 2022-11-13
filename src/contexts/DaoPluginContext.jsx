@@ -12,6 +12,7 @@ import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
 import { useDaoAction } from './DaoActionContext';
 import { useCustomTheme } from './CustomThemeContext';
+import { useInjectedProvider } from './InjectedProviderContext';
 
 export const SupportInnerPluginNames = [
   'inner-plugin://install-plugin-proposal-plugin',
@@ -28,6 +29,7 @@ export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
   const { daoid, daochain } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const { injectedProvider, address } = useInjectedProvider();
   const { theme } = useCustomTheme();
   const { registerAction } = useDaoAction();
 
@@ -92,6 +94,14 @@ export const DaoPluginProvider = ({ children }) => {
     registerAction = async action => {
       registerAction(action);
     };
+
+    getInjectedProvider() {
+      return injectedProvider;
+    }
+
+    getWalletAddress() {
+      return address;
+    }
   }
 
   const loadDaoPlugins = useCallback(async () => {

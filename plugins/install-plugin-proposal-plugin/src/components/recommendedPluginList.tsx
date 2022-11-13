@@ -1,29 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Spinner, Button, HStack, Stack, Link } from '@chakra-ui/react';
-
+import { Flex, Spinner, Stack } from '@chakra-ui/react';
+import { useSubAppContext } from '../contexts/SubAppContext';
 import PluginCard from './pluginCard';
 import { listPlugins, isPluginInstalled, IPlugin } from '../utils/daoPluginApi';
 
 const RecommendedPluginList = ({ daoId, installedPluginIds }) => {
+  const { injectedProvider } = useSubAppContext();
   const [plugins, setPlugins] = useState<Array<IPlugin>>([]);
   const [loading, setLoading] = useState(true);
-  const [address, setAddress] = useState('');
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const newAccounts = await window.starcoin.request({
-        method: 'stc_requestAccounts',
-      });
-      setAddress(newAccounts[0]);
-    };
-
-    getAddress();
-  }, [daoId]);
 
   useEffect(() => {
     const loadPlugins = async () => {
       try {
-        const plugins = await listPlugins(0, 20);
+        const plugins = await listPlugins(injectedProvider, 0, 20);
         if (plugins.length > 0) {
           plugins.sort((a: IPlugin, b: IPlugin) => {
             return b.star - a.star;

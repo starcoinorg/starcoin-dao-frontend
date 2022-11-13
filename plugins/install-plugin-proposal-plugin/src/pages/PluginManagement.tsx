@@ -9,14 +9,14 @@ import {
   TabPanel,
 } from '@chakra-ui/react';
 import MainViewLayout from '../components/mainViewLayout';
-import { useDao } from '../contexts/DaoContext';
+import { useSubAppContext } from '../contexts/SubAppContext';
 import InstalledPluginList from '../components/installedPluginList';
 import RecommendedPluginList from '../components/recommendedPluginList';
 import AllPluginList from '../components/allPluginList';
-import { getDaoInstalledPluginIds, IPlugin } from '../utils/daoPluginApi';
+import { getDaoInstalledPluginIds } from '../utils/daoPluginApi';
 
 const PluginManagement = () => {
-    const { dao } = useDao();
+    const { dao } = useSubAppContext();
     const [installedPluginIds, setInstalledPluginIds] = useState<Array<string>>([]);
     const ctaButton = (
       <></>

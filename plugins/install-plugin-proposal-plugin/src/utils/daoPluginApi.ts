@@ -1,4 +1,4 @@
-import {utils, bcs} from "@starcoin/starcoin"
+import {providers, utils, bcs} from "@starcoin/starcoin"
 import {hexlify} from '@ethersproject/bytes'
 import {getProvder} from "./stcWalletSdk";
 import {nodeUrlMap} from "./consts";
@@ -29,21 +29,18 @@ export const hexVectorToStringArray = (vec):Array<string> => {
   return rets;
 };
 
-export const getDaoInstalledPluginIds = async (daoId): Promise<Array<string>> => {
+export const getDaoInstalledPluginIds = async (provider: providers.JsonRpcProvider, daoId: string): Promise<Array<string>> => {
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
 
-  const installedPluginInfos = await window.starcoin.request({
-    method: 'state.list_resource',
-    params: [
-      daoAddress,
-      {
-        resource_types: [
-          '0x00000000000000000000000000000001::DAOSpace::InstalledPluginInfo',
-        ],
-        decode: true,
-      },
-    ],
-  });
+  const installedPluginInfos = await provider.send('state.list_resource', [
+    daoAddress,
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::DAOSpace::InstalledPluginInfo',
+      ],
+      decode: true,
+    },
+  ]);
 
   let pluginIds = new Array<string>();
   for (const key in installedPluginInfos.resources) {
@@ -57,12 +54,12 @@ export const getDaoInstalledPluginIds = async (daoId): Promise<Array<string>> =>
   return pluginIds;
 };
 
-export const getDaoInstalledPlugins = async (daoId): Promise<Array<IPlugin>> => {
-  const pluginIds = await getDaoInstalledPluginIds(daoId);
+export const getDaoInstalledPlugins = async (provider: providers.JsonRpcProvider, daoId: string): Promise<Array<IPlugin>> => {
+  const pluginIds = await getDaoInstalledPluginIds(provider, daoId);
 
   let plugins = new Array<IPlugin>();
   for (const i in pluginIds) {
-    const plugin = await getPluginInfo(pluginIds[i]);
+    const plugin = await getPluginInfo(provider, pluginIds[i]);
 
     if (plugin && plugin.js_entry_uri) {
       plugins.push(plugin);
@@ -99,18 +96,15 @@ const decodePlugin = (pluginType, plugin): IPlugin => {
   };
 }
 
-export const getPluginInfo = async (plugin_type): Promise<IPlugin|null> => {
+export const getPluginInfo = async (provider: providers.JsonRpcProvider, plugin_type: string): Promise<IPlugin|null> => {
   try {
-    const resp = await window.starcoin.request({
-      method: 'state.get_resource',
-      params: [
-        `0x1`,
-        `0x1::DAOPluginMarketplace::PluginEntry<${plugin_type}>`,
-        {
-          decode: true,
-        },
-      ],
-    });
+    const resp = await provider.send('state.get_resource', [
+      `0x1`,
+      `0x1::DAOPluginMarketplace::PluginEntry<${plugin_type}>`,
+      {
+        decode: true,
+      },
+    ]);
 
     const plugin = resp.json;
     return decodePlugin(plugin_type, plugin);
@@ -120,21 +114,18 @@ export const getPluginInfo = async (plugin_type): Promise<IPlugin|null> => {
   }
 };
 
-export const listPlugins = async (startIndex:number, count: number) => {
-  const pluginEntrys = await window.starcoin.request({
-    method: 'state.list_resource',
-    params: [
-      '0x1',
-      {
-        resource_types: [
-          '0x1::DAOPluginMarketplace::PluginEntry',
-        ],
-        decode: true,
-        start_index: startIndex,
-        max_size: count,
-      },
-    ],
-  });
+export const listPlugins = async (provider: providers.JsonRpcProvider, startIndex:number, count: number) => {
+  const pluginEntrys = await provider.send('state.list_resource', [
+    '0x1',
+    {
+      resource_types: [
+        '0x1::DAOPluginMarketplace::PluginEntry',
+      ],
+      decode: true,
+      start_index: startIndex,
+      max_size: count,
+    },
+  ]);
 
   let plugins = new Array<IPlugin>();
   for (const key in pluginEntrys.resources) {
@@ -151,6 +142,7 @@ export const isPluginInstalled = (installedPluginIds: Array<string>, pluginId: s
 }
 
 export async function installPluginProposal(
+  provider: providers.JsonRpcProvider,
   daoType:string,
   pluginType: string,
   title: string,
@@ -171,9 +163,8 @@ export async function installPluginProposal(
 
       console.log("createMemberProposal tyArgs:", tyArgs);
       console.log("createMemberProposal args:", args);
-      console.log("window.starcoin:", window.starcoin);
 
-      const nodeUrl = nodeUrlMap[window.starcoin.networkVersion]
+      const nodeUrl = nodeUrlMap[provider.network.chainId];
       console.log("nodeUrl:", nodeUrl);
 
       const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
@@ -190,10 +181,8 @@ export async function installPluginProposal(
       }
 
       console.log("txParams:", txParams);
-      const starcoinProvider = await getProvder();
-
-      console.log("starcoinProvider:", starcoinProvider);
-      const transactionHash = await starcoinProvider.getSigner().sendUncheckedTransaction(txParams)
+      console.log("starcoinProvider:", provider);
+      const transactionHash = await provider.getSigner().sendUncheckedTransaction(txParams)
       return transactionHash
   } catch (error) {
       console.log("installPluginProposal error:", error);
