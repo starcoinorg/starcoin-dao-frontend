@@ -3928,10 +3928,10 @@
     "@stablelib/wipe" "^1.0.1"
     "@stablelib/xchacha20" "^1.0.1"
 
-"@starcoin/move-js@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@starcoin/move-js/-/move-js-0.6.1.tgz#c079d276df668009e1d01d69649eae8ad81134fb"
-  integrity sha512-KHxWuSKaEaKv9m1hCej/Es6502397H6Ipm0rAP8FnxIgaPoqvp/d/nCA7wexN941N6k/skB3xJI3l519ODMh2g==
+"@starcoin/move-js@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@starcoin/move-js/-/move-js-0.8.0.tgz#7cc58eb3f9986aaa241b52fb946d722b5b2fc167"
+  integrity sha512-KAsVLZCudqe/2appUcp/ZBheEwh1DitvX72Qt7RnRkA4C0wSKsBLhtXr+DphjKOM14HuxjbFmZKueROqhDB+FA==
   dependencies:
     "@iarna/toml" "^2.2.5"
     "@swc/helpers" "^0.3.13"

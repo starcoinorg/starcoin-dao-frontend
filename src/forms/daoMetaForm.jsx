@@ -94,7 +94,7 @@ const DaoMetaForm = ({ metadata, next }) => {
 
       await polling(injectedProvider, s);
 
-      next(dao.blobBuf);
+      next(dao.blobBuf, cfg);
 
       setLoading(false);
     } catch (err) {

@@ -45,6 +45,8 @@ class DaoService {
       '/workspace/my-dao/target/starcoin/release/hash.txt',
     );
 
+    window.console.info(`Blob hash: ${hash}`);
+
     return {
       blobBuf,
       hash,

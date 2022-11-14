@@ -49,7 +49,9 @@ const Register = () => {
     refetchUserHubDaos();
     sessionStorage.removeItem('exploreDaoData');
 
-    history.push(`/dao/${ret.chainId}/${ret.daoAddress}`);
+    history.push(
+      `/dao/${ret.chainId}/${ret.daoAddress}::${currentDao.name}::${currentDao.name}`,
+    );
   };
 
   const { nextStep, prevStep, setStep, reset, activeStep } = useSteps({
@@ -75,8 +77,9 @@ const Register = () => {
         <DaoMetaForm
           handleUpdate={handleUpdate}
           metadata={currentDao}
-          next={v => {
+          next={(v, daoCfg) => {
             setBlob(v);
+            setCurrentDao(daoCfg);
             nextStep();
           }}
         />

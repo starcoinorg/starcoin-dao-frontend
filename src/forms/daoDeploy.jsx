@@ -5,9 +5,11 @@ import { nodeUrlMap } from '../utils/consts';
 import { hexlify } from '@ethersproject/bytes';
 import { getTxnData, getEventsByTxnHash } from '../utils/sdk';
 import { sleep } from '../utils/common';
+import ContentBox from '../components/ContentBox';
 import { useState } from 'react';
 import { deployContract } from '../utils/stcWalletSdk';
 import { useOverlay } from '../contexts/OverlayContext';
+import { polling } from '../utils/polling';
 
 const DaoDeploy = ({ blob, handleUpdate }) => {
   const { injectedProvider } = useInjectedProvider();
@@ -18,6 +20,8 @@ const DaoDeploy = ({ blob, handleUpdate }) => {
     setLoading(true);
 
     const transactionHash = await deployContract(injectedProvider, blob);
+
+    await polling(injectedProvider, transactionHash);
 
     setLoading(false);
 
@@ -31,13 +35,15 @@ const DaoDeploy = ({ blob, handleUpdate }) => {
 
   return (
     <Flex w='100%' display='flex'>
-      {!loading ? (
-        <Button mx='auto' size='sm' onClick={onClick} mt={10}>
-          Deploy
-        </Button>
-      ) : (
-        <Spinner size='sm' mx='auto' mt={10} />
-      )}
+      <Flex as={ContentBox} w='50%' margin='0 auto'>
+        {!loading ? (
+          <Button mx='auto' size='sm' onClick={onClick} mt={10}>
+            Deploy
+          </Button>
+        ) : (
+          <Spinner size='sm' mx='auto' mt={10} />
+        )}
+      </Flex>
     </Flex>
   );
 };

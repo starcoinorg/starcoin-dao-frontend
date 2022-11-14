@@ -33,21 +33,25 @@ const MyDAOSourceTpl = (
   var count = 0;
   for (const k in plugins) {
     const value = plugins[k];
-    const t = count > 0 ? '\t\t' : '';
-    const n = count != plugins.length - 1 ? '\n' : '';
-    pluginsImport += `${t}use StarcoinFramework::${value}::{Self, ${value}};${n}`;
-    pluginsInfo += `${t}DAOSpace::install_plugin<${daoName}, ${daoName}, ${value}>(&install_cap, ${value}::required_caps());${n}`;
-    count++;
+    if (value) {
+      const t = count > 0 ? '\t\t' : '';
+      const n = count != plugins.length - 1 ? '\n' : '';
+      pluginsImport += `${t}use StarcoinFramework::${value}::{Self, ${value}};${n}`;
+      pluginsInfo += `${t}DAOSpace::install_plugin<${daoName}, ${daoName}, ${value}>(&install_cap, ${value}::required_caps());${n}`;
+      count++;
+    }
   }
 
   count = 0;
   let membersInfo = '';
   for (const k in members) {
     const value = members[k];
-    const t = count > 0 ? '\t\t' : '';
-    const n = count != plugins.length - 1 ? '\n' : '';
-    membersInfo += `${t}DAOSpace::issue_member_offer(&member_cap, @${value}, Option::none<vector<u8>>(), Option::none<vector<u8>>(), 1000);${n} `;
-    count++;
+    if (value) {
+      const t = count > 0 ? '\t\t' : '';
+      const n = count != plugins.length - 1 ? '\n' : '';
+      membersInfo += `${t}DAOSpace::issue_member_offer(&member_cap, @${value}, Option::none<vector<u8>>(), Option::none<vector<u8>>(), 1000);${n} `;
+      count++;
+    }
   }
 
   console.log(plugins);
