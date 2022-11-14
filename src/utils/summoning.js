@@ -74,6 +74,34 @@ export const daoConstants = chainId => {
   return constants;
 };
 
+export const pluginPresets = chainId => {
+  let presets = [
+    {
+      presetName: 'InstallPluginProposalPlugin',
+      presetSubtitle: 'xxx',
+      presetDescription: 'xxx',
+      author: 'dao Space',
+      version: '0.1',
+    },
+    {
+      presetName: 'MemberProposalPlugin',
+      presetSubtitle: 'xxx',
+      presetDescription: 'xxx',
+      author: 'dao Space',
+      version: '0.1',
+    },
+    // {
+    //   presetName: 'any-member-plugin',
+    //   presetSubtitle: 'xxx',
+    //   presetDescription: 'xxx',
+    //   author: 'dao Space',
+    //   version: '0.1',
+    // },
+  ];
+
+  return presets;
+};
+
 export const daoPresets = chainId => {
   let presets = [
     {

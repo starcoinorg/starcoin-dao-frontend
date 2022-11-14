@@ -257,3 +257,15 @@ export const isChainDAO = async daoId => {
 
   return isChainDao;
 };
+
+export const getDAOAccountCap = async (provider, address) => {
+  const cap = await provider.send('state.get_resource', [
+    address,
+    '0x00000000000000000000000000000001::DAOAccount::DAOAccountCap',
+    {
+      decode: true,
+    },
+  ]);
+
+  return cap ? cap.json : null;
+};

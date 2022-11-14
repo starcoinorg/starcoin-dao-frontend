@@ -1,12 +1,13 @@
 const MyDAOSourceTpl = (
   address,
   daoName,
-  logo_image_data,
   description,
   long_description,
   purpose,
   tags,
   links,
+  plugins,
+  members,
 
   voting_delay,
   voting_period,
@@ -27,22 +28,52 @@ const MyDAOSourceTpl = (
     linksCode += `\t\tVector::push_back<vector<u8>>(&mut links, b"${link}");\n`;
   }
 
+  let pluginsImport = '';
+  let pluginsInfo = '';
+  var count = 0;
+  for (const k in plugins) {
+    const value = plugins[k];
+    if (value) {
+      const t = count > 0 ? '\t\t' : '';
+      const n = count != plugins.length - 1 ? '\n' : '';
+      pluginsImport += `${t}use StarcoinFramework::${value}::{Self, ${value}};${n}`;
+      pluginsInfo += `${t}DAOSpace::install_plugin<${daoName}, ${daoName}, ${value}>(&install_cap, ${value}::required_caps());${n}`;
+      count++;
+    }
+  }
+
+  count = 0;
+  let membersInfo = '';
+  for (const k in members) {
+    const value = members[k];
+    if (value) {
+      const t = count > 0 ? '\t\t' : '';
+      const n = count != plugins.length - 1 ? '\n' : '';
+      membersInfo += `${t}DAOSpace::issue_member_offer(&member_cap, @${value}, Option::none<vector<u8>>(), Option::none<vector<u8>>(), 1000);${n} `;
+      count++;
+    }
+  }
+
+  console.log(plugins);
+  console.log(membersInfo);
+
   return `
 module ${address}::${daoName} {
     use StarcoinFramework::Vector;
     use StarcoinFramework::Option;
     use StarcoinFramework::DAOAccount;
     use StarcoinFramework::DAOSpace;
-    use StarcoinFramework::MemberProposalPlugin::{Self, MemberProposalPlugin};
-    use StarcoinFramework::InstallPluginProposalPlugin::{Self, InstallPluginProposalPlugin};
+    ${pluginsImport}
     
-    struct ${daoName} has key, store {
-        long_description: vector<u8>,
-        purpose: vector<u8>,
-        tags: vector<vector<u8>>,
-        links: vector<vector<u8>>,
+    struct ${daoName} has store, drop {}
+    
+    struct Ext has store, drop {
+      long_description: vector<u8>,
+      purpose: vector<u8>,
+      tags: vector<vector<u8>>,
+      links: vector<vector<u8>>,
     }
-    
+
     const NAME: vector<u8> = b"${daoName}";
     const CONTRACT_ACCOUNT:address = @${daoName};
 
@@ -59,7 +90,7 @@ module ${address}::${daoName} {
     public(script) fun initialize(
         sender: signer
     ){
-        let dao_account_cap = DAOAccount::upgrade_to_dao(sender);
+        let witness = ${daoName} {};
         let config = DAOSpace::new_dao_config(
             ${voting_delay},
             ${voting_period},
@@ -67,25 +98,31 @@ module ${address}::${daoName} {
             ${min_action_delay},
             ${min_proposal_deposit},
         );
+        
+        let cap = DAOAccount::extract_dao_account_cap(&sender);
+        let image_data = Option::none<vector<u8>>();
+        let image_url = Option::some<vector<u8>>(b"ipfs://QmdTwdhFi61zhRM3MtPLxuKyaqv3ePECLGsMg9pMrePv4i"); //TODO change to real image url
+        DAOSpace::create_dao<${daoName}>(cap, *&NAME, image_data, image_url, b"${description}", config);
+        
+        // store ext info
         ${tagsCode}
         ${linksCode}
-        let dao = ${daoName} {
+        let ext_info = Ext {
             long_description: b"${long_description}",
             purpose: b"${purpose}",
             tags: tags,
             links: links,
         };
+        let storage_cap = DAOSpace::acquire_storage_cap<${daoName}, ${daoName}>(&witness);
+        DAOSpace::save_to_storage<${daoName}, ${daoName}, Ext>(&storage_cap, ext_info);
 
-        let image_data = Option::some<vector<u8>>(b"${logo_image_data}");
-        let image_url = Option::none<vector<u8>>();
-        let dao_root_cap = DAOSpace::create_dao<${daoName}>(dao_account_cap, *&NAME, image_data, image_url, b"${description}", dao, config);
-        
-        DAOSpace::install_plugin_with_root_cap<${daoName}, InstallPluginProposalPlugin>(&dao_root_cap, InstallPluginProposalPlugin::required_caps()); 
-        DAOSpace::install_plugin_with_root_cap<${daoName}, MemberProposalPlugin>(&dao_root_cap, MemberProposalPlugin::required_caps());
+        let install_cap = DAOSpace::acquire_install_plugin_cap<${daoName}, ${daoName}>(&witness);
+        ${pluginsInfo}
 
-        DAOSpace::join_member_with_root_cap(&dao_root_cap, @0x574BC81805e18893aAecDae7e2C55F92, Option::none<vector<u8>>(), Option::none<vector<u8>>(), 1000);
+        let member_cap = DAOSpace::acquire_member_cap<${daoName}, ${daoName}>(&witness);
+        DAOSpace::join_member_with_member_cap(&member_cap, &sender, Option::none<vector<u8>>(), Option::none<vector<u8>>(), 1000);
 
-        DAOSpace::burn_root_cap(dao_root_cap);
+        ${membersInfo}
     }
 }
 `;

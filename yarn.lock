@@ -3928,10 +3928,10 @@
     "@stablelib/wipe" "^1.0.1"
     "@stablelib/xchacha20" "^1.0.1"
 
-"@starcoin/move-js@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@starcoin/move-js/-/move-js-0.6.1.tgz#c079d276df668009e1d01d69649eae8ad81134fb"
-  integrity sha512-KHxWuSKaEaKv9m1hCej/Es6502397H6Ipm0rAP8FnxIgaPoqvp/d/nCA7wexN941N6k/skB3xJI3l519ODMh2g==
+"@starcoin/move-js@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@starcoin/move-js/-/move-js-0.8.0.tgz#7cc58eb3f9986aaa241b52fb946d722b5b2fc167"
+  integrity sha512-KAsVLZCudqe/2appUcp/ZBheEwh1DitvX72Qt7RnRkA4C0wSKsBLhtXr+DphjKOM14HuxjbFmZKueROqhDB+FA==
   dependencies:
     "@iarna/toml" "^2.2.5"
     "@swc/helpers" "^0.3.13"
@@ -7903,6 +7903,16 @@ ceramic-cacao@^1.1.0, ceramic-cacao@^1.1.1:
     apg-js "^4.1.1"
     caip "^1.0.0"
     multiformats "^9.5.1"
+
+chakra-multiselect@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/chakra-multiselect/-/chakra-multiselect-0.3.7.tgz#0f6b548dec17eccf52880a1be3316568e8dd742a"
+  integrity sha512-yyTF629WAWK3KJsOZvKleMZSVUwT6SJ4flEzTdxrgIKLR5DElPV0HSzS3XEIOA5hRVW/TY9r2PP1DzVxIfSgig==
+
+chakra-ui-steps@^1.3.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/chakra-ui-steps/-/chakra-ui-steps-1.8.0.tgz#0db079a46a94f6e2d06ec2260ebe55603bfd5567"
+  integrity sha512-9gJAG/XHEbLLTMRDhlXf4XRAj7DWvCNmu4LGfUSBNw9LIlqlhmRZLwq7JKdVbfo+fa44lRraW+ZjcYLgQPfTRw==
 
 chalk@^2.0.0, chalk@^2.1.0, chalk@^2.4.1:
   version "2.4.2"

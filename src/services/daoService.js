@@ -33,14 +33,24 @@ class DaoService {
       packagePath: '/workspace/my-dao',
       test: false,
       alias: new Map([['StarcoinFramework', '/workspace/starcoin-framework']]),
-      initFunction: '',
+      initFunction: `${cfg.address}::${cfg.name}::initialize`,
     });
 
     await mp.build();
     const blobBuf = this.wasmfs.fs.readFileSync(
       '/workspace/my-dao/target/starcoin/release/package.blob',
     );
-    return blobBuf;
+
+    const hash = this.wasmfs.fs.readFileSync(
+      '/workspace/my-dao/target/starcoin/release/hash.txt',
+    );
+
+    window.console.info(`Blob hash: ${hash}`);
+
+    return {
+      blobBuf,
+      hash,
+    };
   }
 
   renderDAOPackage(destPath, cfg) {
@@ -63,12 +73,13 @@ class DaoService {
     const myTokenContent = MyDAOSourceTpl(
       cfg.address,
       cfg.name,
-      cfg.logoImageData,
       cfg.description,
       cfg.longDescription,
       cfg.purpose,
       cfg.tags,
       cfg.links,
+      cfg.plugins,
+      cfg.members,
 
       cfg.proposalConfig.voting_delay,
       cfg.proposalConfig.voting_period,

@@ -262,8 +262,14 @@ export const listDaoProposals = async daoId => {
 
   let proposals = [];
 
-  for (const proposalInfo of globalProposals.json.proposals) {
-    proposals.push(convert_proposal(daoId, proposalInfo));
+  if (
+    globalProposals &&
+    globalProposals.json &&
+    globalProposals.json.proposals
+  ) {
+    for (const proposalInfo of globalProposals.json.proposals) {
+      proposals.push(convert_proposal(daoId, proposalInfo));
+    }
   }
 
   return proposals.reverse();
