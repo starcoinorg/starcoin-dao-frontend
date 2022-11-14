@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Button, HStack, Stack, Link, Text } from '@chakra-ui/react';
+import ContentBox from './contentBox';
 import { getMemberNFT } from '../utils/memberPluginAPI';
 
 const MemberCard = ({ daoId }) => {
@@ -36,7 +37,7 @@ const MemberCard = ({ daoId }) => {
   }, [daoId, address]);
 
   return (
-    <Box as={Link} w='60%' p='6' borderWidth='1px' borderColor='whiteAlpha.200' rounded='lg' color='mode.900'>
+    <ContentBox>
       <Stack spacing={4}>
         <Flex as={HStack} spacing={2} align='center'>
           <Text>Address:</Text>
@@ -51,7 +52,7 @@ const MemberCard = ({ daoId }) => {
           <Text variant='value'>{NFT ? NFT.init_sbt : 0}</Text>
         </Flex>
       </Stack>
-    </Box>
+    </ContentBox>
   );
 };
 
