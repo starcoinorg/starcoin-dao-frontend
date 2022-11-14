@@ -1,0 +1,88 @@
+{
+  "name": "@daospace/stake-to-sbt-plugin",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@chakra-ui/react": "~1.6.0",
+    "@choc-ui/chakra-autocomplete": "^5.1.4",
+    "@emotion/react": "^11.1.4",
+    "@emotion/styled": "^11.0.0",
+    "@garfish/bridge-react": "^1.10.2",
+    "@starcoin/starcoin": "^2.1.6",
+    "@starcoin/starmask-onboarding": "^1.2.0",
+    "assert-polyfill": "^0.0.0",
+    "babel-runtime": "^6.26.0",
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.0",
+    "framer-motion": "5.6.0",
+    "history": "^5.1.0",
+    "https-browserify": "^1.0.0",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "os-browserify": "^0.3.0",
+    "process": "0.11.10",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-hook-form": "^6.14.2",
+    "react-images-upload": "^1.2.8",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.1.2",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "typescript": "^4.1.2",
+    "url-polyfill": "^1.1.12",
+    "web-vitals": "^1.1.2",
+    "web3": "^1.6.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.15",
+    "@babel/plugin-proposal-class-properties": "^7.16.0",
+    "@babel/plugin-proposal-decorators": "^7.16.0",
+    "@babel/plugin-transform-react-jsx": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.13.15",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.14.5",
+    "@babel/register": "^7.13.14",
+    "@babel/runtime": "^7.14.6",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
+    "babel-loader": "^8.1.0",
+    "babel-register": "^6.26.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.2.7",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "less": "^3.13.1",
+    "less-loader": "^5.0.0",
+    "mini-css-extract-plugin": "^2.4.2",
+    "react-refresh": "^0.11.0",
+    "rechoir": "^0.8.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.35.0",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^4.2.1"
+  },
+  "dependenciesMeta": {
+    "@garfish/bridge-react": {
+      "injected": true
+    }
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
+    "debug": "cross-env NODE_ENV=development webpack --progress",
+    "build": "cross-env NODE_ENV=production webpack --progress"
+  }
+}
