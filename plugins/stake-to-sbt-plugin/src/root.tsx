@@ -27,14 +27,7 @@ export type AppInfo = {
 };
 
 const RootComponent = (appInfo: AppInfo) => {
-  const routes = (
-    <Switch>
-      <Route exact path="/" component={() => <Redirect to="/home" />} />
-      <Route exact path="/home" component={() => <App />} />
-      <Route exact path="/about" component={() => <App />} />
-      <Route exact path="/vm-sandbox" component={() => <App />} />
-    </Switch>
-  );
+  
   return (
     <SubAppProvider value={{
       initDao: appInfo.dao,
@@ -43,9 +36,9 @@ const RootComponent = (appInfo: AppInfo) => {
       getWalletAddress: appInfo.getWalletAddress,
      }}>
         {location.pathname.includes('loadApp') ? (
-          <MemoryRouter> {routes} </MemoryRouter>
+          <MemoryRouter> <App/> </MemoryRouter>
         ) : (
-          <BrowserRouter basename={appInfo.basename}>{routes}</BrowserRouter>
+          <BrowserRouter basename={appInfo.basename}><App/></BrowserRouter>
         )}
     </SubAppProvider>
   );

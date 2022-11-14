@@ -26,7 +26,7 @@ import {
 import ImageUploader from "react-images-upload";
 import MainViewLayout from '../components/mainViewLayout';
 import { createMemberProposal } from '../utils/memberPluginAPI';
-import { useDao } from '../contexts/DaoContext';
+import { useSubAppContext } from '../contexts/SubAppContext';
 import MemberCard from '../components/memberCard';
 import MemberInviteList from '../components/memberInviteList';
 import MyMemberInviteList from '../components/myMemberInviteList';
@@ -34,7 +34,7 @@ import { fileToBase64 } from '../utils/fileUtils';
 import { isValidateAddress } from '../utils/stcWalletSdk';
 
 const Members = () => {
-    const { dao } = useDao();
+    const { dao } = useSubAppContext();
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -162,7 +162,11 @@ const Members = () => {
             <Tab>All Invite</Tab>
             <Tab>My Invite</Tab>
           </TabList>
-          <TabPanels>
+          <TabPanels
+            w={['100%', null, null, '100%', '80%']}
+            pr={[0, null, null, null, 6]}
+            pb={6}
+          >
             <TabPanel>
               <Flex as={Stack} direction='column' spacing={4} w='100%'>
                 <MemberCard daoId={dao.daoType}/>

@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
-import { FaUsers } from "react-icons/fa";
 import { IDaoPluginContext, IAction } from './extpoints/dao_app';
 import { providers } from "@starcoin/starcoin"
+import AcceptProposalAction from './actions/acceptProposalAction';
+import {VscPackage} from 'react-icons/vsc';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -29,11 +30,11 @@ export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
   ctx.registerApp({
-    name: "member_app",
-    activeWhen: "/members",
-    icon: FaUsers,
+    name: "stake sbt",
+    activeWhen: "/stake_sbt",
+    icon: VscPackage,
     provider: (props) => {
-      props.theme = ctx.theme;
+      props.theme = ctx.theme;  
       props.dao = {
         name: ctx.name,
         address: ctx.address,
@@ -51,6 +52,8 @@ export const setup = (ctx: IDaoPluginContext) => {
       return provider(props)
     },
   })
+
+  // ctx.registerAction(AcceptProposalAction(ctx.daoType))
 }
 
 export const teardown = () => {
@@ -69,7 +72,7 @@ if (!window.__GARFISH__) {
       console.log("register App:", appInfo);
       
       const provider = appInfo.provider({
-        basename: process.env.NODE_ENV === 'production' ? '/plugins/member-proposal-plugin' : '/',
+        basename: process.env.NODE_ENV === 'production' ? '/plugins/install-plugin-proposal-plugin' : '/',
         dom: document,
       });
 
