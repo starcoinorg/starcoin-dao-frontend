@@ -18,7 +18,11 @@ class InstallPluginAction {
       actionType.indexOf('<') + 1,
       actionType.lastIndexOf('>'),
     );
-    const proposalId = params.proposalId;
+    const proposalId = params.proposal_id;
+
+    console.log('InstallPluginAction execute daoType:', daoType);
+    console.log('InstallPluginAction execute pluginType:', pluginType);
+    console.log('InstallPluginAction execute proposalId:', proposalId);
 
     return executeInstallPluginProposal(provider, daoType, pluginType, proposalId)
   }

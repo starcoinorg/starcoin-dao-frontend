@@ -34,7 +34,7 @@ export const DaoActionProvider = ({ children }) => {
       const params = {
         ...action,
         daoType,
-        proposalId,
+        proposal_id: proposalId,
       };
 
       await executeAction(action.actionType, params);

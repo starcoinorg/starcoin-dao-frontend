@@ -7,11 +7,11 @@ class MemberProposalAction {
 
   constructor(ctx: IDaoPluginContext) {
     this.ctx = ctx;
-    this.name = '0x00000000000000000000000000000001::MemberProposalPlugin::MemberProposalAction';
+    this.name = '0x00000000000000000000000000000001::MemberProposalPlugin::MemberJoinAction';
   }
 
   async execute(params: any) {
-    return executeMemberProposal(this.ctx.daoType, params.proposalId)
+    return executeMemberProposal(this.ctx.daoType, params.proposal_id);
   }
 }
 
