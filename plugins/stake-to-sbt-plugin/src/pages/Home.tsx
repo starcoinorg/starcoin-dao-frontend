@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {
     Flex,
     Button,
-    Heading, Switch, Select, HStack, useToast,
+    Heading, Switch, Select, HStack, useToast, Spinner,
 } from '@chakra-ui/react'
 
 import {MdAdd} from 'react-icons/md'
@@ -16,13 +16,13 @@ import {
     queryStakeCount,
     queryStakeList,
     unstakeSBT,
+    unstakeAllSBT,
     nweUnstakeParams,
     queryStakeTokenType,
     QueryStakeTypeResult
 } from "../utils/stakeSBTPluginAPI"
 import TextBox from "../components/TextBox";
 import { useSubAppContext } from '../contexts/SubAppContext'
-import DaoProvider from 'src/contexts/DaoContext'
 
 const HomePage = () => {
     const {dao} = useSubAppContext()
@@ -34,6 +34,7 @@ const HomePage = () => {
    })
     const history = useHistory()
     const [loading, setLoading] = useState(true)
+    const [unStakeloading, setUnStakeloading] = useState(false)
     const [listPages, setListPages] = useState({
         total: 0,
         index: 0,
@@ -47,7 +48,7 @@ const HomePage = () => {
     console.log(dao)
 
     useEffect(() => {
-        queryStakeTokenType(dao.daoType)
+        queryStakeTokenType(dao.address, dao.daoType)
             .then(v => {
                 setTokenTypes(v)
                 setTokenType(v[0].type)
@@ -63,7 +64,7 @@ const HomePage = () => {
         console.log(`fetch ${tokenType}`)
         queryStakeCount({
             dao_type: dao.daoType,
-            plugin_type: tokenType
+            token_type: tokenType
         }).then(v => {
             setListPages({
                 ...listPages,
@@ -71,7 +72,7 @@ const HomePage = () => {
             })
             queryStakeList({
                 dao_type: dao.daoType,
-                plugin_type: tokenType
+                token_type: tokenType
             }).then(setListData)
             .finally(() => setLoading(false))
         }).catch(e => {
@@ -127,7 +128,7 @@ const HomePage = () => {
             {
                 !loading && !listData
                     ?
-                    <Flex direction='column'>
+                    <Flex direction='column' mt={20}>
                         <Heading margin='0 auto'>You haven't stake.</Heading>
                         <TextBox margin='0 auto' mt={4}>
                             Welcome 👏 Let's get stared.
@@ -147,7 +148,7 @@ const HomePage = () => {
                     <Flex direction='column'>
                         {
                             listData?<HStack spacing={6} mb={6}>
-                            <HStack>
+                            <HStack >
                                 <TextBox>Token</TextBox>
                                 <Select>
                                     {
@@ -157,18 +158,27 @@ const HomePage = () => {
                                     }
                                 </Select>
                             </HStack>
-                            <HStack w='10%'>
+                            <HStack >
                                 <TextBox>CreateAt</TextBox>
                                 <Select placeholder='All'>
                                 </Select>
                             </HStack>
-                            <HStack w='10%'>
+                            <HStack>
                                 <TextBox>Expire</TextBox>
                                 <Select placeholder='All'>
                                 </Select>
                             </HStack>
-                            <Button>
-                                Unstake all
+                            <Button 
+                            disabled={unStakeloading}
+                            onClick={
+                                 () =>  {
+                                    setUnStakeloading(true)
+                                    unstakeAllSBT({dao_type:dao.daoType, token_type:tokenType})
+                                    .catch(console.log)
+                                    .finally(() => setUnStakeloading(false))
+                                }
+                            }>
+                                {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
                             </Button>
                         </HStack>:<div/>
                         }

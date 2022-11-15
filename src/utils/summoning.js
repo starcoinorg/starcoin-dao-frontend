@@ -90,6 +90,13 @@ export const pluginPresets = chainId => {
       author: 'dao Space',
       version: '0.1',
     },
+    {
+      presetName: 'StakeToSBTPlugin',
+      presetSubtitle: 'xxx',
+      presetDescription: 'xxx',
+      author: 'dao Space',
+      version: '0.1',
+    },
     // {
     //   presetName: 'any-member-plugin',
     //   presetSubtitle: 'xxx',

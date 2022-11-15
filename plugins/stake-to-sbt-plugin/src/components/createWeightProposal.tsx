@@ -10,6 +10,7 @@ import {
 import AutoCompleteInputWidget from './autoCompleteInput'
 
 const CreateWeightProposalWidget = (props) => {
+
     const toast = useToast()
     const [loading, setLoading] = useState(false)
     const [tokenType, setTokenType] = useState("")
@@ -17,22 +18,17 @@ const CreateWeightProposalWidget = (props) => {
 
     useEffect(() => {
         if (tokenTypeOptions.length == 0) {
-            queryStakeTokenType(props.dao.dao_type).then((v) => {
+            console.log(props.dao.daoType)
+            queryStakeTokenType(props.dao.address, props.dao.daoType).then((v) => {
                 setTokenTypeOptions([...v])
-                setLoading(false)
-            }).catch(e => {
-                console.log(e)
-                setLoading(false)
-            })
+                console.log(v)
+            }).catch(
+                console.log
+            ).finally(()=>setLoading(false))
         }
     }, [])
 
     const onSubmit = async data => {
-
-        console.log(`data ${data}`)
-
-        console.log(newCreateWeightProposalParams())
-        console.log(data)
 
         setLoading(true)
         createWeightProposal({
@@ -67,6 +63,7 @@ const CreateWeightProposalWidget = (props) => {
                 obj={newCreateWeightProposalParams()}
                 loading={loading}
                 onSubmit={onSubmit}
+                rightAddon={new Map().set("action_delay", "min")}
             />
         </Flex>
     )

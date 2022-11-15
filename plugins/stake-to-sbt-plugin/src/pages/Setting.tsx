@@ -16,6 +16,8 @@ import CreateWeightProposalWidget from "../components/createWeightProposal";
 const Setting = () => {
     const {dao} = useSubAppContext()
 
+    console.log(dao)
+
     return (
         <MainViewLayout
             header='Stake SBT Setting'
@@ -23,8 +25,8 @@ const Setting = () => {
         >
             <Tabs size='md' variant='enclosed'>
                 <TabList>
-                    <Tab>Weight</Tab>
-                    <Tab>Accept</Tab>
+                    <Tab>Create weight propoal</Tab>
+                    <Tab>Create accept propoal</Tab>
                 </TabList>
                 <TabPanels>
                     <TabPanel>

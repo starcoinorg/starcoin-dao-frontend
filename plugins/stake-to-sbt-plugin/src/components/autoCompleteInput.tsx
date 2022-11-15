@@ -40,10 +40,10 @@ const AutoCompleteInputWidget = (props) => {
                             h='38px'
                             variant="filled"
                             placeholder="Select..."
-                            background=''
+                            background='#03051b'
                             border=''
                             bordeer-color=''
-                            _focus={{bg: "white"}}
+                            
                         />
                         <AutoCompleteList>
                             {props.options.map((t, i) => (

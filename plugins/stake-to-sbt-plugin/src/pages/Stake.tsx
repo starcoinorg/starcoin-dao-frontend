@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
     Box,
+    FormHelperText,
     useToast,
 } from '@chakra-ui/react';
 
@@ -14,6 +15,7 @@ import {
 } from "../utils/stakeSBTPluginAPI";
 import { useSubAppContext } from '../contexts/SubAppContext'
 import AutoCompleteInputWidget from "../components/autoCompleteInput";
+import TextBox from '../components/TextBox';
 
 const Stake = () => {
 
@@ -30,10 +32,11 @@ const Stake = () => {
     const [tokenTypeOptions, setTokenTypeOptions] = useState<Array<QueryStakeTypeResult>>([])
     const [tokenType, setTokenType] = useState("")
     const [tokenTypeLimits, setTokenTypeLimits] = useState<Map<string, QueryTokenStakeLimitResult>>(new Map())
+    const [expectSBT, setExpectSBT] = useState(0)     
 
     useEffect(() => {
         setLoading(true)
-        queryStakeTokenType(dao.daoType)
+        queryStakeTokenType(dao.address, dao.daoType)
             .then(v => setTokenTypeOptions([...v]))
             .catch(console.log)
             .finally(() => setLoading(false))
@@ -41,7 +44,7 @@ const Stake = () => {
 
     const onTokenTypeChange = type => {
         setTokenType(type)
-        queryTokenStakeLimit(dao.daoType, type).then(limit => {
+        queryTokenStakeLimit(dao.address, dao.daoType, type).then(limit => {
             setTokenTypeLimits(new Map(tokenTypeLimits).set(type, limit))
         })
     }
@@ -50,9 +53,9 @@ const Stake = () => {
         setLoading(true);
         stakeSBT({
             ...data,
-            lock_time: 60000n,
+            lock_time: tokenTypeLimits.get(tokenType)?.lock_time,
             dao_type: dao.daoType,
-            plugin_type: tokenType
+            token_type: tokenType
         }).then(v => {
             console.log(v)
             toast({
@@ -60,6 +63,7 @@ const Stake = () => {
                 status: 'success',
             })
         }).catch(e => {
+            console.log(e)
             toast({
                 description: `create upgrade proposa error \n err: ${e}`,
                 status: 'error',
@@ -86,7 +90,18 @@ const Stake = () => {
                     helper={helper}
                 />
 
-                <HookForm obj={{amount: 0n}} loading={loading} onSubmit={onSubmit}/>
+                <HookForm 
+                obj={{amount: 0n}}
+                 loading={loading}
+                  onChange={(k,v:number) => {
+                    const limit = tokenTypeLimits.get(tokenType)?.weight
+                    if (limit != undefined) {
+                        setExpectSBT(v / 1000000000 * Number(limit))
+                    }
+                }} 
+                onSubmit={onSubmit}
+                formHelperText={`Expect sbt ${expectSBT}`}
+                />
             </Box>
         </MainViewLayout>
     )
