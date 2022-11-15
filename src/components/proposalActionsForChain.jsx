@@ -82,7 +82,7 @@ const ProposalActionsForChain = ({
   const { canInteract, interactErrors } = useCanInteract({
     checklist: ['canSponsorAndVote'],
   });
-  const { executeAction } = useDaoAction();
+  const { executeProposal } = useDaoAction();
   const [enoughDeposit, setEnoughDeposit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nextProposalToProcess, setNextProposal] = useState(null);
@@ -299,9 +299,11 @@ const ProposalActionsForChain = ({
 
     console.log('proposal:', proposal);
 
-    await executeAction('0x1::MemberProposalPlugin::MemberProposalAction', {
-      proposalId: proposal.proposalId.proposalNumber,
-    });
+    await executeProposal(
+      injectedProvider,
+      proposal.proposalId.daoId,
+      proposal.proposalId.proposalNumber,
+    );
 
     setLoading(false);
   };

@@ -4,6 +4,7 @@ import RootComponent from './root';
 import { VscExtensions } from "react-icons/vsc";
 import { IDaoPluginContext, IAction } from './extpoints/dao_app';
 import { providers } from "@starcoin/starcoin"
+import InstallPluginAction from './actions/install_plugin_action';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -51,6 +52,8 @@ export const setup = (ctx: IDaoPluginContext) => {
       return provider(props)
     },
   })
+
+  ctx.registerAction(new InstallPluginAction(ctx))
 }
 
 export const teardown = () => {

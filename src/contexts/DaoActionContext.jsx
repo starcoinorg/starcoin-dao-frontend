@@ -1,9 +1,9 @@
-import React, { useContext, createContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, createContext, useState } from 'react';
+import { getDaoActionByProposalId } from '../utils/proposalApi';
+
 export const DaoActionContext = createContext();
 
 export const DaoActionProvider = ({ children }) => {
-  const { daoid, daochain } = useParams();
   const [daoActions, setDaoActions] = useState([]);
 
   const registerAction = async actionInfo => {
@@ -12,10 +12,36 @@ export const DaoActionProvider = ({ children }) => {
   };
 
   const executeAction = async (actionName, actionArgs) => {
-    const action = daoActions.find(action => action.name === actionName);
+    const action = daoActions.find(action =>
+      actionName.startsWith(action.name),
+    );
     if (action) {
       console.log(`executeAction ${actionName}`);
       await action.execute(actionArgs);
+    } else {
+      console.log(`executeAction ${actionName} not found`);
+    }
+  };
+
+  const executeProposal = async (provider, daoType, proposalId) => {
+    const action = await getDaoActionByProposalId(
+      provider,
+      daoType,
+      proposalId,
+    );
+
+    if (action) {
+      const params = {
+        ...action,
+        daoType,
+        proposalId,
+      };
+
+      await executeAction(action.actionType, params);
+    } else {
+      throw new Error(
+        `executeProposal ${daoType}/${proposalId} not found action`,
+      );
     }
   };
 
@@ -23,7 +49,7 @@ export const DaoActionProvider = ({ children }) => {
     <DaoActionContext.Provider
       value={{
         registerAction,
-        executeAction,
+        executeProposal,
       }}
     >
       {children}
@@ -32,10 +58,10 @@ export const DaoActionProvider = ({ children }) => {
 };
 
 export const useDaoAction = () => {
-  const { registerAction, executeAction } = useContext(DaoActionContext);
+  const { registerAction, executeProposal } = useContext(DaoActionContext);
 
   return {
     registerAction,
-    executeAction,
+    executeProposal,
   };
 };
