@@ -1,0 +1,11 @@
+[package]
+name = "MemberPlugin"
+version = "0.1.0"
+
+[addresses]
+StarcoinFramework = "0x1"
+MemberPlugin = "0xce38a3D11bb357ceA0cc60a62b9D11dB"
+
+[dependencies]
+StarcoinFramework = {git = "https://github.com/starcoinorg/starcoin-framework.git", rev="cf1deda180af40a8b3e26c0c7b548c4c290cd7e7"}
+FreePlugin = {git = "https://github.com/freepai/free-plugin.git", rev="main"}
