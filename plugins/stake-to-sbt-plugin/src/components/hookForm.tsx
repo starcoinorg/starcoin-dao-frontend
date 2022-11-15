@@ -5,6 +5,7 @@ import {
     Input,
     InputGroup,
     InputLeftAddon,
+    InputRightAddon,
     NumberInput,
     NumberInputField,
     Spinner
@@ -50,8 +51,6 @@ const parseItems = (obj, prex, rules) => {
 
         let valueType = typeof v
 
-//        console.log(`${keys[i]} valueTypee ${valueTypee} ${valueTypee === "bigint"}`)
-
         if (valueType === "object") {
             let sub = parseItems(v, keys[i], rules)
             items = items.concat(keys[i] === "obj" ? sub : [{
@@ -70,7 +69,6 @@ const parseItems = (obj, prex, rules) => {
                     valueType: valueType,
                     type: ItemType.Input
                 })
-                console.log(items)
             }
         }
     })
@@ -94,6 +92,13 @@ const HookForm = (props) => {
             direction='column'>
             {
                 items.map((v, i) => {
+                    
+                    let rightAddon = undefined
+
+                    if (props.rightAddon) {
+                        rightAddon = props.rightAddon.get(v.name)
+                    }
+
                     return v.type === ItemType.Title
                         ? <TextBox key={i.toString()} size='xs' mb={2} mt={2}>
                             {v.title}
@@ -105,7 +110,7 @@ const HookForm = (props) => {
                                         {v.title}
                                     </TextBox>
                                 </InputLeftAddon>
-                                {   // BUG
+                                {  
                                     v.valueType === "bigint" || v.valueType === "number"
                                         ?
                                         <NumberInput w='100%'
@@ -115,17 +120,37 @@ const HookForm = (props) => {
                                                 ref={register({required: true})}
                                                 name={v.name}
                                                 borderTopStartRadius='0'
+                                                onChange = {(v1) => {
+                                                    if (props.onChange) {
+                                                        props.onChange(v.name, v1.target.value)
+                                                    }
+                                                }}   
                                                 borderBottomStartRadius='0'
+                                                borderTopEndRadius={rightAddon?0:5}
+                                                borderBottomEndRadius={rightAddon?0:5}
                                             />
                                         </NumberInput>
                                         :
                                         <Input ref={register({required: true})}
                                                defaultValue={v.defaultValue}
                                                placeholder={v.title + "..."}
+                                               onChange = {(v) => {
+                                               }}
                                                isReadOnly={props.rules ? props.rules.get(v.name) : false}
                                                name={v.name}/>
                                 }
+                                {
+                                 rightAddon ? 
+                                 <InputRightAddon bg='transparent' w='6%'>
+                                 <TextBox size='sm'>
+                                    {rightAddon}
+                                 </TextBox>
+                             </InputRightAddon> :<></>  
+                                }
                             </InputGroup>
+                            <FormHelperText>
+                                {props.formHelperText}
+                            </FormHelperText>
                         </FormControl>
                 })
             }

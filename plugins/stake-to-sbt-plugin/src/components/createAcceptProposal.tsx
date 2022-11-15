@@ -20,8 +20,10 @@ const CreateAcceptPropoalWidget = (props) => {
             position: 'top-right',
             isClosable: true,
         })
+        data.propsal.action_delay =  data.propsal.action_delay * 60 *1000
         createTokenAcceptProposal({
             ...data,
+
             dao_type: props.dao.daoType,
         }).then((v) => {
             toast({
@@ -47,6 +49,7 @@ const CreateAcceptPropoalWidget = (props) => {
                 obj={newCreateTokenAcceptProposalParams()}
                 loading={loading}
                 onSubmit={onSubmit}
+                rightAddon={new Map().set("propsal.action_delay", "min")}
             />
         </Flex>
     )

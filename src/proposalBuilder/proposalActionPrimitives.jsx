@@ -257,7 +257,7 @@ export const VotingActive = ({
             key={index}
             votes={item.title}
             sequenceid={item.sequenceId}
-            onClick={() => voteNo(item.sequenceId)}
+            onClick={() => voteYes(item.sequenceId)}
             optionsdata={item}
             isDisabled={
               disableAll ||
