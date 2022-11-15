@@ -5,9 +5,9 @@ import {
     Route,Redirect
 } from 'react-router-dom'
 
-import HomePage from "../pages/home";
-import Stake from "../pages/stake";
-import Setting from "../pages/setting";
+import HomePage from "../pages/Home";
+import Stake from "../pages/Stake";
+import Setting from "../pages/Setting";
 import IndexPage from '../pages/index';
 
 const Router = () => {
