@@ -24,7 +24,7 @@ export const listAllOffers = async (daoId:string) => {
     method: 'state.get_resource',
     params: [
       daoAddress,
-      `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::OfferMemeber<${daoId}>>`,
+      `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::MemeberOffer<${daoId}>>`,
       {
         decode: true,
       },
@@ -47,7 +47,7 @@ export const listUserOffers = async (daoId:string, address: string) => {
       method: 'state.get_resource',
       params: [
         daoAddress,
-        `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::OfferMemeber<${daoId}>>`,
+        `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::MemeberOffer<${daoId}>>`,
         {
           decode: true,
         },
@@ -56,12 +56,14 @@ export const listUserOffers = async (daoId:string, address: string) => {
   
     let offers = [];
   
-    for (const offer of globalCheckpoints.json.offers) {
+    if (globalCheckpoints && globalCheckpoints.json.offers) {
+      for (const offer of globalCheckpoints.json.offers) {
         if (offer.for === address) {
             offers.push(parseOffer(offer));
         }
+      }
     }
-  
+    
     return offers.reverse();
 };
 
@@ -184,7 +186,7 @@ export async function executeMemberProposal(daoType:string, proposalId:string): 
 
 export async function doAccecptOffer(daoType:string): Promise<string> {
     try {
-        const functionId = '0x1::DAOSpace::join_member_entry'
+        const functionId = '0x1::DAOSpace::accept_member_offer_entry'
         const tyArgs = [daoType]
         const args = []
 
