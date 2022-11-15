@@ -197,8 +197,9 @@ function convert_proposal(daoType, proposalInfo) {
     minionAddress: minion_address,
     categoryId: 1,
     votingType: 'YES_NO_ABSTAIN',
-    title: web3.utils.hexToString(proposalInfo.description),
-    description: web3.utils.hexToString(proposalInfo.description),
+    title: web3.utils.hexToString(proposalInfo.title),
+    introduction: web3.utils.hexToString(proposalInfo.introduction),
+    extend: web3.utils.hexToString(proposalInfo.extend),
     proposalVotingChoices: [
       {
         sequenceId: 1,
@@ -311,4 +312,51 @@ export const get_member_power = async (memberAddress, daoId, state_root) => {
   return {
     totalVotingPower: nft.json.nft.vec[0].body.sbt.value,
   };
+};
+
+export const listDaoActions = async (provider, daoType) => {
+  const daoAddress = daoType.substring(0, daoType.indexOf('::'));
+
+  const proposalActions = await provider.send('state.list_resource', [
+    daoAddress,
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::DAOSpace::ProposalActions',
+      ],
+      decode: true,
+    },
+  ]);
+
+  let retActions = new Array();
+  for (const key in proposalActions.resources) {
+    const actions = proposalActions.resources[key];
+    const actionType = key.substring(
+      key.indexOf('<') + 1,
+      key.lastIndexOf('>'),
+    );
+
+    for (const action of actions.json.actions) {
+      retActions.push({
+        ...action,
+        actionType,
+      });
+    }
+  }
+
+  return retActions;
+};
+
+export const getDaoActionByProposalId = async (
+  provider,
+  daoType,
+  proposalId,
+) => {
+  const daoActions = await listDaoActions(provider, daoType);
+  for (const action of daoActions) {
+    if (action.proposal_id === proposalId) {
+      return action;
+    }
+  }
+
+  return null;
 };

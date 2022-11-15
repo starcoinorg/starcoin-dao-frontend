@@ -188,6 +188,49 @@ export async function installPluginProposal(
   }
 }
 
+export async function executeInstallPluginProposal(
+  provider: providers.JsonRpcProvider,
+  daoType:string,
+  pluginType: string,
+  proposalId: string,
+) :Promise<string>  {
+  try {
+      const tokens = pluginType.split('::');
+      const functionId = `${tokens[0]}::${tokens[1]}::execute_proposal_entry`
+      const tyArgs = [daoType, pluginType]
+      const args = [
+        proposalId,
+      ]
+
+      console.log("createMemberProposal tyArgs:", tyArgs);
+      console.log("createMemberProposal args:", args);
+
+      const nodeUrl = nodeUrlMap[provider.network.chainId];
+      console.log("nodeUrl:", nodeUrl);
+
+      const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(functionId, tyArgs, args, nodeUrl)
+      // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+      const payloadInHex = (function () {
+          const se = new bcs.BcsSerializer()
+          scriptFunction.serialize(se)
+          return hexlify(se.getBytes())
+      })()
+
+      const txParams = {
+          data: payloadInHex,
+          expiredSecs: 10
+      }
+
+      console.log("txParams:", txParams);
+      console.log("starcoinProvider:", provider);
+      const transactionHash = await provider.getSigner().sendUncheckedTransaction(txParams)
+      return transactionHash
+  } catch (error) {
+      console.log("installPluginProposal error:", error);
+      throw error
+  }
+}
+
 export async function starPlugin(
   provider: providers.JsonRpcProvider,
   pluginType: string,

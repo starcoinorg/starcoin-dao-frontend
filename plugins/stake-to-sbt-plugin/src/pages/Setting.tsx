@@ -9,12 +9,12 @@ import {
 
 import MainViewLayout from '../components/mainViewLayout';
 import Back from "../components/back";
-import {useDao} from '../contexts/DaoContext';
+import { useSubAppContext } from '../contexts/SubAppContext'
 import CreateAcceptProposalWidget from '../components/createAcceptProposal'
 import CreateWeightProposalWidget from "../components/createWeightProposal";
 
 const Setting = () => {
-    const {dao} = useDao()
+    const {dao} = useSubAppContext()
 
     return (
         <MainViewLayout

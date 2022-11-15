@@ -12,12 +12,12 @@ import {
     QueryStakeTypeResult,
     stakeSBT, queryTokenStakeLimit, QueryTokenStakeLimitResult
 } from "../utils/stakeSBTPluginAPI";
-import {useDao} from '../contexts/DaoContext';
+import { useSubAppContext } from '../contexts/SubAppContext'
 import AutoCompleteInputWidget from "../components/autoCompleteInput";
 
 const Stake = () => {
 
-    const {dao} = useDao();
+    const {dao} = useSubAppContext();
     const toast = useToast({
         title: 'Tips',
         duration: 3000,

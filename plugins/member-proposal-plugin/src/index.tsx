@@ -4,6 +4,7 @@ import RootComponent from './root';
 import { FaUsers } from "react-icons/fa";
 import { IDaoPluginContext, IAction } from './extpoints/dao_app';
 import { providers } from "@starcoin/starcoin"
+import MemberProposalAction from './actions/member_proposal_action';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -29,7 +30,7 @@ export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
   ctx.registerApp({
-    name: "member_app",
+    name: "members",
     activeWhen: "/members",
     icon: FaUsers,
     provider: (props) => {
@@ -51,6 +52,8 @@ export const setup = (ctx: IDaoPluginContext) => {
       return provider(props)
     },
   })
+
+  ctx.registerAction(new MemberProposalAction(ctx));
 }
 
 export const teardown = () => {

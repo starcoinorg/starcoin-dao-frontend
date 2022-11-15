@@ -103,6 +103,8 @@ export async function createMemberProposal(
         const tyArgs = [daoType]
         const args = [
             description,
+            description,
+            "{}",
             member,
             image_data,
             image_url,

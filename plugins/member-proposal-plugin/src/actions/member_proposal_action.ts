@@ -1,17 +1,17 @@
-import { IDAO } from '../extpoints/dao_app';
+import { IDaoPluginContext } from '../extpoints/dao_app';
 import { executeMemberProposal } from '../utils/memberPluginAPI';
 
 class MemberProposalAction {
-  dao: IDAO;
+  ctx: IDaoPluginContext;
   name: string;
 
-  constructor(dao: IDAO) {
-    this.dao = dao;
-    this.name = '0x1::MemberProposalPlugin::MemberProposalAction';
+  constructor(ctx: IDaoPluginContext) {
+    this.ctx = ctx;
+    this.name = '0x00000000000000000000000000000001::MemberProposalPlugin::MemberProposalAction';
   }
 
   async execute(params: any) {
-    return executeMemberProposal(this.dao.daoType, params.proposalId)
+    return executeMemberProposal(this.ctx.daoType, params.proposalId)
   }
 }
 
