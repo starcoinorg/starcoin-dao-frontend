@@ -7,7 +7,7 @@ on:
       - 'v*'
 
 jobs:
-  deploy:
+  deploy-live:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
