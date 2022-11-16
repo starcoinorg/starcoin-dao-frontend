@@ -92,7 +92,7 @@
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "install-plugins-deps": "pnpm install",
+    "install-plugins-deps": "pnpm --filter @daospace/*-plugin install",
     "build-plugins": "pnpm --filter @daospace/*-plugin run build"
   },
   "browserslist": {
