@@ -2,6 +2,9 @@
   "name": "daospace",
   "version": "2.0.1",
   "private": true,
+  "workspaces": [
+    "plugins/*"
+  ],
   "dependencies": {
     "@chakra-ui/icons": "^2.0.4",
     "@chakra-ui/react": "~1.6.0",
@@ -92,8 +95,7 @@
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "install-plugins-deps": "pnpm --filter @daospace/*-plugin install",
-    "build-plugins": "pnpm --filter @daospace/*-plugin run build"
+    "build-plugins": "yarn workspaces run build"
   },
   "browserslist": {
     "production": [
@@ -141,7 +143,6 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
-    "pnpm": "7.6.0",
     "prettier": "^1.19.1",
     "url-polyfill": "^1.1.12",
     "webpack-cli": "^4.10.0"
