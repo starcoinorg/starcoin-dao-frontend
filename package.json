@@ -88,7 +88,9 @@
     "less-loader": "^5.0.0",
     "babel-types": "latest",
     "image-size": "latest",
-    "jsesc": "latest"
+    "jsesc": "latest",
+    "babel-core": "latest",
+    "supports-color": "latest"
   },
   "scripts": {
     "start": "npm run build-plugins && craco start",
