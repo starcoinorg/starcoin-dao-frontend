@@ -13,23 +13,19 @@
     "babel-runtime": "^6.26.0",
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.0",
-    "framer-motion": "5.6.0",
-    "history": "^5.1.0",
     "https-browserify": "^1.0.0",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "os-browserify": "^0.3.0",
     "process": "0.11.10",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-icons": "^4.1.0",
     "react-images-upload": "^1.2.8",
     "react-router-dom": "^5.2.0",
-    "react-icons": "^4.1.0",
     "redux": "^4.1.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "typescript": "^4.1.2",
     "url-polyfill": "^1.1.12",
-    "web-vitals": "^1.1.2",
     "web3": "^1.6.1"
   },
   "browserslist": {
@@ -64,14 +60,12 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
     "less": "^3.13.1",
-    "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^2.4.2",
     "react-refresh": "^0.11.0",
     "rechoir": "^0.8.0",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.35.0",
-    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.2.1"
   },
   "dependenciesMeta": {
@@ -82,7 +76,6 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "debug": "cross-env NODE_ENV=development webpack --progress",
-    "build": "cross-env NODE_ENV=production webpack --progress",
-    "install": "npm install"
+    "build": "cross-env NODE_ENV=production webpack --progress"
   }
 }
