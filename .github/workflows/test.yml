@@ -6,27 +6,29 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [15]
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Node
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: '14'
-          cache: 'yarn'
-
-      - name: clean cache
-        run: yarn cache clean
+    - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2.2.4
+      with:
+        version: 7
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
 
       - name: Install
-        run: yarn install && yarn run install-plugins
+        run: pnpm install && pnpm run install-plugins
         
       - name: Build
-        run: yarn build
+        run: pnpm build
         env:
           CI: false
           NODE_ENV: 'production'
 
       - name: Test
-        run: yarn test
+        run: pnpm test
