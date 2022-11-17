@@ -15,20 +15,21 @@ jobs:
     - uses: pnpm/action-setup@v2.2.4
       with:
         version: 7
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
 
-      - name: Install
-        run: pnpm install && pnpm run install-plugins
-        
-      - name: Build
-        run: pnpm build
-        env:
-          CI: false
-          NODE_ENV: 'production'
+    - name: Install
+      run: pnpm install && pnpm run install-plugins
+      
+    - name: Build
+      run: pnpm build
+      env:
+        CI: false
+        NODE_ENV: 'production'
 
-      - name: Test
-        run: pnpm test
+    - name: Test
+      run: pnpm test
