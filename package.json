@@ -108,7 +108,7 @@
     "eject": "craco eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "install-plugins": "pnpm --filter @daospace/*-plugin run install",
+    "install-plugins-deps": "./scripts/install_plugins_deps.sh",
     "build-plugins": "pnpm --filter @daospace/*-plugin run build"
   },
   "browserslist": {

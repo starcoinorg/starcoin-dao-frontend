@@ -20,8 +20,11 @@ jobs:
       run: yarn cache clean
 
     - name: Install
-      run: yarn install && ./scripts/install_plugins_deps.sh
+      run: yarn install
       
+    - name: Install plugin deps
+      run: yarn install-plugins-deps
+
     - name: Build
       run: yarn build
       env:
