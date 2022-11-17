@@ -17,7 +17,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install
-        run: yarn install
+        run: yarn install && ./scripts/install_plugins_deps.sh
         
       - name: Build
         run: yarn build
