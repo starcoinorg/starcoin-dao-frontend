@@ -27,6 +27,3 @@ jobs:
       env:
         CI: false
         NODE_ENV: 'production'
-
-    - name: Test
-      run: yarn test
