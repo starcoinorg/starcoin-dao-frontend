@@ -129,24 +129,28 @@ export const DaoPluginProvider = ({ children }) => {
         continue;
       }
 
-      const app = await Garfish.loadApp(plugin_info.name, {
-        cache: true,
-        preCompiled: true,
-        entry: adapterURI(plugin_info.js_entry_uri),
-      });
+      try {
+        const app = await Garfish.loadApp(plugin_info.name, {
+          cache: true,
+          preCompiled: true,
+          entry: adapterURI(plugin_info.js_entry_uri),
+        });
 
-      const plugin = app?.cjsModules.exports;
+        const plugin = app?.cjsModules.exports;
 
-      const ctx = new PluginContext(
-        app,
-        plugin_info.name,
-        daoMetaData.daoAddress,
-        daoMetaData.daoId,
-        theme,
-      );
-      plugin?.setup(ctx);
+        const ctx = new PluginContext(
+          app,
+          plugin_info.name,
+          daoMetaData.daoAddress,
+          daoMetaData.daoId,
+          theme,
+        );
+        plugin?.setup(ctx);
 
-      loadedPlugins.push(plugin);
+        loadedPlugins.push(plugin);
+      } catch (e) {
+        console.error(`Error in load plugin ${plugin_info.name}`, e);
+      }
     }
 
     setloadedPlugins(loadedPlugins);

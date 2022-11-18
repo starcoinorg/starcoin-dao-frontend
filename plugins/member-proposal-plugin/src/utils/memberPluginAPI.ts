@@ -7,6 +7,7 @@ import { utils as web3Utils } from 'web3'
 const parseOffer = offer => {
   console.log('offer', offer)
   const { offered, time_lock } = offer;
+  
   return {
     for_user: offer.for,
     offered_image_data: offered.image_data,
@@ -33,8 +34,10 @@ export const listAllOffers = async (daoId:string) => {
 
   let offers = [];
 
-  for (const offer of globalCheckpoints.json.offers) {
-    offers.push(parseOffer(offer));
+  if (globalCheckpoints && globalCheckpoints.json.offers) {
+    for (const offer of globalCheckpoints.json.offers) {
+      offers.push(parseOffer(offer));
+    }
   }
 
   return offers.reverse();
