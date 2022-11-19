@@ -107,10 +107,9 @@ export const DaoPluginProvider = ({ children }) => {
     }
   }
 
-  const loadDaoPlugins = async () => {
-    const garfishInstance = await GarfishInit(path);
-
+  const loadDaoPlugins = async garfishInstance => {
     const daoPlugins = daoMetaData.installedPlugins;
+
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
       console.log('plugin_info:', plugin_info);
@@ -153,17 +152,22 @@ export const DaoPluginProvider = ({ children }) => {
     setPluginLoaded(true);
   };
 
-  const unloadAllDaoPlugins = async () => {
-    if (garfishInstance) {
-      garfishInstance.apps.forEach(app => {
-        garfishInstance.unloadApp(app.name);
-      });
+  const unloadAllDaoPlugins = async garfishInstance => {
+    for (const i in loadedPlugins) {
+      const plugin = loadedPlugins[i];
+
+      try {
+        plugin?.teardown();
+      } catch (e) {
+        console.error(`Error in unload plugin ${plugin.name}`, e);
+      }
     }
 
-    setGarfishInstance(null);
     setloadedPlugins([]);
     setPluginMenus([]);
     setPluginLoaded(false);
+
+    garfishInstance.unloadApps();
   };
 
   useEffect(() => {
@@ -176,10 +180,16 @@ export const DaoPluginProvider = ({ children }) => {
       return;
     }
 
-    loadDaoPlugins();
+    const garfishInstance = GarfishInit(path);
+    if (!garfishInstance) {
+      console.error('Garfish init failed!');
+      return;
+    }
+
+    loadDaoPlugins(garfishInstance);
 
     return () => {
-      unloadAllDaoPlugins();
+      unloadAllDaoPlugins(garfishInstance);
     };
   }, [daochain, daoid, daoMetaData]);
 

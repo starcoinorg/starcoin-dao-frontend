@@ -19,6 +19,25 @@ export function AppLoader() {
       return app;
     };
 
+    garfish.unloadApps = async function() {
+      const apps = this.cacheApps;
+
+      for (const appName in apps) {
+        const app = apps[appName];
+
+        if (app) {
+          try {
+            await app.unmount();
+          } catch (e) {
+            console.log('Error in unmount app, error:', e);
+          }
+        }
+      }
+
+      this.cacheApps = {};
+      this.appInfos = {};
+    };
+
     return {
       name: 'app-loader',
       version: 'v0.1.0',

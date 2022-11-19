@@ -10,7 +10,7 @@ import { GarfishBrowserSnapshot } from '@garfish/browser-snapshot';
 import { def, warn, hasOwn, inBrowser, __GARFISH_FLAG__ } from '@garfish/utils';
 import { AppLoader } from './utils/garfish/appLoaderPlugin';
 
-export const GarfishInit = async basename => {
+export const GarfishInit = basename => {
   const garfishInstance = new Garfish({
     plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishBrowserSnapshot()],
   });
