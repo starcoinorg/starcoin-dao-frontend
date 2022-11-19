@@ -1,20 +1,28 @@
-import Garfish from 'garfish';
 import React from 'react';
 import * as ReactDom from 'react-dom';
 import * as ReactRouterDom from 'react-router-dom';
 import { GarfishEsModule } from '@garfish/es-module';
 import { GarfishCssScope } from '@garfish/css-scope';
+import Garfish from '@garfish/core';
+import { GarfishRouter } from '@garfish/router';
+import { GarfishBrowserVm } from '@garfish/browser-vm';
+import { GarfishBrowserSnapshot } from '@garfish/browser-snapshot';
+import { def, warn, hasOwn, inBrowser, __GARFISH_FLAG__ } from '@garfish/utils';
 import { AppLoader } from './utils/garfish/appLoaderPlugin';
 
 export const GarfishInit = async basename => {
-  Garfish.setExternal({
+  const garfishInstance = new Garfish({
+    plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishBrowserSnapshot()],
+  });
+
+  garfishInstance.setExternal({
     react: React,
     'react-dom': ReactDom,
     'react-router-dom': ReactRouterDom,
     starcoin: window.starcoin,
   });
 
-  Garfish.channel.on('event', msg => {
+  garfishInstance.channel.on('event', msg => {
     console.log(`主应用收到消息：${msg}`);
   });
 
@@ -43,8 +51,13 @@ export const GarfishInit = async basename => {
   };
 
   try {
-    Garfish.run(config);
+    if (inBrowser()) {
+      def(window, '__GARFISH__', true);
+    }
+
+    return garfishInstance.run(config);
   } catch (error) {
     console.log('garfish init error', error);
+    return null;
   }
 };

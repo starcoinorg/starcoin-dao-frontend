@@ -1,4 +1,3 @@
-import Garfish from 'garfish';
 import {
   useContext,
   createContext,
@@ -7,6 +6,7 @@ import {
   useCallback,
   memo,
 } from 'react';
+import Garfish from 'garfish';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { GarfishInit } from '../garfishInit';
 import { useMetaData } from './MetaDataContext';
@@ -28,12 +28,13 @@ const PluginOutlet = memo(() => {
 
 export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
-  const { daoid, daochain } = useParams();
+  const { daochain, daoid } = useParams();
   const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
   const { injectedProvider, address } = useInjectedProvider();
   const { theme } = useCustomTheme();
   const { registerAction } = useDaoAction();
 
+  const [garfishInstance, setGarfishInstance] = useState(null);
   const [loadedPlugins, setloadedPlugins] = useState([]);
   const [pluginMenus, setPluginMenus] = useState([]);
   const [pluginLoaded, setPluginLoaded] = useState(false);
@@ -51,7 +52,8 @@ export const DaoPluginProvider = ({ children }) => {
   };
 
   class PluginContext {
-    constructor(appInstance, name, address, daoType, theme) {
+    constructor(garfishInstance, appInstance, name, address, daoType, theme) {
+      this.garfishInstance = garfishInstance;
       this.appInstance = appInstance;
       this.name = name;
       this.address = address;
@@ -77,7 +79,7 @@ export const DaoPluginProvider = ({ children }) => {
       }
 
       // 调用 Garfish.registerApp 动态注册子应用
-      Garfish.registerApp({
+      this.garfishInstance.registerApp({
         name: this.name,
         basename: basename,
         activeWhen: activeWhen,
@@ -105,17 +107,8 @@ export const DaoPluginProvider = ({ children }) => {
     }
   }
 
-  const loadDaoPlugins = useCallback(async () => {
-    if (!daoMetaData) {
-      return;
-    }
-
-    if (pluginLoaded) {
-      console.log('plugin already loaded!');
-      return;
-    }
-
-    await GarfishInit(path);
+  const loadDaoPlugins = async () => {
+    const garfishInstance = await GarfishInit(path);
 
     const daoPlugins = daoMetaData.installedPlugins;
     for (const i in daoPlugins) {
@@ -130,7 +123,7 @@ export const DaoPluginProvider = ({ children }) => {
       }
 
       try {
-        const app = await Garfish.loadApp(plugin_info.name, {
+        const app = await garfishInstance.loadApp(plugin_info.name, {
           cache: true,
           preCompiled: true,
           entry: adapterURI(plugin_info.js_entry_uri),
@@ -139,6 +132,7 @@ export const DaoPluginProvider = ({ children }) => {
         const plugin = app?.cjsModules.exports;
 
         const ctx = new PluginContext(
+          garfishInstance,
           app,
           plugin_info.name,
           daoMetaData.daoAddress,
@@ -153,18 +147,46 @@ export const DaoPluginProvider = ({ children }) => {
       }
     }
 
+    setGarfishInstance(garfishInstance);
     setloadedPlugins(loadedPlugins);
     setPluginMenus(pluginMenus);
     setPluginLoaded(true);
-  }, [daoMetaData]);
+  };
+
+  const unloadAllDaoPlugins = async () => {
+    if (garfishInstance) {
+      garfishInstance.apps.forEach(app => {
+        garfishInstance.unloadApp(app.name);
+      });
+    }
+
+    setGarfishInstance(null);
+    setloadedPlugins([]);
+    setPluginMenus([]);
+    setPluginLoaded(false);
+  };
 
   useEffect(() => {
+    if (!daoMetaData) {
+      return;
+    }
+
+    if (pluginLoaded) {
+      console.log('plugin already loaded!');
+      return;
+    }
+
     loadDaoPlugins();
-  }, [loadDaoPlugins]);
+
+    return () => {
+      unloadAllDaoPlugins();
+    };
+  }, [daochain, daoid, daoMetaData]);
 
   return (
     <DaoPluginContext.Provider
       value={{
+        garfishInstance,
         pluginLoaded,
         pluginMenus,
         PluginOutlet,
@@ -176,11 +198,15 @@ export const DaoPluginProvider = ({ children }) => {
 };
 
 export const useDaoPlugin = () => {
-  const { pluginLoaded, pluginMenus, PluginOutlet } = useContext(
-    DaoPluginContext,
-  );
+  const {
+    garfishInstance,
+    pluginLoaded,
+    pluginMenus,
+    PluginOutlet,
+  } = useContext(DaoPluginContext);
 
   return {
+    garfishInstance,
     pluginLoaded,
     pluginMenus,
     PluginOutlet,
