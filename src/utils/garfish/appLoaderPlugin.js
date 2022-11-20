@@ -22,6 +22,7 @@ export function AppLoader() {
 
     garfish.unloadApps = async function() {
       const apps = this.cacheApps;
+
       for (const appName in apps) {
         const app = apps[appName];
 
@@ -33,6 +34,10 @@ export function AppLoader() {
           }
         }
       }
+
+      this.cacheApps = {};
+      this.appInfos = {};
+      this.router.routerConfig.apps = [];
     };
 
     return {

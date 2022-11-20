@@ -106,8 +106,6 @@ export const DaoPluginProvider = ({ children }) => {
   }
 
   const loadDaoPlugins = async () => {
-    await GarfishInit(path);
-
     const daoPlugins = daoMetaData.installedPlugins;
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
@@ -164,6 +162,10 @@ export const DaoPluginProvider = ({ children }) => {
 
     garfishInstance.unloadApps();
   };
+
+  useEffect(() => {
+    GarfishInit(path);
+  }, [path]);
 
   useEffect(() => {
     if (!daoMetaData) {
