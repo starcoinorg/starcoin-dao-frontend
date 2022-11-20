@@ -26,6 +26,7 @@ import {
   Select,
   FormHelperText,
   HStack,
+  useToast,
 } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
@@ -39,12 +40,15 @@ import { deployContract } from '../utils/stcWalletSdk';
 import { useOverlay } from '../contexts/OverlayContext';
 import { MultiSelect } from 'chakra-multiselect';
 import { callContractWithSigner, callV2 } from '../utils/sdk';
+import ImageUploader from 'react-images-upload';
+import { fileToBase64 } from '../utils/fileUtils';
 import { polling } from '../utils/polling';
 
 const puposes = daoPresets('0x1').map(preset => preset.presetName);
 const plugins = pluginPresets('0x1').map(preset => preset.presetName);
 
 const DaoMetaForm = ({ metadata, next }) => {
+  const toast = useToast();
   const [ipfsHash, setIpfsHash] = useState();
   const [loading, setLoading] = useState();
   const [uploading, setUploading] = useState();
@@ -57,13 +61,31 @@ const DaoMetaForm = ({ metadata, next }) => {
 
   const [myPlugins, setMyPlugins] = useState(['InstallPluginProposalPlugin']);
 
+  const [nftImages, setNFTImages] = useState();
+  const onDrop = pictures => {
+    setNFTImages(pictures);
+  };
+
   const onSubmit = async data => {
     setLoading(true);
 
+    if (nftImages == null || nftImages.length == 0) {
+      toast({
+        title: 'Tips',
+        description: 'Please select NFT image.',
+        status: 'error',
+        duration: 9000,
+        position: 'top-right',
+        isClosable: true,
+      });
+
+      return;
+    }
+
     try {
-      if (ipfsHash) {
-        data.avatarImg = ipfsHash;
-      }
+      const nftData = await fileToBase64(nftImages[0]);
+      console.log('nftData', nftData);
+      data.nftImage = nftData;
 
       data.tags = data.tags.split(',');
       data.members = data.members.split(',');
@@ -130,28 +152,17 @@ const DaoMetaForm = ({ metadata, next }) => {
           </FormControl>
 
           <FormControl id='avatarImg' mb={4}>
-            <HStack spacing={4}>
-              {ipfsHash || metadata.avatarImg ? (
-                <>
-                  <Image
-                    src={themeImagePath(ipfsHash || metadata.avatarImg)}
-                    alt='brand image'
-                    w='50px'
-                    h='50px'
-                  />
-                </>
-              ) : null}
-
-              <ImageUploadModal
-                ipfsHash={ipfsHash}
-                setIpfsHash={setIpfsHash}
-                setUploading={setUploading}
-                uploading={uploading}
-                matchMeta={metadata?.avatarImg}
-                setLabel='Upload Image'
-                changeLabel='Change Image'
-              />
-            </HStack>
+            <TextBox size='xs' mb={2}>
+              NFT image:
+            </TextBox>
+            <ImageUploader
+              withIcon={true}
+              withPreview={true}
+              singleImage={true}
+              onChange={onDrop}
+              imgExtension={['.jpg', '.gif', '.png', '.gif']}
+              maxFileSize={5242880}
+            />
           </FormControl>
           <FormControl id='name' mb={4}>
             <TextBox size='xs' mb={2}>
