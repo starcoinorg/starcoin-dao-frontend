@@ -35,31 +35,37 @@ import TextBox from './TextBox';
 import VaultTotal from './vaultTotal';
 import DocLink from './docLink';
 
-import { getActiveMembers } from '../utils/dao';
+import { getActiveMembers, getDaoNFTImage } from '../utils/dao';
 import { getTerm, getTitle, themeImagePath } from '../utils/metadata';
 import { POST_LOCATIONS } from '../utils/poster';
-import { useRequest } from '../hooks/useRequest';
+import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 
 const OverviewCard = ({ daoOverview, members, daoVaults }) => {
   const { daochain, daoid } = useParams();
   const { daoMetaData, customTerms } = useMetaData();
+  const { injectedProvider, injectedChain, network } = useInjectedProvider();
+
   const [activeMembers, setActiveMembers] = useState(null);
   const totalShares = utils.commify(daoOverview?.totalShares || 0);
   const totalLoot = utils.commify(daoOverview?.totalLoot || 0);
   const history = useHistory();
   const { isActive } = useBoost();
+  const [avatarImg, setAvatarImg] = useState(null);
 
   const [daoData, setDaoData] = useState(null);
 
-  /*
-  const { data: dao } = useRequest(`daos/${daoid}`);
-
   useEffect(() => {
-    if (dao) {
-      setDaoData(dao);
-    }
-  }, [dao]);
-  */
+    const loadDaoInfo = async () => {
+      try {
+        const avatarImg = await getDaoNFTImage(injectedProvider, daoid);
+        setAvatarImg(avatarImg);
+      } catch (e) {
+        console.log('Error loading NFT image', e);
+      }
+    };
+
+    loadDaoInfo();
+  }, [daoid]);
 
   useEffect(() => {
     if (members?.length) {
@@ -106,8 +112,8 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             <Flex align='center'>
               <Avatar
                 src={
-                  daoMetaData?.avatarImg
-                    ? themeImagePath(daoMetaData.avatarImg)
+                  avatarImg
+                    ? themeImagePath(avatarImg)
                     : makeBlockie(daoid || '0x0')
                 }
                 mr={6}

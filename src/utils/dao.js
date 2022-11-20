@@ -269,3 +269,24 @@ export const getDAOAccountCap = async (provider, address) => {
 
   return cap ? cap.json : null;
 };
+
+export const getDaoNFTImage = async (provider, daoType) => {
+  const nftTypeInfo = await provider.send('state.get_resource', [
+    '0x1',
+    `0x00000000000000000000000000000001::NFT::NFTTypeInfoV2<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoType}>>`,
+    {
+      decode: true,
+    },
+  ]);
+
+  const ntfMeta = nftTypeInfo ? nftTypeInfo.json.meta : null;
+  if (ntfMeta) {
+    if (ntfMeta.image && ntfMeta.image != '0x') {
+      return utils.hexToString(ntfMeta.image);
+    } else {
+      return utils.hexToString(ntfMeta.image_data);
+    }
+  }
+
+  return null;
+};
