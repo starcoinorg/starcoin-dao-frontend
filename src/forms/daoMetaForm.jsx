@@ -26,7 +26,6 @@ import {
   Select,
   FormHelperText,
   HStack,
-  useToast,
 } from '@chakra-ui/react';
 
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
@@ -48,7 +47,6 @@ const puposes = daoPresets('0x1').map(preset => preset.presetName);
 const plugins = pluginPresets('0x1').map(preset => preset.presetName);
 
 const DaoMetaForm = ({ metadata, next }) => {
-  const toast = useToast();
   const [ipfsHash, setIpfsHash] = useState();
   const [loading, setLoading] = useState();
   const [uploading, setUploading] = useState();
@@ -70,14 +68,11 @@ const DaoMetaForm = ({ metadata, next }) => {
     setLoading(true);
 
     if (nftImages == null || nftImages.length == 0) {
-      toast({
-        title: 'Tips',
-        description: 'Please select NFT image.',
-        status: 'error',
-        duration: 9000,
-        position: 'top-right',
-        isClosable: true,
+      errorToast({
+        title: 'Required',
+        description: 'You must upload a image as DAO logo',
       });
+      setLoading(false);
 
       return;
     }
@@ -153,7 +148,7 @@ const DaoMetaForm = ({ metadata, next }) => {
 
           <FormControl id='avatarImg' mb={4}>
             <TextBox size='xs' mb={2}>
-              NFT image:
+              Logo:
             </TextBox>
             <ImageUploader
               withIcon={true}

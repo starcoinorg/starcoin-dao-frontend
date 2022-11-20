@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 import { useSessionStorage } from '../hooks/useSessionStorage';
 import { EXPLORER_DAOS } from '../graphQL/explore-queries';
@@ -73,12 +73,11 @@ const reducer = (state, action) => {
 
 export const ExploreContextProvider = ({ children }) => {
   const [exploreDaos, setExploreDaos] = useSessionStorage('exploreDaoData', {
+    loaded: false,
     chains: [],
     data: [],
   });
   const [state, dispatch] = React.useReducer(reducer, initialState);
-
-  const hasLoadedExploreData = true;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +86,7 @@ export const ExploreContextProvider = ({ children }) => {
       });
 
       setExploreDaos({
+        loaded: true,
         chains: [],
         data: data,
       });
@@ -101,7 +101,6 @@ export const ExploreContextProvider = ({ children }) => {
         state,
         dispatch,
         exploreDaos,
-        hasLoadedExploreData,
       }}
     >
       {children}
