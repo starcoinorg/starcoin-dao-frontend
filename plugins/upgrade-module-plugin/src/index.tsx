@@ -65,10 +65,10 @@ if (!window.__GARFISH__) {
 
   const ctx = {
     name: "StarcoinDAO",
-    address: "0x00000000000000000000000000000001", 
-    daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
-    // address: "0xae3d8bba513cb51486a50ec41d08b564", 
-    // daoType: '0xae3d8bba513cb51486a50ec41d08b564::TESTDAOA::TESTDAOA',
+    // address: "0x00000000000000000000000000000001",
+    // daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
+    address: "0xae3d8bba513cb51486a50ec41d08b564", 
+    daoType: '0xae3d8bba513cb51486a50ec41d08b564::TESTDAOA::TESTDAOA',
     registerApp: function(appInfo) {
       console.log("register App:", appInfo);
       

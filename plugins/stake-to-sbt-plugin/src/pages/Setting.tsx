@@ -1,24 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+    useEffect,
+    useState
+} from 'react';
 import {
-    SimpleGrid, Container, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure
-} from '@chakra-ui/react';
+    SimpleGrid,
+    Container,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure, Spinner
+} from '@chakra-ui/react'
 
 import {useHistory} from 'react-router-dom'
 
-import MainViewLayout from '../components/mainViewLayout';
-import Back from "../components/back";
-import { useSubAppContext } from '../contexts/SubAppContext'
+import Card from '../components/card'
+import Back from "../components/back"
+import MainViewLayout from '../components/mainViewLayout'
+import {useSubAppContext} from '../contexts/SubAppContext'
 import CreateAcceptProposalWidget from '../components/createAcceptProposal'
-import CreateWeightProposalWidget from "../components/createWeightProposal";
-import Card from '../components/card';
-import { queryStakeTokenType, QueryStakeTypeResult } from '../utils/stakeSBTPluginAPI';
+import {
+    queryStakeTokenType,
+    QueryStakeTypeResult
+} from '../utils/stakeSBTPluginAPI'
 
 const SettingPage = () => {
     const {dao} = useSubAppContext()
     const history = useHistory()
     const [loading, setLoading] = useState(true)
     const [dataList, setDataList] = useState<Array<QueryStakeTypeResult>>([])
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const {isOpen, onOpen, onClose} = useDisclosure()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,10 +42,10 @@ const SettingPage = () => {
             })
             setDataList(result)
             setLoading(false)
-    }
+        }
 
-        fetchData().catch(console.log)  
-    },[])
+        fetchData().catch(console.log)
+    }, [])
 
     return (
         <MainViewLayout
@@ -40,41 +53,46 @@ const SettingPage = () => {
             headerEl={Back('Back')}
         >
             <Modal isOpen={isOpen} onClose={onClose} size='xl'>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create a new stake Token</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {/* <Lorem count={2} /> */}
-            <CreateAcceptProposalWidget dao={dao}/>
-          </ModalBody>
+                <ModalOverlay/>
+                <ModalContent>
+                    <ModalHeader>Create a new stake Token</ModalHeader>
+                    <ModalCloseButton/>
+                    <ModalBody>
+                        <CreateAcceptProposalWidget dao={dao}/>
+                    </ModalBody>
 
-        </ModalContent>
-      </Modal>
-           <Container maxW="80rem" centerContent>
-        <SimpleGrid columns={[1, 2]}>
-          {dataList.map(function (data) {
-            const { title, type } = data;
-            const plus = title == "-"
-            return (
-              <Card
-                key={type}
-                product={plus ? "New" : title}
-                summary={plus? "Add new token type to stake":type}
-                longLine="..."
-                action={plus?"Add":"Detail"}
-                actionCallback = {() => {
-                    if (plus) {
-                        onOpen()
-                    } else {
-                        history.push(`/detail/${type}`)
+                </ModalContent>
+            </Modal>
+            <Container maxW="80rem" centerContent>
+                <SimpleGrid columns={[1, 2]}>
+                    {
+                        loading
+                            ?
+                            <Spinner/>
+                            :
+                            dataList.map(function (data) {
+                                const {title, type} = data;
+                                const plus = title == "-"
+                                return (
+                                    <Card
+                                        key={type}
+                                        product={plus ? "New" : title}
+                                        summary={plus ? "Add new token type to stake" : type}
+                                        longLine="..."
+                                        action={plus ? "Add" : "Detail"}
+                                        actionCallback={() => {
+                                            if (plus) {
+                                                onOpen()
+                                            } else {
+                                                history.push(`/detail/${type}`)
+                                            }
+                                        }}
+                                    />
+                                )
+                            })
                     }
-                }}
-              />
-            )
-          })}
-        </SimpleGrid>
-      </Container>
+                </SimpleGrid>
+            </Container>
 
         </MainViewLayout>
     )

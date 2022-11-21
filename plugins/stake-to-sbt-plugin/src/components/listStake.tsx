@@ -10,16 +10,7 @@ import {
     Td,
     TableCaption,
     TableContainer,
-     Spinner,
-     AlertDialog,
-     AlertDialogBody,
-     AlertDialogFooter,
-     AlertDialogHeader,
-     AlertDialogContent,
-     AlertDialogOverlay,
-     Box,
-     AlertDialogCloseButton,
-     useDisclosure,
+    Spinner,
 } from '@chakra-ui/react'
 
 import {Skeleton} from '@chakra-ui/react'
@@ -40,7 +31,7 @@ const ListStake = (props) => {
 
     const [actionLoading, setActionLoading] = useState<Map<String, boolean>>(new Map())
 
-    const onItemClick = (v :any, fouce?:boolean) => {
+    const onItemClick = (v: any, fouce?: boolean) => {
 
         setActionLoading(new Map(actionLoading.set(v.id, true)))
         console.log(actionLoading)
@@ -63,7 +54,7 @@ const ListStake = (props) => {
         }
     }
 
-    const formatExpire = (time:number, lock_time:number) => {
+    const formatExpire = (time: number, lock_time: number) => {
         const now = new Date()
         const expire = new Date(time * 1000)
         expire.setSeconds(lock_time)
@@ -76,14 +67,13 @@ const ListStake = (props) => {
     }
 
     return (
-
-<TableContainer>
+        <TableContainer>
             <Table variant='simple'>
-                    <TableCaption> 
-                        <TextBox>
-                        {props.data ? `Time zone ${Intl.DateTimeFormat().resolvedOptions().timeZone}` : '' }
-                        </TextBox>
-                    </TableCaption>
+                <TableCaption>
+                    <TextBox>
+                        {props.data ? `Time zone ${Intl.DateTimeFormat().resolvedOptions().timeZone}` : ''}
+                    </TextBox>
+                </TableCaption>
                 <Thead>
                     <Tr>
                         {
@@ -98,21 +88,22 @@ const ListStake = (props) => {
                         ?
                         props.data.items.map((v, i) => (
                             <Tr key={`#${v.id.toString()}`}>
-                            <Td>{v.id}</Td>
-                            <Td>{formatTime(v.stake_time)}</Td>
-                            <Td>{v.token.value}</Td>
-                            <Td>{v.lock_time}</Td>
-                            <Td>{v.weight}</Td>
-                            <Td>{v.sbt_amount}</Td>
-                            <Td>{formatExpire(v.stake_time, v.lock_time)}</Td>
-                            <Td>
-                                <Button w='46%' disabled={formatExpire(v.stake_time, v.lock_time) != "Expired"} onClick={() => {
-                                    onItemClick(v)
-                                }}>
-                                    {actionLoading.get(v.id) ? <Spinner margin='0 auto'/> : "unstake"}
-                                </Button>
-                            </Td>
-                        </Tr>
+                                <Td>{v.id}</Td>
+                                <Td>{formatTime(v.stake_time)}</Td>
+                                <Td>{v.token.value}</Td>
+                                <Td>{v.lock_time}</Td>
+                                <Td>{v.weight}</Td>
+                                <Td>{v.sbt_amount}</Td>
+                                <Td>{formatExpire(v.stake_time, v.lock_time)}</Td>
+                                <Td>
+                                    <Button w='46%' disabled={formatExpire(v.stake_time, v.lock_time) != "Expired"}
+                                            onClick={() => {
+                                                onItemClick(v)
+                                            }}>
+                                        {actionLoading.get(v.id) ? <Spinner margin='0 auto'/> : "unstake"}
+                                    </Button>
+                                </Td>
+                            </Tr>
                         ))
                         :
                         <Tr>

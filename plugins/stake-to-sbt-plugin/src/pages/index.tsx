@@ -21,21 +21,19 @@ const IndexPage = () => {
 
     const [loading, setLoading] = useState(true)
     const history = useHistory()
-    const [init, setInit] = useState(false)
+    const [init, setInit] = useState(true)
 
     useEffect(() => {
-
-
         const fetchData = async () => {
-                let result = await queryStakeTokenType(dao.address, dao.daoType)
+            let result = await queryStakeTokenType(dao.address, dao.daoType)
 
-                if (result.length > 0) {
-                    history.replace("/list")
-                } else {
-                    setInit(false)
-                }
+            if (result.length > 0) {
+                history.replace("/list")
+            } else {
+                setInit(false)
+            }
 
-                setLoading(false)
+            setLoading(false)
         }
 
         fetchData().catch(console.log)
@@ -49,15 +47,20 @@ const IndexPage = () => {
         >
             <Flex direction='column'>
                 {
-                    loading ?
+                    loading
+                        ?
                         <Spinner margin='0 auto'/>
                         :
-                        <Flex direction='column'>
-                            <TextBox mb={6}>
-                                Initializes a token type
-                            </TextBox>
-                            <CreateAcceptPropoalWidget dao={dao}/>
-                        </Flex>
+                        init
+                            ?
+                            <></>
+                            :
+                            <Flex direction='column'>
+                                <TextBox mb={6}>
+                                    Initializes a token type
+                                </TextBox>
+                                <CreateAcceptPropoalWidget dao={dao}/>
+                            </Flex>
                 }
 
             </Flex>

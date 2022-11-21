@@ -31,6 +31,7 @@ export async function callContarctWithSigner(functionId, tyArgs, args): Promise<
 }
 
 export type Action = {
+    dao_type:string,
     title: string,
     introduction: string,
     description: string,
@@ -42,7 +43,7 @@ export type Action = {
 
 export async function createUpgradeProposal(action: Action): Promise<string> {
     const functionId = '0x1::UpgradeModulePlugin::create_proposal_entry'
-    const tyArgs = []
+    const tyArgs = [action.dao_type]
     const args = [action.title, action.introduction, action.description, action.action_delay, action.package_hash, action.version, action.enforced]
 
     console.log("createMemberProposal tyArgs:", tyArgs)
@@ -51,9 +52,9 @@ export async function createUpgradeProposal(action: Action): Promise<string> {
     return await callContarctWithSigner(functionId, tyArgs, args)
 }
 
-export async function executeUpgradeProposal(proposalId: string): Promise<string> {
+export async function executeUpgradeProposal(daoType:string, proposalId: string): Promise<string> {
     const functionId = '0x1::UpgradeModulePlugin::execute_proposal_entry'
-    const tyArgs = []
+    const tyArgs = [daoType]
     const args = [proposalId]
 
     console.log("executeMemberProposal tyArgs:", tyArgs);

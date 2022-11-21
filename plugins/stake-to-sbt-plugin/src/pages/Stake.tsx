@@ -1,34 +1,37 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react'
 import {
     Box,
     Spinner,
     useToast,
-} from '@chakra-ui/react';
+} from '@chakra-ui/react'
 
-import MainViewLayout from '../components/mainViewLayout';
-import HookForm from "../components/hookForm";
-import Back from "../components/back";
+import Back from "../components/back"
+import HookForm from "../components/hookForm"
+import MainViewLayout from '../components/mainViewLayout'
+import { useSubAppContext } from '../contexts/SubAppContext'
+import AutoCompleteInputWidget from "../components/autoCompleteInput"
 import {
+    stakeSBT,
     queryStakeTokenType,
     QueryStakeTypeResult,
-    stakeSBT, queryTokenStakeLimit, QueryTokenStakeLimitResult
-} from "../utils/stakeSBTPluginAPI";
-import { useSubAppContext } from '../contexts/SubAppContext'
-import AutoCompleteInputWidget from "../components/autoCompleteInput";
+    queryTokenStakeLimit,
+    QueryTokenStakeLimitResult
+} from "../utils/stakeSBTPluginAPI"
+
 
 const StakePage = () => {
 
-    const {dao} = useSubAppContext();
+    const {dao} = useSubAppContext()
     const toast = useToast({
         title: 'Tips',
         duration: 3000,
         position: 'top-right',
         isClosable: true,
-    });
+    })
 
-    const [loading, setLoading] = useState(false);
-    const [fetchingType, setFetchingType] = useState(true);
-    const [fetchingTypeCfg, setFetchingTypeCfg] = useState(true);
+    const [loading, setLoading] = useState(false)
+    const [fetchingType, setFetchingType] = useState(true)
+    const [fetchingTypeCfg, setFetchingTypeCfg] = useState(true)
 
     const [tokenTypeOptions, setTokenTypeOptions] = useState<Array<QueryStakeTypeResult>>([])
     const [tokenType, setTokenType] = useState("")
@@ -55,10 +58,10 @@ const StakePage = () => {
     }
 
     const onSubmit = data => {
-        setLoading(true);
+        setLoading(true)
         stakeSBT({
             ...data,
-            // lock_time: tokenTypeLimits.get(tokenType)?.lock_time,
+            lock_time: tokenTypeLimit?.lock_time,
             dao_type: dao.daoType,
             token_type: tokenType
         }).then(v => {
@@ -91,9 +94,9 @@ const StakePage = () => {
 
                     <AutoCompleteInputWidget
                     title="Stake config"
-                    options={ 
-                        tokenTypeLimits.get(tokenType) ? 
-                        tokenTypeLimits.get(tokenType)?.map(v => `Lock time: ${v.lock_time}, Weight: ${v.weight}`) 
+                    options={
+                        tokenTypeLimits.get(tokenType) ?
+                        tokenTypeLimits.get(tokenType)?.map(v => `Lock time: ${v.lock_time}, Weight: ${v.weight}`)
                         : []
                     }
                     onChange={
@@ -134,4 +137,4 @@ const StakePage = () => {
     )
 }
 
-export default StakePage;
+export default StakePage

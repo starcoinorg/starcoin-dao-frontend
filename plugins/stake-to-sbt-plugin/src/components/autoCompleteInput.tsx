@@ -61,10 +61,10 @@ const AutoCompleteInputWidget = (props) => {
             </InputGroup>
             {
                 props.helper ?
-                <FormHelperText>
-                    {props.helper}
-                </FormHelperText> :
-                <div/>
+                    <FormHelperText>
+                        {props.helper}
+                    </FormHelperText> :
+                    <div/>
             }
         </FormControl>
     )

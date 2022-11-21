@@ -3,13 +3,14 @@ import {
     Flex,
     Button,
     FormControl,
-    Input, InputGroup, InputLeftAddon, NumberInput, NumberInputField, FormLabel, Switch, useToast,
+    Input, InputGroup, InputLeftAddon, NumberInput, NumberInputField, FormLabel, Switch, useToast, InputRightAddon,
 } from '@chakra-ui/react';
 
 import {useForm} from 'react-hook-form';
 import MainViewLayout from '../components/mainViewLayout';
 import TextBox from '../components/TextBox';
 import {createUpgradeProposal, Action} from "../utils/memberPluginAPI";
+import { useSubAppContext } from '../contexts/SubAppContext';
 
 const From = (props) => {
 
@@ -27,6 +28,8 @@ const From = (props) => {
                         name={props.name}
                         borderTopStartRadius='0'
                         borderBottomStartRadius='0'
+                        borderTopEndRadius={props.right?0:5}
+                        borderBottomEndRadius={props.right?0:5}
                     />
                 </NumberInput> :
                 <Input ref={props.reg}
@@ -34,16 +37,27 @@ const From = (props) => {
                        placeholder={props.title + "..."}
                        name={props.name}/>
             }
+            {
+                props.right ? 
+                <InputRightAddon>
+                <TextBox size='sm'>
+                                        {props.right}
+                                     </TextBox>
+                </InputRightAddon>:
+                <></>
+            }
         </InputGroup>
     </FormControl>)
 }
 
-const Proposal = () => {
+const HomePage = () => {
 
     const toast = useToast();
+    const {dao} = useSubAppContext()
     const [loading, setLoading] = useState(false);
     const {register, handleSubmit} = useForm();
     const [action, setAction] = useState<Action>({
+        dao_type:"-",
         title: "",
         introduction: "",
         description: "",
@@ -53,37 +67,29 @@ const Proposal = () => {
         enforced: false,
     });
 
-    const onSubmit = async data => {
+    const onSubmit = data => {
         setLoading(true);
 
         setAction(data);
 
-//        await createUpgradeProposal(data)
+        data.action_delay = data.action_delay * 60
+
+        createUpgradeProposal({...data, dao_type:dao.daoType}).then(v=> {
+            toast({
+                title: 'Tips',
+                description: "create upgrade proposa success",
+                status: 'success',
+                duration: 3000,
+                position: 'top-right',
+                isClosable: true,
+            })
+        }).catch(e => {
+            console.log(e)
+        })
 
         setLoading(false);
-
-        toast({
-            title: 'Tips',
-            description: "create upgrade proposa success",
-            status: 'success',
-            duration: 3000,
-            position: 'top-right',
-            isClosable: true,
-        })
     }
 
-//    const values = Object.values(action)
-//    Object.keys(action).forEach((v, i) => {
-//        let name = ""
-//        v.split("_").forEach((v, i) => {
-//            name += i > 0 ? " " + v : v
-//        })
-//
-//        name = name[0].toUpperCase() + name.substring(1, name.length)
-//        const s = typeof values[i]
-//
-//        console.log(s)
-//    })
     return (
         <MainViewLayout
             header='Upgrade'
@@ -125,6 +131,7 @@ const Proposal = () => {
                     defaultValue={action.action_delay}
                     type='number'
                     title='Action delay'
+                    right='min'
                     name='action_delay'/>
 
                 <TextBox size='xs' mb={2} mt={2}>
@@ -168,4 +175,4 @@ const Proposal = () => {
     );
 }
 
-export default Proposal;
+export default HomePage;

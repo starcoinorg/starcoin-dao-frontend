@@ -92,7 +92,7 @@ const HookForm = (props) => {
             direction='column'>
             {
                 items.map((v, i) => {
-                    
+
                     let rightAddon = undefined
 
                     if (props.rightAddon) {
@@ -105,12 +105,12 @@ const HookForm = (props) => {
                         </TextBox>
                         : <FormControl key={i.toString()} id={v.name} mb={4}>
                             <InputGroup>
-                                <InputLeftAddon bg='transparent' w={props.startW?props.startW:'20%'}>
+                                <InputLeftAddon bg='transparent' w={props.startW ? props.startW : '20%'}>
                                     <TextBox size='sm'>
                                         {v.title}
                                     </TextBox>
                                 </InputLeftAddon>
-                                {  
+                                {
                                     v.valueType === "bigint" || v.valueType === "number"
                                         ?
                                         <NumberInput w='100%'
@@ -120,32 +120,32 @@ const HookForm = (props) => {
                                                 ref={register({required: true})}
                                                 name={v.name}
                                                 borderTopStartRadius='0'
-                                                onChange = {(v1) => {
+                                                onChange={(v1) => {
                                                     if (props.onChange) {
                                                         props.onChange(v.name, v1.target.value)
                                                     }
-                                                }}   
+                                                }}
                                                 borderBottomStartRadius='0'
-                                                borderTopEndRadius={rightAddon?0:5}
-                                                borderBottomEndRadius={rightAddon?0:5}
+                                                borderTopEndRadius={rightAddon ? 0 : 5}
+                                                borderBottomEndRadius={rightAddon ? 0 : 5}
                                             />
                                         </NumberInput>
                                         :
                                         <Input ref={register({required: true})}
                                                defaultValue={v.defaultValue}
                                                placeholder={v.title + "..."}
-                                               onChange = {(v) => {
+                                               onChange={(v) => {
                                                }}
                                                isReadOnly={props.rules ? props.rules.get(v.name) : false}
                                                name={v.name}/>
                                 }
                                 {
-                                 rightAddon ? 
-                                 <InputRightAddon bg='transparent'>
-                                 <TextBox size='sm'>
-                                    {rightAddon}
-                                 </TextBox>
-                             </InputRightAddon> :<></>  
+                                    rightAddon ?
+                                        <InputRightAddon bg='transparent'>
+                                            <TextBox size='sm'>
+                                                {rightAddon}
+                                            </TextBox>
+                                        </InputRightAddon> : <></>
                                 }
                             </InputGroup>
                             <FormHelperText>
@@ -155,14 +155,14 @@ const HookForm = (props) => {
                 })
             }
             {
-                
-                    <Button type='submit' my={4} disabled={props.loading}>
-                    {    props.loading ?
-                    <Spinner margin='0 auto'/> :
-                    "Submit"
+
+                <Button type='submit' my={4} disabled={props.loading}>
+                    {props.loading ?
+                        <Spinner margin='0 auto'/> :
+                        "Submit"
                     }
 
-                    </Button>
+                </Button>
             }
 
         </Flex>

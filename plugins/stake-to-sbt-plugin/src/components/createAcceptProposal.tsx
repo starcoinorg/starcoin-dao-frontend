@@ -10,8 +10,8 @@ const CreateAcceptPropoalWidget = (props) => {
     const toast = useToast({
         title: 'Tips',
         duration: 3000,
-            position: 'top-right',
-            isClosable: true,
+        position: 'top-right',
+        isClosable: true,
     });
     const [loading, setLoading] = useState(false);
 
@@ -24,10 +24,10 @@ const CreateAcceptPropoalWidget = (props) => {
             })
             return
         }
-        
+
         setLoading(true)
 
-        data.propsal.action_delay =  data.propsal.action_delay * 60
+        data.propsal.action_delay = data.propsal.action_delay * 60
         createTokenAcceptProposal({
             ...data,
             dao_type: props.dao.daoType,
@@ -37,7 +37,7 @@ const CreateAcceptPropoalWidget = (props) => {
                 status: 'success',
             })
             setLoading(false)
-        }).catch((e:any) => {
+        }).catch((e: any) => {
             console.log(e)
             toast({
                 description: `${e.toString()}`,

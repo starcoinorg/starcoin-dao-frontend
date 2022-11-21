@@ -5,12 +5,12 @@ import {
     Route,Redirect
 } from 'react-router-dom'
 
-import IndexPage from '../pages/Proposal';
+import HomePage from '../pages/Home'
 
 const Router = () => {
     return (<Switch>
         <Route exact path="/" component={() => <Redirect to="/home" />}/>
-        <Route exact path="/home" component={() => <IndexPage/>}/>
+        <Route exact path="/home" component={() => <HomePage/>}/>
     </Switch>)
 }
 
