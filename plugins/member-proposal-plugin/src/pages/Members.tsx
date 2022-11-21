@@ -23,7 +23,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-import ImageUploader from "react-images-upload";
 import MainViewLayout from '../components/mainViewLayout';
 import { createMemberProposal } from '../utils/memberPluginAPI';
 import { useSubAppContext } from '../contexts/SubAppContext';
@@ -76,19 +75,6 @@ const Members = () => {
         return
       }
 
-      if (nftImages == null || nftImages.length == 0) {
-        toast({
-          title: 'Tips',
-          description: "Please select NFT image.",
-          status: 'error',
-          duration: 9000,
-          position: 'top-right',
-          isClosable: true,
-        })
-
-        return;
-      }
-
       if (initSBT < 0) {
         toast({
           title: 'Tips',
@@ -103,15 +89,12 @@ const Members = () => {
       }
 
       try {
-        const nftData = await fileToBase64(nftImages[0]);
-        console.log('nftData', nftData);
-
         const transactionHash = await createMemberProposal(
           dao.daoType,
           `Apply add ${memberAddress} as member`,
           memberAddress,
-          nftData,
-          "ipfs://xxxxxx",
+          "",
+          "",
           initSBT,
           0
         );
@@ -201,19 +184,6 @@ const Members = () => {
                   onChange={handleMemberAddressChange}
                 />
               </FormControl>
-
-              <FormControl mt={4}>
-                <FormLabel>Member NFT image:</FormLabel>
-                <ImageUploader
-                  withIcon={true}
-                  withPreview={true}
-                  singleImage={true}
-                  onChange={onDrop}
-                  imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-                  maxFileSize={5242880}
-                />
-              </FormControl>
-
               <FormControl>
                 <FormLabel>Init SBT:</FormLabel>
                 <Input 
