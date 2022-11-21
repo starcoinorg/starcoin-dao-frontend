@@ -29,8 +29,8 @@ const PluginOutlet = memo(() => {
 
 export const DaoPluginProvider = ({ children }) => {
   const { path } = useRouteMatch();
-  const { daoid, daochain } = useParams();
-  const { daoMetaData, customTerms, refetchMetaData } = useMetaData();
+  const { daochain, daoid } = useParams();
+  const { daoMetaData } = useMetaData();
   const { injectedProvider, address } = useInjectedProvider();
   const { theme } = useCustomTheme();
   const { registerAction } = useDaoAction();
@@ -106,18 +106,7 @@ export const DaoPluginProvider = ({ children }) => {
     }
   }
 
-  const loadDaoPlugins = useCallback(async () => {
-    if (!daoMetaData) {
-      return;
-    }
-
-    if (pluginLoaded) {
-      console.log('plugin already loaded!');
-      return;
-    }
-
-    await GarfishInit(path);
-
+  const loadDaoPlugins = async () => {
     const daoPlugins = daoMetaData.installedPlugins;
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
@@ -130,34 +119,71 @@ export const DaoPluginProvider = ({ children }) => {
         continue;
       }
 
-      const app = await Garfish.loadApp(plugin_info.name, {
-        cache: true,
-        preCompiled: true,
-        entry: adapterURI(plugin_info.js_entry_uri),
-      });
+      try {
+        const app = await Garfish.loadApp(plugin_info.name, {
+          cache: true,
+          preCompiled: true,
+          entry: adapterURI(plugin_info.js_entry_uri),
+        });
 
-      const plugin = app?.cjsModules.exports;
+        const plugin = app?.cjsModules.exports;
 
-      const ctx = new PluginContext(
-        app,
-        plugin_info.name,
-        daoMetaData.daoAddress,
-        daoMetaData.daoId,
-        theme,
-      );
-      plugin?.setup(ctx);
+        const ctx = new PluginContext(
+          app,
+          plugin_info.name,
+          daoMetaData.daoAddress,
+          daoMetaData.daoId,
+          theme,
+        );
+        plugin?.setup(ctx);
 
-      loadedPlugins.push(plugin);
+        loadedPlugins.push(plugin);
+      } catch (e) {
+        console.error(`Error in load plugin ${plugin_info.name}`, e);
+      }
     }
 
     setloadedPlugins(loadedPlugins);
     setPluginMenus(pluginMenus);
     setPluginLoaded(true);
-  }, [daoMetaData]);
+  };
+
+  const unloadAllDaoPlugins = async () => {
+    const garfishInstance = Garfish;
+
+    for (const i in loadedPlugins) {
+      const plugin = loadedPlugins[i];
+
+      try {
+        plugin?.teardown();
+      } catch (e) {
+        console.error(`Error in unload plugin ${plugin.name}`, e);
+      }
+    }
+
+    garfishInstance.unloadApps();
+  };
 
   useEffect(() => {
+    GarfishInit(path);
+  }, [path]);
+
+  useEffect(() => {
+    if (!daoMetaData) {
+      return;
+    }
+
+    if (pluginLoaded) {
+      console.log('plugin already loaded!');
+      return;
+    }
+
     loadDaoPlugins();
-  }, [loadDaoPlugins]);
+
+    return () => {
+      unloadAllDaoPlugins();
+    };
+  }, [daochain, daoid, daoMetaData]);
 
   return (
     <DaoPluginContext.Provider

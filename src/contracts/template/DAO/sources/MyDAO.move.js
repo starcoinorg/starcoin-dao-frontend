@@ -1,6 +1,7 @@
 const MyDAOSourceTpl = (
   address,
   daoName,
+  nftImage,
   description,
   long_description,
   purpose,
@@ -100,8 +101,8 @@ module ${address}::${daoName} {
         );
         
         let cap = DAOAccount::extract_dao_account_cap(&sender);
-        let image_data = Option::none<vector<u8>>();
-        let image_url = Option::some<vector<u8>>(b"ipfs://QmdTwdhFi61zhRM3MtPLxuKyaqv3ePECLGsMg9pMrePv4i"); //TODO change to real image url
+        let image_url = Option::none<vector<u8>>();
+        let image_data = Option::some<vector<u8>>(b"${nftImage}");
         DAOSpace::create_dao<${daoName}>(cap, *&NAME, image_data, image_url, b"${description}", config);
         
         // store ext info

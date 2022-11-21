@@ -73,6 +73,7 @@ class DaoService {
     const myTokenContent = MyDAOSourceTpl(
       cfg.address,
       cfg.name,
+      cfg.nftImage,
       cfg.description,
       cfg.longDescription,
       cfg.purpose,

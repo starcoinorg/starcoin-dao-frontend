@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
-import axios from 'axios';
-
-import { ExploreContext } from '../contexts/ExploreContext';
 import ExploreCard from './exploreCard';
 
 const ExploreList = ({ daoList }) => {

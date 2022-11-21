@@ -7,28 +7,39 @@ import { ExploreContext } from '../contexts/ExploreContext';
 import ContentBox from './ContentBox';
 import { chainByNetworkId } from '../utils/chain';
 import { numberWithCommas } from '../utils/general';
+import { getDaoNFTImage } from '../utils/dao';
 import { pokemolUrlExplore, themeImagePath } from '../utils/metadata';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 
 const ExploreCard = ({ dao }) => {
-  const { injectedChain, network } = useInjectedProvider();
+  const { injectedProvider, injectedChain, network } = useInjectedProvider();
   const { state, dispatch } = useContext(ExploreContext);
   const [daoData, setDaoData] = useState({});
+  const [avatarImg, setAvatarImg] = useState(null);
 
   useEffect(() => {
-    let _dao = {
-      meta: {
-        tags: dao?.tags?.split(',') || '',
-        avatarImg: dao?.logoUrl || '',
-        description: dao?.description || '',
-        network: network,
-        chainID: injectedChain?.chainId || '',
-        name: dao?.name || '',
-      },
-      id: dao?.daoId || '',
+    const loadDaoInfo = async () => {
+      let _dao = {
+        meta: {
+          tags: dao?.tags?.split(',') || '',
+          description: dao?.description || '',
+          network: network,
+          chainID: injectedChain?.chainId || '',
+          name: dao?.name || '',
+        },
+        id: dao?.daoId || '',
+      };
+      setDaoData(_dao);
+
+      try {
+        const avatarImg = await getDaoNFTImage(injectedProvider, dao.daoId);
+        setAvatarImg(avatarImg);
+      } catch (e) {
+        console.log('Error loading NFT image', e);
+      }
     };
 
-    setDaoData(_dao);
+    loadDaoInfo();
   }, [dao]);
 
   const handleTagSelect = tag => {
@@ -84,11 +95,7 @@ const ExploreCard = ({ dao }) => {
     >
       <Flex direction='row' align='center' w='100%'>
         <Avatar
-          src={
-            daoData.meta?.avatarImg
-              ? themeImagePath(daoData.meta.avatarImg)
-              : null
-          }
+          src={avatarImg ? themeImagePath(avatarImg) : null}
           mr='10px'
           bg='primary'
         />

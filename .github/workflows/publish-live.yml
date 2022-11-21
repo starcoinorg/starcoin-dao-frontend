@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy Live
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - 'v*'
 
 jobs:
-  deploy:
+  deploy-live:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -18,8 +18,14 @@ jobs:
           node-version: '14'
           cache: 'yarn'
 
+      - name: clean cache
+        run: yarn cache clean
+
       - name: Install
         run: yarn install
+        
+      - name: Install plugin deps
+        run: yarn install-plugins-deps
 
       - name: Build
         run: yarn build

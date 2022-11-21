@@ -80,9 +80,16 @@ export const themeImagePath = imageValue => {
     return imageValue;
   }
 
+  if (imageValue.slice(0, 4) === 'ipfs') {
+    const ipfsHash = imageValue.slice(7);
+    return `https://daohaus.mypinata.cloud/ipfs/${ipfsHash}`;
+  }
+
   if (imageValue.slice(0, 2) === 'Qm') {
     return `https://daohaus.mypinata.cloud/ipfs/${imageValue}`;
   }
+
+  return imageValue;
 };
 
 export const pokemolUrlHubList = dao => {
