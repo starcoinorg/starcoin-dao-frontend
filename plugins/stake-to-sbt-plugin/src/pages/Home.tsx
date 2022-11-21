@@ -1,17 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React, {
+    useEffect,
+    useState
+} from 'react'
 import {
     Flex,
     Button,
-    Heading, Switch, Select, HStack, useToast, Spinner,
+    Heading,
+    Select,
+    HStack,
+    Spinner,
+    useToast,
 } from '@chakra-ui/react'
-
 import {MdAdd} from 'react-icons/md'
 import {GoSettings} from 'react-icons/go'
-
 import {useHistory} from 'react-router-dom'
 
-import ListStake from "../components/listStake"
-import MainViewLayout from '../components/mainViewLayout'
 import {
     queryStakeCount,
     queryStakeList,
@@ -21,31 +24,35 @@ import {
     queryStakeTokenType,
     QueryStakeTypeResult
 } from "../utils/stakeSBTPluginAPI"
-import TextBox from "../components/TextBox";
-import { useSubAppContext } from '../contexts/SubAppContext'
+import TextBox from "../components/TextBox"
+import ListStake from "../components/listStake"
+import MainViewLayout from '../components/mainViewLayout'
+import {useSubAppContext} from '../contexts/SubAppContext'
 
 const HomePage = () => {
     const {dao} = useSubAppContext()
-   const toast = useToast({
-    title: 'Tips',
-    duration: 3000,
-    position: 'top-right',
-    isClosable: true,
-   })
+
+    const toast = useToast({
+        title: 'Tips',
+        duration: 3000,
+        position: 'top-right',
+        isClosable: true,
+    })
+
     const history = useHistory()
+
     const [loading, setLoading] = useState(true)
     const [unStakeloading, setUnStakeloading] = useState(false)
     const [listPages, setListPages] = useState({
         total: 0,
         index: 0,
         limitCount: 10,
-
     })
+
     const [tokenType, setTokenType] = useState<string>("")
     const [tokenTypes, setTokenTypes] = useState<Array<QueryStakeTypeResult>>()
     const [listData, setListData] = useState<any>()
-
-    console.log(dao)
+    const [refreshLoading, setRefreshLoading] = useState(false)
 
     useEffect(() => {
         queryStakeTokenType(dao.address, dao.daoType)
@@ -74,20 +81,33 @@ const HomePage = () => {
                 dao_type: dao.daoType,
                 token_type: tokenType
             }).then(setListData)
-            .finally(() => setLoading(false))
+                .finally(() => {
+                    setLoading(false)
+                    setRefreshLoading(false)
+                })
         }).catch(e => {
             console.log(e)
             setLoading(false)
+            setRefreshLoading(false)
         })
+    }
+
+    const unStakeAll = async () => {
+        try {
+            const result = await unStakeAll()
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     const unStake = async (id) => {
         try {
-           const v =  await unstakeSBT(nweUnstakeParams(dao.daoType, tokenType, id))
-           toast({
-               status: 'success',
-               description: `unStake of id ${id} success \n tx: ${v}`,
-           })
+            const v = await unstakeSBT(nweUnstakeParams(dao.daoType, tokenType, id))
+            toast({
+                status: 'success',
+                description: `Unstake of id ${id} is success \n tx: ${v}`,
+            })
+            fetch(tokenType)
         } catch (e) {
             console.log("haha")
             toast({
@@ -147,42 +167,49 @@ const HomePage = () => {
                     :
                     <Flex direction='column'>
                         {
-                            listData?<HStack spacing={6} mb={6}>
-                            <HStack >
-                                <TextBox>Token</TextBox>
-                                <Select>
-                                    {
-                                        tokenTypes?.map((v, i) => (
-                                            <option key={i.toString()} value={v.type}>{v.title}</option>
-                                        ))
-                                    }
-                                </Select>
-                            </HStack>
-                            <HStack >
-                                <TextBox>CreateAt</TextBox>
-                                <Select placeholder='All'>
-                                </Select>
-                            </HStack>
-                            <HStack>
-                                <TextBox>Expire</TextBox>
-                                <Select placeholder='All'>
-                                </Select>
-                            </HStack>
-                            <Button 
-                            disabled={unStakeloading}
-                            onClick={
-                                 () =>  {
-                                    setUnStakeloading(true)
-                                    unstakeAllSBT({dao_type:dao.daoType, token_type:tokenType})
-                                    .catch(console.log)
-                                    .finally(() => setUnStakeloading(false))
-                                }
-                            }>
-                                {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
-                            </Button>
-                        </HStack>:<div/>
+                            listData ? <HStack spacing={6} mb={6}>
+                                <HStack>
+                                    <TextBox>Token</TextBox>
+                                    <Select>
+                                        {
+                                            tokenTypes?.map((v, i) => (
+                                                <option key={i.toString()} value={v.type}>{v.title}</option>
+                                            ))
+                                        }
+                                    </Select>
+                                </HStack>
+                                <HStack>
+                                    <TextBox>CreateAt</TextBox>
+                                    <Select placeholder='All'>
+                                    </Select>
+                                </HStack>
+                                <HStack>
+                                    <TextBox>Expire</TextBox>
+                                    <Select placeholder='All'>
+                                    </Select>
+                                </HStack>
+                                <Button
+                                    disabled={unStakeloading}
+                                    onClick={
+                                        () => {
+                                            setUnStakeloading(true)
+                                            unstakeAllSBT({dao_type: dao.daoType, token_type: tokenType})
+                                                .catch(console.log)
+                                                .finally(() => setUnStakeloading(false))
+                                        }
+                                    }>
+                                    {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
+                                </Button>
+                                <Button onClick={() => {
+                                    setRefreshLoading(true)
+                                    fetch(tokenType)
+                                }}>
+                                    {refreshLoading ? <Spinner margin='0 auto'/> : "Refresh"}
+
+                                </Button>
+                            </HStack> : <div/>
                         }
-                        <ListStake data={listData}  onItemClick={unStake}/>
+                        <ListStake data={listData} onItemClick={unStake}/>
                     </Flex>
             }
 

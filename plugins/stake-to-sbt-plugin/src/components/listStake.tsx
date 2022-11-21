@@ -42,22 +42,16 @@ const ListStake = (props) => {
 
     const onItemClick = (v :any, fouce?:boolean) => {
 
-        console.log("onItemClick")
         setActionLoading(new Map(actionLoading.set(v.id, true)))
         console.log(actionLoading)
 
         props.onItemClick(v.id).finally(() => {
-            console.log("onItemClick finally")
             setActionLoading(new Map(actionLoading.set(v.id, false)))
         })
     }
 
     const formatTime = (time) => {
-        
         const now = new Date()
-
-        console.log(now.getDate())    
-
         const date = new Date(time * 1000)
 
         if (now.getUTCDate() === date.getUTCDate()) {
@@ -70,9 +64,7 @@ const ListStake = (props) => {
     }
 
     const formatExpire = (time:number, lock_time:number) => {
-
         const now = new Date()
-        
         const expire = new Date(time * 1000)
         expire.setSeconds(lock_time)
 

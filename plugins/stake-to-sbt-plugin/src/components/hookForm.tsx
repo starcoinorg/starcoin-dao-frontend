@@ -105,7 +105,7 @@ const HookForm = (props) => {
                         </TextBox>
                         : <FormControl key={i.toString()} id={v.name} mb={4}>
                             <InputGroup>
-                                <InputLeftAddon bg='transparent' w='20%'>
+                                <InputLeftAddon bg='transparent' w={props.startW?props.startW:'20%'}>
                                     <TextBox size='sm'>
                                         {v.title}
                                     </TextBox>
@@ -141,7 +141,7 @@ const HookForm = (props) => {
                                 }
                                 {
                                  rightAddon ? 
-                                 <InputRightAddon bg='transparent' w='6%'>
+                                 <InputRightAddon bg='transparent'>
                                  <TextBox size='sm'>
                                     {rightAddon}
                                  </TextBox>
@@ -155,10 +155,13 @@ const HookForm = (props) => {
                 })
             }
             {
-                props.loading ?
+                
+                    <Button type='submit' my={4} disabled={props.loading}>
+                    {    props.loading ?
                     <Spinner margin='0 auto'/> :
-                    <Button type='submit' my={4}>
-                        Submit
+                    "Submit"
+                    }
+
                     </Button>
             }
 

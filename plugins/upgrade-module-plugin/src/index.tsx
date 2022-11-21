@@ -29,8 +29,8 @@ export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
   
   ctx.registerApp({
-    name: "stake sbt",
-    activeWhen: "/stake_sbt",
+    name: "Upgrade",
+    activeWhen: "/upgrade",
     icon: VscCloudUpload,
     provider: (props) => {
       props.theme = ctx.theme;  

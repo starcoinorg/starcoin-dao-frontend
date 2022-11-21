@@ -30,7 +30,7 @@ export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
   ctx.registerApp({
-    name: "stake sbt",
+    name: "StakeSBT",
     activeWhen: "/stake_sbt",
     icon: VscPackage,
     provider: (props) => {

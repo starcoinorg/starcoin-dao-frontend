@@ -11,30 +11,21 @@ import AutoCompleteInputWidget from './autoCompleteInput'
 
 const CreateWeightProposalWidget = (props) => {
 
+    const {daoAddress, daoType } = props.dao
+    const {tokenType} = props
+
     const toast = useToast()
     const [loading, setLoading] = useState(false)
-    const [tokenType, setTokenType] = useState("")
-    const [tokenTypeOptions, setTokenTypeOptions] = useState<Array<QueryStakeTypeResult>>([])
-
-    useEffect(() => {
-        if (tokenTypeOptions.length == 0) {
-            console.log(props.dao.daoType)
-            queryStakeTokenType(props.dao.address, props.dao.daoType).then((v) => {
-                setTokenTypeOptions([...v])
-                console.log(v)
-            }).catch(
-                console.log
-            ).finally(()=>setLoading(false))
-        }
-    }, [])
 
     const onSubmit = async data => {
 
+        data.sbt.lock_time = data.sbt.lock_time * 60
+        data.propsal.action_delay = data.propsal.action_delay * 60
         setLoading(true)
         createWeightProposal({
             ...data,
-            dao_type: props.dao.daoType,
-            plugin_type: tokenType
+            dao_type: daoType,
+            token_type: tokenType
         }).then((v) => {
             toast({
                 title: 'Tips',
@@ -55,15 +46,14 @@ const CreateWeightProposalWidget = (props) => {
         <Flex
             direction='column'
         >
-            <AutoCompleteInputWidget
-                options={tokenTypeOptions.map(v => v.type)}
-                onChange={setTokenType}
-            />
             <HookForm
                 obj={newCreateWeightProposalParams()}
                 loading={loading}
                 onSubmit={onSubmit}
-                rightAddon={new Map().set("action_delay", "min")}
+                startW='22%'
+                rightAddon={new Map().
+                    set("propsal.action_delay", "min").
+                    set("sbt.lock_time", "min")}
             />
         </Flex>
     )

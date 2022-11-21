@@ -1080,6 +1080,13 @@
     "@chakra-ui/spinner" "1.1.14"
     "@chakra-ui/utils" "1.8.4"
 
+"@chakra-ui/card@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/card/-/card-2.1.1.tgz#b981a68d81d0f6447eb0d4d3fdcd7846bab2111f"
+  integrity sha512-vvmfuNn6gkfv6bGcXQe6kvWHspziPZgYnnffiEjPaZYtaf98WRszpjyPbFv0oQR/2H1RSE1oaTqa/J1rHrzw3A==
+  dependencies:
+    "@chakra-ui/react-context" "2.0.5"
+
 "@chakra-ui/checkbox@1.5.10":
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/@chakra-ui/checkbox/-/checkbox-1.5.10.tgz#018eabc8c1062578a22155feb2e6255206c761fe"
@@ -1369,6 +1376,11 @@
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@chakra-ui/react-context/-/react-context-2.0.4.tgz#1b6ab260d44d9073c95b975b7d1643f011e65e02"
   integrity sha512-eBITFkf7fLSiMZrSdhweK4fYr41WUNMEeIEOP2dCWolE7WgKxNYaYleC+iRGY0GeXkFM2KYywUtixjJe29NuVA==
+
+"@chakra-ui/react-context@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/react-context/-/react-context-2.0.5.tgz#c434013ecc46c780539791d756dafdfc7c64320e"
+  integrity sha512-WYS0VBl5Q3/kNShQ26BP+Q0OGMeTQWco3hSiJWvO2wYLY7N1BLq6dKs8vyKHZfpwKh2YL2bQeAObi+vSkXp6tQ==
 
 "@chakra-ui/react-env@1.0.8":
   version "1.0.8"

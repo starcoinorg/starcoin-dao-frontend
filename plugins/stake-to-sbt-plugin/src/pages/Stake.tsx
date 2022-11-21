@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
     Box,
-    FormHelperText,
+    Spinner,
     useToast,
 } from '@chakra-ui/react';
 
@@ -15,9 +15,8 @@ import {
 } from "../utils/stakeSBTPluginAPI";
 import { useSubAppContext } from '../contexts/SubAppContext'
 import AutoCompleteInputWidget from "../components/autoCompleteInput";
-import TextBox from '../components/TextBox';
 
-const Stake = () => {
+const StakePage = () => {
 
     const {dao} = useSubAppContext();
     const toast = useToast({
@@ -28,23 +27,29 @@ const Stake = () => {
     });
 
     const [loading, setLoading] = useState(false);
+    const [fetchingType, setFetchingType] = useState(true);
+    const [fetchingTypeCfg, setFetchingTypeCfg] = useState(true);
 
     const [tokenTypeOptions, setTokenTypeOptions] = useState<Array<QueryStakeTypeResult>>([])
     const [tokenType, setTokenType] = useState("")
-    const [tokenTypeLimits, setTokenTypeLimits] = useState<Map<string, QueryTokenStakeLimitResult>>(new Map())
-    const [expectSBT, setExpectSBT] = useState(0)     
+    const [tokenTypeLimit, setTokenTypeLimit] = useState<QueryTokenStakeLimitResult>()
+    const [tokenTypeLimits, setTokenTypeLimits] = useState<Map<string, Array<QueryTokenStakeLimitResult>>>(new Map())
+    const [expectSBT, setExpectSBT] = useState(0)
 
     useEffect(() => {
-        setLoading(true)
+        setFetchingType(true)
         queryStakeTokenType(dao.address, dao.daoType)
             .then(v => setTokenTypeOptions([...v]))
             .catch(console.log)
-            .finally(() => setLoading(false))
+            .finally(() => setFetchingType(false))
     }, [])
 
     const onTokenTypeChange = type => {
         setTokenType(type)
+        setFetchingTypeCfg(true)
         queryTokenStakeLimit(dao.address, dao.daoType, type).then(limit => {
+            setFetchingTypeCfg(false)
+            console.log(limit)
             setTokenTypeLimits(new Map(tokenTypeLimits).set(type, limit))
         })
     }
@@ -53,7 +58,7 @@ const Stake = () => {
         setLoading(true);
         stakeSBT({
             ...data,
-            lock_time: tokenTypeLimits.get(tokenType)?.lock_time,
+            // lock_time: tokenTypeLimits.get(tokenType)?.lock_time,
             dao_type: dao.daoType,
             token_type: tokenType
         }).then(v => {
@@ -71,12 +76,6 @@ const Stake = () => {
         }).finally(() => setLoading(false))
     }
 
-    let helper = ""
-
-    if (tokenTypeLimits.get(tokenType)) {
-        helper = `Lock Time ${tokenTypeLimits.get(tokenType)?.lock_time}, Weight ${tokenTypeLimits.get(tokenType)?.weight}`
-    }
-
     return (
         <MainViewLayout
             header='Stake SBT'
@@ -84,27 +83,55 @@ const Stake = () => {
         >
             <Box w='50%' margin='0 auto'>
 
-                <AutoCompleteInputWidget
+                    <AutoCompleteInputWidget
+                    title="Token"
                     options={tokenTypeOptions.map(v => v.type)}
                     onChange={onTokenTypeChange}
-                    helper={helper}
                 />
 
-                <HookForm 
+                    <AutoCompleteInputWidget
+                    title="Stake config"
+                    options={ 
+                        tokenTypeLimits.get(tokenType) ? 
+                        tokenTypeLimits.get(tokenType)?.map(v => `Lock time: ${v.lock_time}, Weight: ${v.weight}`) 
+                        : []
+                    }
+                    onChange={
+                        (v:string) => {
+
+                            let arr= v.trim().split(",")
+
+                            const lock_time = BigInt(arr[0].trim().split(":")[1])
+                            const weight = BigInt(arr[1].trim().split(":")[1])
+                            tokenTypeLimits.get(tokenType)?.map(v=> {
+                                if (v.lock_time.toString() === lock_time.toString()) {
+                                    setTokenTypeLimit({
+                                        lock_time:lock_time,
+                                        weight:weight
+                                    })
+                                }
+                            })
+                        }
+                    }
+                    />
+
+                <HookForm
                 obj={{amount: 0n}}
                  loading={loading}
-                  onChange={(k,v:number) => {
-                    const limit = tokenTypeLimits.get(tokenType)?.weight
-                    if (limit != undefined) {
-                        setExpectSBT(v / 1000000000 * Number(limit))
+                  onChange={(k, v:number) => {
+
+                    console.log(tokenTypeLimit)
+
+                    if (tokenType.includes("STC")) {
+                        setExpectSBT(v / 1000000000 * Number(tokenTypeLimit?.weight))
                     }
-                }} 
+                }}
                 onSubmit={onSubmit}
-                formHelperText={`Expect sbt ${expectSBT}`}
+                formHelperText={tokenType.includes("STC") ? `Expect sbt ${expectSBT}`:""}
                 />
             </Box>
         </MainViewLayout>
     )
 }
 
-export default Stake;
+export default StakePage;

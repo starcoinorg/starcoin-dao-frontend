@@ -92,7 +92,7 @@ const Proposal = () => {
                 as='form'
                 onSubmit={handleSubmit(onSubmit)}
                 direction='column'
-                w='50%'
+                w='100%'
             >
                 <TextBox size='xs' mb={2} mt={2}>
                     Info
