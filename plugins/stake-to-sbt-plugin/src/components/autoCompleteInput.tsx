@@ -24,7 +24,7 @@ const AutoCompleteInputWidget = (props) => {
             <InputGroup>
                 <InputLeftAddon bg='transparent' w='20%'>
                     <TextBox size='sm'>
-                        Token
+                        {props.title}
                     </TextBox>
                 </InputLeftAddon>
 
@@ -40,10 +40,9 @@ const AutoCompleteInputWidget = (props) => {
                             h='38px'
                             variant="filled"
                             placeholder="Select..."
-                            background='#03051b'
+                            // background='#03051b'
                             border=''
                             bordeer-color=''
-                            
                         />
                         <AutoCompleteList>
                             {props.options.map((t, i) => (
@@ -62,10 +61,10 @@ const AutoCompleteInputWidget = (props) => {
             </InputGroup>
             {
                 props.helper ?
-                <FormHelperText>
-                    {props.helper}
-                </FormHelperText> :
-                <div/>
+                    <FormHelperText>
+                        {props.helper}
+                    </FormHelperText> :
+                    <div/>
             }
         </FormControl>
     )

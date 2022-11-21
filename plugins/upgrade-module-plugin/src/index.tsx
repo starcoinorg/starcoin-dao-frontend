@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
-import { IDaoPluginContext, IAction } from './extpoints/dao_app';
 import { providers } from "@starcoin/starcoin"
-import AcceptProposalAction from './actions/acceptProposalAction';
-import {VscPackage} from 'react-icons/vsc';
+// import AcceptProposalAction from './actions/acceptProposalAction';
+import {VscCloudUpload} from 'react-icons/vsc';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -28,11 +27,11 @@ export const provider = (props) => {
 
 export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
-
+  
   ctx.registerApp({
-    name: "StakeSBT",
-    activeWhen: "/stake_sbt",
-    icon: VscPackage,
+    name: "Upgrade",
+    activeWhen: "/upgrade",
+    icon: VscCloudUpload,
     provider: (props) => {
       props.theme = ctx.theme;  
       props.dao = {
@@ -53,7 +52,7 @@ export const setup = (ctx: IDaoPluginContext) => {
     },
   })
 
-  ctx.registerAction(new AcceptProposalAction(ctx.daoType))
+  // ctx.registerAction(new AcceptProposalAction(ctx.daoType))
 }
 
 export const teardown = () => {
@@ -66,10 +65,10 @@ if (!window.__GARFISH__) {
 
   const ctx = {
     name: "StarcoinDAO",
-    address: "0x00000000000000000000000000000001", 
-    daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
-    // address: "0xae3d8bba513cb51486a50ec41d08b564", 
-    // daoType: '0xae3d8bba513cb51486a50ec41d08b564::TESTDAOA::TESTDAOA',
+    // address: "0x00000000000000000000000000000001",
+    // daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
+    address: "0xae3d8bba513cb51486a50ec41d08b564", 
+    daoType: '0xae3d8bba513cb51486a50ec41d08b564::TESTDAOA::TESTDAOA',
     registerApp: function(appInfo) {
       console.log("register App:", appInfo);
       

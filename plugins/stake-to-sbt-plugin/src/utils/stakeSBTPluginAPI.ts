@@ -89,23 +89,16 @@ export async function queryStakeTokenType(address: string, daoType: string): Pro
 
     for (let key in result.resources) {
         const tmp = key.split(",")
-        console.log(tmp[0])
 
         if (!tmp[0].includes(daoType)) {
-            console.log('----  asd ')
-            console.log(daoType)
             continue
         }
-
-        console.log('----   ')
-        console.log(tmp[1])
 
         type = type.concat({
             type: tmp[1].replace(">>", "").trim(),
             title: tmp[1].replace(">>", "").trim().split("::")[2],
         })
     }
-    console.log(type)
     return type
 }
 
@@ -114,7 +107,7 @@ export type  QueryTokenStakeLimitResult = {
     weight: uint64
 }
 
-export async function queryTokenStakeLimit(address:string, daoType: string, tokenType: string): Promise<QueryTokenStakeLimitResult> {
+export async function queryTokenStakeLimit(address:string, daoType: string, tokenType: string): Promise<Array<QueryTokenStakeLimitResult>> {
     const type = `0x1::Config::Config<0x1::StakeToSBTPlugin::LockWeightConfig<${daoType}, ${tokenType}>>`
     const result = await window.starcoin.request({
         method: 'state.list_resource',
@@ -130,7 +123,7 @@ export async function queryTokenStakeLimit(address:string, daoType: string, toke
     })
     console.log(result)
 
-    return result.resources[type.replaceAll("0x1", "0x00000000000000000000000000000001")].json.payload.weight_vec[0]
+    return result.resources[type.replaceAll("0x1", "0x00000000000000000000000000000001")].json.payload.weight_vec
 }
 
 export async function queryStakeCount(types: Types): Promise<number> {
@@ -238,11 +231,11 @@ export function newCreateWeightProposalParams(): createWeightProposalParams {
             extend: "",
         },
         sbt: {
-            lock_time: 0n,
             weight: 0n,
+            lock_time: 0n,
         },
         propsal: {
-            action_delay: 0n,
+            action_delay: 5n,
         }
     }
 }
