@@ -125,7 +125,7 @@ const DaoMetaForm = ({ metadata, next }) => {
 
   return (
     <Flex w='100%'>
-      <Flex as={ContentBox} w='50%' margin='0 auto'>
+      <Flex as={ContentBox} w='70%' margin='0 auto'>
         <Flex
           direction='column'
           w='100%'
@@ -269,10 +269,8 @@ const DaoMetaForm = ({ metadata, next }) => {
           <Stack>
             <FormControl id='voting_delay'>
               <InputGroup>
-                <InputLeftAddon bg='transparent' w='22%'>
-                  <TextBox size='sm' margin='0 auto'>
-                    voting delay
-                  </TextBox>
+                <InputLeftAddon bg='transparent' w='24%'>
+                  <TextBox size='sm'>voting delay</TextBox>
                 </InputLeftAddon>
                 <NumberInput w='100%' defaultValue={metadata.voting_delay}>
                   <NumberInputField
@@ -288,10 +286,8 @@ const DaoMetaForm = ({ metadata, next }) => {
             </FormControl>
             <FormControl id='voting_period' mb={4}>
               <InputGroup>
-                <InputLeftAddon bg='transparent' w='22%'>
-                  <TextBox size='sm' margin='0 auto'>
-                    voting period
-                  </TextBox>
+                <InputLeftAddon bg='transparent' w='24%'>
+                  <TextBox size='sm'>voting period</TextBox>
                 </InputLeftAddon>
                 <NumberInput w='100%' defaultValue={metadata.voting_period}>
                   <NumberInputField
@@ -307,10 +303,8 @@ const DaoMetaForm = ({ metadata, next }) => {
             </FormControl>
             <FormControl id='min_action_delay' mb={4}>
               <InputGroup>
-                <InputLeftAddon bg='transparent' w='22%'>
-                  <TextBox size='sm' margin='0 auto'>
-                    min action delay
-                  </TextBox>
+                <InputLeftAddon bg='transparent' w='24%'>
+                  <TextBox size='sm'>min action delay</TextBox>
                 </InputLeftAddon>
                 <NumberInput w='100%' defaultValue={metadata.min_action_delay}>
                   <NumberInputField
@@ -326,10 +320,8 @@ const DaoMetaForm = ({ metadata, next }) => {
             </FormControl>
             <FormControl id='voting_quorum_rate' mb={4}>
               <InputGroup>
-                <InputLeftAddon bg='transparent' w='22%'>
-                  <TextBox size='sm' margin='0 auto'>
-                    voting quorum rate
-                  </TextBox>
+                <InputLeftAddon bg='transparent' w='24%'>
+                  <TextBox size='sm'>voting quorum rate</TextBox>
                 </InputLeftAddon>
                 <NumberInput
                   w='100%'
@@ -348,10 +340,8 @@ const DaoMetaForm = ({ metadata, next }) => {
             </FormControl>
             <FormControl id='min_proposal_deposit' mb={4}>
               <InputGroup>
-                <InputLeftAddon bg='transparent' w='22%'>
-                  <TextBox size='sm' margin='0 auto'>
-                    min proposal deposit
-                  </TextBox>
+                <InputLeftAddon bg='transparent' w='24%'>
+                  <TextBox size='sm'>min proposal deposit</TextBox>
                 </InputLeftAddon>
                 <NumberInput
                   w='100%'
