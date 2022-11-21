@@ -40,7 +40,7 @@ const AutoCompleteInputWidget = (props) => {
                             h='38px'
                             variant="filled"
                             placeholder="Select..."
-                            // background='#03051b'
+                            background='#03051b'
                             border=''
                             bordeer-color=''
                         />

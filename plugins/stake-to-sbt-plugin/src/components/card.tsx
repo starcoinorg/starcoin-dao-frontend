@@ -46,7 +46,7 @@ function Card(props) {
                 <Text my={2} color="gray.500">
                     {longLine}
                 </Text>
-                <Button maxWidth="100px" my={2} onClick={actionCallback}>
+                <Button maxWidth="100px" my={2} onClick={actionCallback} disabled={action==="Delete"}>
                     {action}
                 </Button>
             </Stack>
