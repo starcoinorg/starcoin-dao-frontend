@@ -195,8 +195,7 @@ export async function executeInstallPluginProposal(
   proposalId: string,
 ) :Promise<string>  {
   try {
-      const tokens = pluginType.split('::');
-      const functionId = `${tokens[0]}::${tokens[1]}::execute_proposal_entry`
+      const functionId = '0x1::InstallPluginProposalPlugin::execute_proposal_entry'
       const tyArgs = [daoType, pluginType]
       const args = [
         proposalId,
