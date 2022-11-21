@@ -17,6 +17,7 @@ function Card(props) {
             maxWidth="32rem"
             borderWidth={1}
             margin={2}
+            borderRadius='5'
         >
             <Stack
                 align={{base: "center", md: "stretch"}}
