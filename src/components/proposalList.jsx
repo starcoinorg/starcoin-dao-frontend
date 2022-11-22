@@ -196,7 +196,7 @@ const ProposalsList = ({ customTerms }) => {
         {isLoaded &&
           paginatedProposals?.map(proposal => (
             <ProposalCardV2
-              key={proposal.categoryId}
+              key={proposal.id}
               proposal={proposal}
               customTerms={customTerms}
               interaction={interaction}
