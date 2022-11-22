@@ -11,8 +11,9 @@ import {
     ModalCloseButton,
     useDisclosure,
 } from '@chakra-ui/react'
-
+import { rgba } from 'polished'
 import {useParams} from 'react-router-dom'
+
 import Back from "../components/back"
 import Card from '../components/card'
 import MainViewLayout from '../components/mainViewLayout'
@@ -22,6 +23,8 @@ import {
     queryTokenStakeLimit,
     QueryTokenStakeLimitResult
 } from '../utils/stakeSBTPluginAPI'
+
+export const CARD_BG = '#0b0b0b';
 
 const TypePage = (props) => {
     const {dao} = useSubAppContext()
@@ -57,9 +60,14 @@ const TypePage = (props) => {
             header='Token Detail'
             headerEl={Back('Back')}
         >
-            <Modal isOpen={isOpen} onClose={onClose} size='xl'>
-                <ModalOverlay/>
-                <ModalContent>
+            <Modal isOpen={isOpen} onClose={onClose} size='full'>
+            <ModalOverlay bgColor={rgba(CARD_BG, 0.8)} />
+                <ModalContent rounded='lg'
+                bg={CARD_BG}
+                borderWidth='1px'
+                borderColor='whiteAlpha.200'
+                py={3}
+                px={9}>
                     <ModalHeader>Create a new stake weight</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>

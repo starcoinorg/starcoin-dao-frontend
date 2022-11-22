@@ -127,7 +127,7 @@ const HomePage = () => {
                         rightIcon={<MdAdd/>}
                         title='Stake'
                         onClick={() => {
-                            history.push(`/stake`)
+                            history.push('/stake')
                         }}
                     >
                         Stake
@@ -137,7 +137,7 @@ const HomePage = () => {
                         rightIcon={<GoSettings/>}
                         title='Setting'
                         onClick={() => {
-                            history.push(`/setting`)
+                            history.push('/setting')
                         }}
                     >
                         Setting

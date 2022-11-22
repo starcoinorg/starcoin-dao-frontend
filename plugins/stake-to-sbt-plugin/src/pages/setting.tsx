@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 import {useHistory} from 'react-router-dom'
-
+import { rgba } from 'polished'
 import Card from '../components/card'
 import Back from "../components/back"
 import MainViewLayout from '../components/mainViewLayout'
@@ -26,6 +26,8 @@ import {
     QueryStakeTypeResult
 } from '../utils/stakeSBTPluginAPI'
 
+const CARD_BG = '#0b0b0b';
+
 const SettingPage = () => {
     const {dao} = useSubAppContext()
     const history = useHistory()
@@ -34,6 +36,7 @@ const SettingPage = () => {
     const {isOpen, onOpen, onClose} = useDisclosure()
 
     useEffect(() => {
+        console.log("haishdoiahsdiohsaiodhaioshido")
         const fetchData = async () => {
             let result = await queryStakeTokenType(dao.address, dao.daoType)
             result.push({
@@ -52,13 +55,19 @@ const SettingPage = () => {
             header='Stake SBT Setting'
             headerEl={Back('Back')}
         >
-            <Modal isOpen={isOpen} onClose={onClose} size='xl'>
-                <ModalOverlay/>
-                <ModalContent>
+            <Modal isOpen={isOpen} onClose={onClose} size='full'>
+            <ModalOverlay bgColor={rgba(CARD_BG, 0.8)} />
+                <ModalContent  
+                rounded='lg'
+                bg={CARD_BG}
+                borderWidth='1px'
+                borderColor='whiteAlpha.200'
+                py={3}
+                px={9}>
                     <ModalHeader>Create a new stake Token</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        <CreateAcceptProposalWidget dao={dao}/>
+                        <CreateAcceptProposalWidget dao={dao} formHelperText="asd"/>
                     </ModalBody>
 
                 </ModalContent>

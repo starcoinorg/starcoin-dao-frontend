@@ -29,33 +29,44 @@ const AutoCompleteInputWidget = (props) => {
                 </InputLeftAddon>
 
                 <Box border='1px solid #E2E8F0' w='100%' h='40px'
+
                      borderTopEndRadius='5px'
                      borderBottomEndRadius='5px'
                 >
-                    <AutoComplete openOnFocus
-                                  suggestWhenEmpty
-                                  emptyState
+                    <AutoComplete 
+                    background='red'
+                    openOnFocus
                                   onChange={props.onChange}>
                         <AutoCompleteInput
                             h='38px'
                             variant="filled"
                             placeholder="Select..."
-                            // background='#03051b'
-                            border=''
-                            bordeer-color=''
+                            background='#03051b'
+                            _selected={{ bg: "#EB8A23" }}
+                            _focus={{ bg: "#EB8A23" }}
+                            _hover={{ bg: "#EB8A23" }}
+                            border='0'
+                            borderTopStartRadius='0'
+                            borderBottomStartRadius='0'
+                            borderTopEndRadius='5px'
+                            borderBottomEndRadius='5px'
                         />
                         <AutoCompleteList>
+                            
                             {props.options.map((t, i) => (
                                 <AutoCompleteItem
                                     key={`option-${i}`}
                                     value={t}
-                                    align="center"
+                                    background='#03051b'
+                                    _selected={{ bg: "#EB8A23" }}
+                                    _focus={{ bg: "#EB8A23" }}
                                 >
                                     <Avatar size="sm" name={t}/>
                                     <Text ml="4">{t}</Text>
                                 </AutoCompleteItem>
                             ))}
                         </AutoCompleteList>
+
                     </AutoComplete>
                 </Box>
             </InputGroup>
