@@ -11,6 +11,8 @@ import {
   Tooltip,
   Stack,
   Text,
+  useToast,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { isAfter, isBefore } from 'date-fns';
 import { MaxUint256 } from '@ethersproject/constants';
@@ -38,7 +40,13 @@ import { supportedChains } from '../utils/chain';
 import { earlyExecuteMinionType } from '../utils/minionUtils';
 import { useRequest } from '../hooks/useRequest';
 import { useDaoAction } from '../contexts/DaoActionContext';
-import { queue_proposal_action, ProposalState } from '../utils/proposalApi';
+import {
+  queue_proposal_action,
+  get_member_power,
+  get_access_path,
+  get_with_proof_by_root_raw,
+  cast_vote,
+} from '../utils/proposalApi';
 import { validate } from '../utils/validation';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -281,13 +289,91 @@ const ProposalActionsForChain = ({
     setLoading(false);
   };
 
-  const submitVote = async (proposal, vote) => {
+  const toast = useToast();
+  const [daoData, setDaoData] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+  const [accountPowerTotal, setAccountPowerTotal] = useState(0);
+  const [choiceSequenceId, setChoiceSequenceId] = useState(null);
+
+  useEffect(() => {
+    if (daoid) {
+      setDaoData({
+        daoId: daoid,
+        daoStrategies: [
+          {
+            votingPowerName: 'default',
+          },
+        ],
+      });
+    }
+  }, [daoid]);
+
+  const voteHandler = async sequenceId => {
     setLoading(true);
-    await submitTransaction({
-      args: [proposal.proposalIndex, vote],
-      tx: TX.SUBMIT_VOTE,
-    });
-    setLoading(false);
+    try {
+      const accountPowerData = await get_member_power(
+        address,
+        daoid,
+        proposal.state_root,
+      );
+      setAccountPowerTotal(+accountPowerData.totalVotingPower);
+      setChoiceSequenceId(sequenceId);
+      onOpen();
+    } catch (err) {
+      console.error('error getting member power:', err);
+      setLoading(false);
+    }
+  };
+
+  const signHandle = async choiceSequenceId => {
+    try {
+      let access_path = await get_access_path(injectedProvider, daoid, address);
+      console.log('access_path: ', access_path);
+
+      let state_root = proposal.blockStateRoot;
+      console.log('state_root: ', state_root);
+
+      let proof = await get_with_proof_by_root_raw(
+        injectedChain.chainId,
+        access_path,
+        state_root,
+      );
+      console.log('proof: ', proof);
+
+      let transactionHash = await cast_vote(
+        injectedProvider,
+        daoid,
+        proposal.id,
+        proof,
+        choiceSequenceId,
+      );
+      console.log('transactionHash: ', transactionHash);
+
+      onClose();
+      setLoading(false);
+      toast({
+        title: 'Success',
+        description: 'Vote successfully',
+        position: 'top-right',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err.message,
+        position: 'top-right',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const queueProposal = async proposal => {
@@ -448,114 +534,12 @@ const ProposalActionsForChain = ({
           <TopStatusBox
             status={getProposalStatus(proposal?.status).status}
             appendStatusText={getProposalText(proposal?.status)}
-            // circleColor={voteData.isPassing ? 'green' : 'red'}
             circleColor={getProposalStatus(proposal?.status).color}
             proposal={proposal}
             voteData={voteData}
             quorum
           />
         </Skeleton>
-        {!daoConnectedAndSameChain(address, daochain, injectedChain?.chainId) &&
-          ((proposal?.status === 'Unsponsored' && !proposal?.proposalIndex) ||
-            proposal?.status === 'ReadyForProcessing') && <NetworkOverlay />}
-
-        {!daoConnectedAndSameChain(address, daochain, injectedChain?.chainId) &&
-          (proposal?.status !== 'Unsponsored' || proposal?.proposalIndex) &&
-          proposal?.status !== 'Cancelled' &&
-          !proposal?.status === 'ReadyForProcessing' && <NetworkOverlay />}
-
-        {proposal?.status === 'Unsponsored' && !proposal?.proposalIndex && (
-          <Flex justify='center' direction='column'>
-            <Flex justify='center' mb={4}>
-              <Flex justify='center' direction='column' align='center'>
-                <TextBox size='xs'>
-                  Deposit to Sponsor
-                  <Tooltip
-                    hasArrow
-                    shouldWrapChildren
-                    placement='bottom'
-                    label='Deposits discourage spam, and are returned after a proposal is processed. Minus the reward for processing, if one has been selected'
-                  >
-                    <Icon mt='-4px' as={RiQuestionLine} />
-                  </Tooltip>
-                </TextBox>
-                <TextBox variant='value' size='xl' textAlign='center'>
-                  {`${overview?.proposalDeposit /
-                    10 ** overview?.depositToken.decimals}
-                  ${overview?.depositToken?.symbol}`}
-                  {!enoughDeposit && daoMember ? (
-                    <Tooltip
-                      shouldWrapChildren
-                      placement='bottom'
-                      label={`Insufficient Funds: You only have ${Number(
-                        daoMember?.depositTokenBalance,
-                      )?.toFixed(3)} ${overview?.depositToken?.symbol}`}
-                    >
-                      <Icon
-                        color='red.500'
-                        as={RiErrorWarningLine}
-                        ml={2}
-                        mt='-4px'
-                      />
-                    </Tooltip>
-                  ) : null}
-                </TextBox>
-              </Flex>
-            </Flex>
-            <Flex justify='space-around'>
-              {canInteract ? (
-                <>
-                  {Number(daoMember?.depositTokenData?.allowance) ||
-                  Number(delegate?.depositTokenData?.allowance) >=
-                    Number(overview?.proposalDeposit) ||
-                  Number(overview?.proposalDeposit === 0) ? (
-                    <Button
-                      onClick={() => sponsorProposal(proposal?.proposalId)}
-                      isDisabled={!enoughDeposit}
-                      isLoading={loading}
-                    >
-                      Sponsor
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => unlock(overview.depositToken.tokenAddress)}
-                      isLoading={loading}
-                    >
-                      Unlock
-                    </Button>
-                  )}
-                </>
-              ) : (
-                <Tooltip
-                  hasArrow
-                  shouldWrapChildren
-                  placement='bottom'
-                  label={interactErrors}
-                  bg='secondary.500'
-                >
-                  <Button isDisabled>Sponsor</Button>
-                </Tooltip>
-              )}
-              {proposal?.proposer === address?.toLowerCase() &&
-                !proposal?.minionAddress && (
-                  <Button
-                    variant='outline'
-                    onClick={cancelProposal}
-                    isLoading={loading}
-                  >
-                    Cancel
-                  </Button>
-                )}
-              {proposal?.minionAddress &&
-                proposal?.proposer === proposal?.minionAddress && (
-                  <MinionCancel
-                    proposal={proposal}
-                    minionAction={minionAction}
-                  />
-                )}
-            </Flex>
-          </Flex>
-        )}
 
         {
           <>
@@ -613,6 +597,16 @@ const ProposalActionsForChain = ({
                           .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                       </Text>
                     </Tooltip>
+                    {currentlyVoting(proposal) && (
+                      <Button
+                        ml={5}
+                        size='sm'
+                        minW='4rem'
+                        onClick={voteHandler(item.sequenceId)}
+                      >
+                        Vote
+                      </Button>
+                    )}
                   </TextBox>
                 </Skeleton>
               ))}
@@ -655,6 +649,62 @@ const ProposalActionsForChain = ({
               </Flex>
             )}
         </Stack>
+
+        <AlertDialog
+          motionPreset='slideInBottom'
+          leastDestructiveRef={cancelRef}
+          onClose={() => {
+            onClose();
+            setLoading(false);
+          }}
+          isOpen={isOpen}
+          isCentered
+        >
+          <AlertDialogOverlay />
+          <AlertDialogContent>
+            <AlertDialogHeader color={'#000'}>Confirm Vote</AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody color={'#000'}>
+              You have <i>{accountPowerTotal}</i> voting rights（
+              {daoData?.daoStrategies[0]?.votingPowerName}）, All votes can be
+              cast at one time only, and cannot be modified after cast
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRef}
+                onClick={() => {
+                  onClose();
+                  setLoading(false);
+                }}
+                sx={{
+                  border: '1px solid rgb(255, 150, 142)',
+                  background: '#fff',
+                  color: '#000',
+                  _hover: {
+                    background: '#fff',
+                    color: '#000',
+                  },
+                  _focus: {
+                    background: '#fff',
+                    color: '#000',
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                colorScheme={'red'}
+                ml={3}
+                disabled={+accountPowerTotal === 0}
+                onClick={() => {
+                  signHandle(choiceSequenceId);
+                }}
+              >
+                Confirm Vote
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </ContentBox>
     </>
   );
