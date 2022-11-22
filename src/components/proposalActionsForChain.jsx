@@ -12,6 +12,13 @@ import {
   Stack,
   Text,
   useToast,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
 import { isAfter, isBefore } from 'date-fns';
@@ -295,6 +302,7 @@ const ProposalActionsForChain = ({
   const cancelRef = React.useRef();
   const [accountPowerTotal, setAccountPowerTotal] = useState(0);
   const [choiceSequenceId, setChoiceSequenceId] = useState(null);
+  const [voting, setVoting] = useState(false);
 
   useEffect(() => {
     if (daoid) {
@@ -308,6 +316,11 @@ const ProposalActionsForChain = ({
       });
     }
   }, [daoid]);
+
+  useEffect(() => {
+    const voting = currentlyVoting(proposal);
+    setVoting(voting);
+  }, [proposal]);
 
   const voteHandler = async sequenceId => {
     setLoading(true);
@@ -402,26 +415,6 @@ const ProposalActionsForChain = ({
     );
 
     setLoading(false);
-  };
-
-  const getMaxOptionsTitle = () => {
-    let maxId = -1;
-    let maxPower = -1;
-    let ret = '';
-    proposal.accountVoteSummaries.forEach(item => {
-      if (item.subtotalVotingPower > maxPower) {
-        maxPower = item.subtotalVotingPower;
-        maxId = item.choiceSequenceId;
-      }
-    });
-
-    proposal.proposalVotingChoices.forEach(item => {
-      if (item.sequenceId === maxId) {
-        ret = item.title;
-      }
-    });
-
-    return ret;
   };
 
   const getBgColor = () => {
@@ -597,12 +590,14 @@ const ProposalActionsForChain = ({
                           .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                       </Text>
                     </Tooltip>
-                    {currentlyVoting(proposal) && (
+                    {voting && (
                       <Button
                         ml={5}
                         size='sm'
                         minW='4rem'
-                        onClick={voteHandler(item.sequenceId)}
+                        onClick={() => {
+                          voteHandler(item.sequenceId);
+                        }}
                       >
                         Vote
                       </Button>

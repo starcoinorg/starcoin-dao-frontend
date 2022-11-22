@@ -9,6 +9,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  Skeleton,
   AlertDialogCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -377,14 +378,16 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
 
   return (
     <PropActionBox>
-      <TopStatusBox
-        status={getProposalStatus().status}
-        appendStatusText={getProposalText()}
-        circleColor={getProposalStatus().color}
-        proposal={proposal}
-        voteData={voteData}
-        quorum
-      />
+      <Skeleton isLoaded={proposalStatus !== 'UNKNOWN'}>
+        <TopStatusBox
+          status={getProposalStatus().status}
+          appendStatusText={getProposalText()}
+          circleColor={getProposalStatus().color}
+          proposal={proposal}
+          voteData={voteData}
+          quorum
+        />
+      </Skeleton>
       {voteData?.hasVoted ? (
         <>
           <MiddleActionBox>
