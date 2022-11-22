@@ -48,6 +48,7 @@ const ProposalDetailsForChain = ({
   const { customTerms } = useMetaData();
   const { daoOverview } = useDao();
   const [status, setStatus] = useState(null);
+
   useEffect(() => {
     if (proposal) {
       const statusStr = determineProposalStatus(proposal);

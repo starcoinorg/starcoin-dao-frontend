@@ -310,7 +310,7 @@ export const get_member_power = async (memberAddress, daoId, state_root) => {
   });
 
   return {
-    totalVotingPower: nft.json.nft.vec[0].body.sbt.value,
+    totalVotingPower: nft?.json ? nft.json.nft.vec[0].body.sbt.value : 0,
   };
 };
 

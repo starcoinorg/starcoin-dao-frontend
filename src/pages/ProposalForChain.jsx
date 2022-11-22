@@ -49,14 +49,16 @@ const ProposalForChain = ({
   };
 
   useEffect(() => {
-    loadProposal()
-      .then(proposal => {
-        setProposal(proposal);
-      })
-      .catch(err => {
-        console.error('Error fetching proposals', err);
-      });
-  }, [daoid, daochain, propid]);
+    if (injectedProvider) {
+      loadProposal()
+        .then(proposal => {
+          setProposal(proposal);
+        })
+        .catch(err => {
+          console.error('Error fetching proposals', err);
+        });
+    }
+  }, [daoid, daochain, propid, injectedProvider]);
 
   return (
     <MainViewLayout header='Proposal' customTerms={customTerms} isDao>

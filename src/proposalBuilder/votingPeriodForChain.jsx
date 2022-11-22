@@ -9,6 +9,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  Skeleton,
   AlertDialogCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -299,8 +300,9 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
   }, [_activities, address]);
 
   const [proposalStatus, setProposalStatus] = useState('UNKNOWN');
-  useEffect(async () => {
-    if (injectedProvider && proposal) {
+
+  useEffect(() => {
+    const loadProposalStatus = async () => {
       const status = await get_proposal_state(
         injectedProvider,
         daoid,
@@ -308,6 +310,10 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
       );
 
       setProposalStatus(status);
+    };
+
+    if (injectedProvider && proposal) {
+      loadProposalStatus();
     }
   }, [injectedProvider, proposal]);
 
@@ -372,15 +378,16 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
 
   return (
     <PropActionBox>
-      <TopStatusBox
-        status={getProposalStatus().status}
-        appendStatusText={getProposalText()}
-        // circleColor={voteData.isPassing ? 'green' : 'red'}
-        circleColor={getProposalStatus().color}
-        proposal={proposal}
-        voteData={voteData}
-        quorum
-      />
+      <Skeleton isLoaded={proposalStatus !== 'UNKNOWN'}>
+        <TopStatusBox
+          status={getProposalStatus().status}
+          appendStatusText={getProposalText()}
+          circleColor={getProposalStatus().color}
+          proposal={proposal}
+          voteData={voteData}
+          quorum
+        />
+      </Skeleton>
       {voteData?.hasVoted ? (
         <>
           <MiddleActionBox>
