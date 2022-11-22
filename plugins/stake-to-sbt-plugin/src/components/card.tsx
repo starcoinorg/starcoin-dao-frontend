@@ -17,6 +17,7 @@ function Card(props) {
             maxWidth="32rem"
             borderWidth={1}
             margin={2}
+            borderRadius='5'
         >
             <Stack
                 align={{base: "center", md: "stretch"}}
@@ -46,7 +47,7 @@ function Card(props) {
                 <Text my={2} color="gray.500">
                     {longLine}
                 </Text>
-                <Button maxWidth="100px" my={2} onClick={actionCallback}>
+                <Button maxWidth="100px" my={2} onClick={actionCallback} disabled={action==="Delete"}>
                     {action}
                 </Button>
             </Stack>

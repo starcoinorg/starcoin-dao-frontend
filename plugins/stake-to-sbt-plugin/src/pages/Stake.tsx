@@ -37,7 +37,7 @@ const StakePage = () => {
     const [tokenType, setTokenType] = useState("")
     const [tokenTypeLimit, setTokenTypeLimit] = useState<QueryTokenStakeLimitResult>()
     const [tokenTypeLimits, setTokenTypeLimits] = useState<Map<string, Array<QueryTokenStakeLimitResult>>>(new Map())
-    const [expectSBT, setExpectSBT] = useState(0)
+    const [expectSBT, setExpectSBT] = useState()
 
     useEffect(() => {
         setFetchingType(true)
@@ -126,11 +126,11 @@ const StakePage = () => {
                     console.log(tokenTypeLimit)
 
                     if (tokenType.includes("STC")) {
-                        setExpectSBT(v / 1000000000 * Number(tokenTypeLimit?.weight))
+                        setExpectSBT(new Map().set("amount", `Expect sbt ${v / 1000000000 * Number(tokenTypeLimit?.weight)}`))
                     }
                 }}
                 onSubmit={onSubmit}
-                formHelperText={tokenType.includes("STC") ? `Expect sbt ${expectSBT}`:""}
+                helpers={expectSBT}
                 />
             </Box>
         </MainViewLayout>
