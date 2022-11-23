@@ -19,8 +19,8 @@ const CreateWeightProposalWidget = (props) => {
 
     const onSubmit = async data => {
 
-        data.sbt.lock_time = data.sbt.lock_time * 60
-        data.propsal.action_delay = data.propsal.action_delay * 60
+        data.sbt.lock_time = data.sbt.lock_time * 60*1000
+        data.propsal.action_delay = data.propsal.action_delay * 60*1000
         setLoading(true)
         createWeightProposal({
             ...data,

@@ -85,6 +85,8 @@ export async function queryStakeTokenType(address: string, daoType: string): Pro
         ]
     })
 
+    console.log(result.resources)
+
     let type = new Array<QueryStakeTypeResult>()
 
     for (let key in result.resources) {
@@ -121,9 +123,48 @@ export async function queryTokenStakeLimit(address:string, daoType: string, toke
             }
         ]
     })
-    console.log(result)
+
+    console.log("result:", result)
 
     return result.resources[type.replaceAll("0x1", "0x00000000000000000000000000000001")].json.payload.weight_vec
+}
+
+export type queryTokenInfoResult = {
+    scaling_factor: number,
+    token: string
+}
+
+export async function queryTokenInfo(): Promise<any> {
+
+    const type = `0x1::Token::TokenInfo`
+    const result = await window.starcoin.request({
+        method: 'state.list_resource',
+        params: [
+            "0x1",
+            {
+                resource_types: [type],
+                decode: true,
+                start_index: 0,
+                max_size: 100
+            }
+        ]
+    })
+
+    let infos = new Map<string, queryTokenInfoResult>()
+
+    for (let key in result.resources) {
+        const token = key.substring(
+            key.indexOf('<') + 1,
+            key.lastIndexOf('>'),
+          );
+
+          infos.set(token, {
+            token: token,
+            scaling_factor: result.resources[key].json.scaling_factor,
+          })
+    }
+
+    return infos
 }
 
 export async function queryStakeCount(types: Types): Promise<number> {
@@ -143,9 +184,7 @@ export async function queryStakeList(types: Types): Promise<any> {
             window.starcoin.selectedAddress,
             {
                 resource_types: [resType],
-                decode: true,
-                start_index: 0,
-                max_size: 3
+                decode: true
             }
         ]
     })

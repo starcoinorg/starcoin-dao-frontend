@@ -36,10 +36,11 @@ const TypePage = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             let result = await queryTokenStakeLimit(dao.address, dao.daoType, type)
-            result.push({
-                lock_time: 0n,
-                weight: 0n
-            })
+            console.log(result)
+            // result.push({
+            //     lock_time: -1n,
+            //     weight: -1n
+            // })
             setDataList(result)
             setLoading(false)
         }
@@ -86,7 +87,7 @@ const TypePage = (props) => {
                         <SimpleGrid columns={[1, 2]}>
                             {dataList.map(function (data) {
                                 const {lock_time, weight} = data
-                                const plus = lock_time === 0n
+                                const plus = lock_time === -1n
                                 return (
                                     <Card
                                         key={lock_time}

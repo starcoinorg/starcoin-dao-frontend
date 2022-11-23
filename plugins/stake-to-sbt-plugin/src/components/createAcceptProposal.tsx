@@ -29,7 +29,7 @@ const CreateAcceptPropoalWidget = (props) => {
 
         setLoading(true)
 
-        data.propsal.action_delay = data.propsal.action_delay * 60
+        data.propsal.action_delay = data.propsal.action_delay * 60 * 1000
 
         createTokenAcceptProposal({
             ...data,

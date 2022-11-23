@@ -15,7 +15,9 @@ import {
     queryStakeTokenType,
     QueryStakeTypeResult,
     queryTokenStakeLimit,
-    QueryTokenStakeLimitResult
+    QueryTokenStakeLimitResult,
+    queryTokenInfo,
+    queryTokenInfoResult
 } from "../utils/stakeSBTPluginAPI"
 
 
@@ -38,13 +40,17 @@ const StakePage = () => {
     const [tokenTypeLimit, setTokenTypeLimit] = useState<QueryTokenStakeLimitResult>()
     const [tokenTypeLimits, setTokenTypeLimits] = useState<Map<string, Array<QueryTokenStakeLimitResult>>>(new Map())
     const [expectSBT, setExpectSBT] = useState()
+    const [tokenInfos, setTokenInfos] = useState<Map<String, queryTokenInfoResult>>(new Map())
 
     useEffect(() => {
         setFetchingType(true)
+
         queryStakeTokenType(dao.address, dao.daoType)
             .then(v => setTokenTypeOptions([...v]))
             .catch(console.log)
             .finally(() => setFetchingType(false))
+    
+        queryTokenInfo().then(v => setTokenInfos(v)).catch(console.log)
     }, [])
 
     const onTokenTypeChange = type => {
@@ -60,7 +66,7 @@ const StakePage = () => {
     const onSubmit = data => {
         setLoading(true)
         stakeSBT({
-            ...data,
+            amount: BigInt(data.amount * tokenInfos.get(tokenType).scaling_factor),
             lock_time: tokenTypeLimit?.lock_time,
             dao_type: dao.daoType,
             token_type: tokenType
@@ -123,11 +129,7 @@ const StakePage = () => {
                  loading={loading}
                   onChange={(k, v:number) => {
 
-                    console.log(tokenTypeLimit)
-
-                    if (tokenType.includes("STC")) {
-                        setExpectSBT(new Map().set("amount", `Expect sbt ${v / 1000000000 * Number(tokenTypeLimit?.weight)}`))
-                    }
+                    setExpectSBT(new Map().set("amount", `Expect sbt ${v * Number(tokenTypeLimit?.weight)}`))
                 }}
                 onSubmit={onSubmit}
                 helpers={expectSBT}
