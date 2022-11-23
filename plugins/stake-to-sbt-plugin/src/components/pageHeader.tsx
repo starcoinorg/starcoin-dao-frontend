@@ -22,14 +22,6 @@ const PageHeader = ({header, headerEl}) => {
                 ) : null}
                 {headerEl}
             </Flex>
-            <Flex
-                direction='row'
-                justify='flex-end'
-                align='center'
-                d={['none', null, null, 'flex']}
-            >
-                Web3SignIn
-            </Flex>
         </Flex>
     );
 };

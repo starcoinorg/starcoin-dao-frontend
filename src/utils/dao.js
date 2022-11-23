@@ -79,47 +79,67 @@ export const hasMinion = (minions, minionType) => {
   return false;
 };
 
-export const listDaos = async _opts => {
+export const getDaoNFTImage = async (provider, daoType) => {
+  const nftTypeInfo = await provider.send('state.get_resource', [
+    '0x1',
+    `0x00000000000000000000000000000001::NFT::NFTTypeInfoV2<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoType}>>`,
+    {
+      decode: true,
+    },
+  ]);
+
+  const ntfMeta = nftTypeInfo ? nftTypeInfo.json.meta : null;
+  if (ntfMeta) {
+    if (ntfMeta.image && ntfMeta.image != '0x') {
+      return utils.hexToString(ntfMeta.image);
+    } else {
+      return utils.hexToString(ntfMeta.image_data);
+    }
+  }
+
+  return null;
+};
+
+export const listDaos = async (provider, _opts) => {
   const opts = {
     ..._opts,
   };
 
-  const daoEntrys = await window.starcoin.request({
-    method: 'state.list_resource',
-    params: [
-      '0x1',
-      {
-        resource_types: [
-          '0x00000000000000000000000000000001::DAORegistry::DAORegistryEntry',
-        ],
-        decode: true,
-        start_index: 0,
-        max_size: 10,
-      },
-    ],
-  });
+  const daoEntrys = await provider.send('state.list_resource', [
+    '0x1',
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::DAORegistry::DAORegistryEntry',
+      ],
+      decode: true,
+      start_index: 0,
+      max_size: 10,
+    },
+  ]);
 
   let daos = [];
   for (const key in daoEntrys.resources) {
     const daoId = key.substring(key.indexOf('<') + 1, key.indexOf('>'));
-    const dao = await getDaoDetail(daoId, opts.withPlugins);
+    const dao = await getDaoDetail(
+      provider,
+      daoId,
+      opts.withLogo,
+      opts.withPlugins,
+    );
     daos.push(dao);
   }
 
   return daos;
 };
 
-export const getDao = async daoAddress => {
-  const daoInfo = await window.starcoin.request({
-    method: 'state.get_resource',
-    params: [
-      daoAddress,
-      '0x00000000000000000000000000000001::DAOSpace::DAO',
-      {
-        decode: true,
-      },
-    ],
-  });
+export const getDao = async (provider, daoAddress) => {
+  const daoInfo = await provider.send('state.get_resource', [
+    daoAddress,
+    '0x00000000000000000000000000000001::DAOSpace::DAO',
+    {
+      decode: true,
+    },
+  ]);
 
   return {
     id: daoInfo.json.id,
@@ -129,21 +149,18 @@ export const getDao = async daoAddress => {
   };
 };
 
-export const getDaoInstalledPlugins = async daoId => {
+export const getDaoInstalledPlugins = async (provider, daoId) => {
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
 
-  const installedPluginInfos = await window.starcoin.request({
-    method: 'state.list_resource',
-    params: [
-      daoAddress,
-      {
-        resource_types: [
-          '0x00000000000000000000000000000001::DAOSpace::InstalledPluginInfo',
-        ],
-        decode: true,
-      },
-    ],
-  });
+  const installedPluginInfos = await provider.send('state.list_resource', [
+    daoAddress,
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::DAOSpace::InstalledPluginInfo',
+      ],
+      decode: true,
+    },
+  ]);
 
   let plugins = [];
   for (const key in installedPluginInfos.resources) {
@@ -159,57 +176,29 @@ export const getDaoInstalledPlugins = async daoId => {
   return plugins;
 };
 
-export const getDaoDetail = async (daoId, withPlugins = true) => {
+export const getDaoDetail = async (
+  provider,
+  daoId,
+  withLogo = true,
+  withPlugins = true,
+) => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
-  const daoInfo = await getDao(daoAddress);
+  const daoInfo = await getDao(provider, daoAddress);
 
   let tags = ['DAO'];
   let links = {};
   let long_description = '';
 
-  /*
-  const resourceType = `0x00000000000000000000000000000001::DAOSpace::DAOExt<${daoTypeTag}>`;
-  const daoExt = await window.starcoin.request({
-    method: 'state.get_resource',
-    params: [
-      daoAddress,
-      resourceType,
-      {
-        decode: true,
-      },
-    ],
-  });
-
-  
-  if (daoExt.json.ext.tags) {
-    for (const i in daoExt.json.ext.tags) {
-      const encodedTag = daoExt.json.ext.tags[i];
-      const tag = utils.hexToString(encodedTag);
-      tags.push(tag);
-    }
+  let daoLogo = '';
+  if (withLogo) {
+    daoLogo = await getDaoNFTImage(provider, daoTypeTag);
   }
-
-  if (daoExt.json.ext.links) {
-    for (const i in daoExt.json.ext.links) {
-      const encodedLink = daoExt.json.ext.links[i];
-      const link = utils.hexToString(encodedLink);
-      const token = link.split('=');
-      if (token.length == 2) {
-        links[token[0]] = token[1];
-      }
-    }
-  }
-
-  if (daoExt.json.ext.long_description) {
-    long_description = utils.hexToString(daoExt.json.ext.long_description);
-  }
-  */
 
   let plugins = [];
 
   if (withPlugins) {
-    let installed_web_plugins = await getDaoInstalledPlugins(daoId);
+    let installed_web_plugins = await getDaoInstalledPlugins(provider, daoId);
     if (installed_web_plugins) {
       for (const i in installed_web_plugins) {
         const plugin_info = installed_web_plugins[i];
@@ -225,6 +214,7 @@ export const getDaoDetail = async (daoId, withPlugins = true) => {
   return {
     daoId: daoTypeTag,
     name: daoInfo.name,
+    avatarImg: daoLogo,
     description: daoInfo.description,
     daoAddress: daoAddress,
     longDescription: long_description,
@@ -268,25 +258,4 @@ export const getDAOAccountCap = async (provider, address) => {
   ]);
 
   return cap ? cap.json : null;
-};
-
-export const getDaoNFTImage = async (provider, daoType) => {
-  const nftTypeInfo = await provider.send('state.get_resource', [
-    '0x1',
-    `0x00000000000000000000000000000001::NFT::NFTTypeInfoV2<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoType}>>`,
-    {
-      decode: true,
-    },
-  ]);
-
-  const ntfMeta = nftTypeInfo ? nftTypeInfo.json.meta : null;
-  if (ntfMeta) {
-    if (ntfMeta.image && ntfMeta.image != '0x') {
-      return utils.hexToString(ntfMeta.image);
-    } else {
-      return utils.hexToString(ntfMeta.image_data);
-    }
-  }
-
-  return null;
 };

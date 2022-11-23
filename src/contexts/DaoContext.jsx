@@ -9,7 +9,6 @@ import { TokenProvider } from './TokenContext';
 import { TXProvider } from './TXContext';
 import { useInjectedProvider } from './InjectedProviderContext';
 import { useSessionStorage } from '../hooks/useSessionStorage';
-import { listDaoProposals } from '../utils/proposalApi';
 import { supportedChains } from '../utils/chain';
 import { putRefreshApiVault } from '../utils/metadata';
 
@@ -17,7 +16,7 @@ export const DaoContext = createContext();
 
 export const DaoProvider = ({ children }) => {
   const { daoid, daochain } = useParams();
-  const { injectedChain, address } = useInjectedProvider();
+  const { injectedProvider, injectedChain, address } = useInjectedProvider();
 
   const daoNetworkData = supportedChains[daochain];
   const isCorrectNetwork = daochain === injectedChain?.chainId;
@@ -44,53 +43,8 @@ export const DaoProvider = ({ children }) => {
   const hasPerformedBatchQuery = useRef(false);
   const currentDao = useRef(null);
 
-  useEffect(() => {
-    // This condition is brittle. If one request passes, but the rest fail
-    // this stops the app from fetching. We'll need something better later on.
-    if (daoProposals || daoActivities || daoOverview || daoMembers) {
-      return;
-    }
-
-    if (!daoid || !daochain || hasPerformedBatchQuery.current) {
-      return;
-    }
-
-    listDaoProposals(daoid)
-      .then(proposals => {
-        setDaoProposals(proposals);
-      })
-      .catch(err => {
-        console.error('Error fetching proposals', err);
-      });
-
-    hasPerformedBatchQuery.current = true;
-  }, [
-    daoid,
-    daochain,
-    daoNetworkData,
-    daoActivities,
-    daoMembers,
-    daoOverview,
-    daoProposals,
-    daoVaults,
-    setDaoActivities,
-    setDaoMembers,
-    setDaoOverview,
-    setDaoProposals,
-    setDaoVaults,
-    isCorrectNetwork,
-  ]);
-
   const refetch = async () => {
     currentDao.current = null;
-
-    listDaoProposals(daoid)
-      .then(proposals => {
-        setDaoProposals(proposals);
-      })
-      .catch(err => {
-        console.error('Error fetching proposals', err);
-      });
   };
 
   const refreshAllDaoVaults = async () => {

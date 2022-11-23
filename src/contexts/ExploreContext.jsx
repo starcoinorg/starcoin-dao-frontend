@@ -7,6 +7,7 @@ import { getApiMetadata } from '../utils/metadata';
 import { SORT_OPTIONS, EXPLORE_FILTER_OPTIONS } from '../utils/exploreContent';
 import { supportedChains } from '../utils/chain';
 import { listDaos } from '../utils/dao';
+import { useInjectedProvider } from './InjectedProviderContext';
 
 export const ExploreContext = createContext();
 
@@ -72,6 +73,7 @@ const reducer = (state, action) => {
 };
 
 export const ExploreContextProvider = ({ children }) => {
+  const { injectedProvider } = useInjectedProvider();
   const [exploreDaos, setExploreDaos] = useSessionStorage('exploreDaoData', {
     loaded: false,
     chains: [],
@@ -81,7 +83,8 @@ export const ExploreContextProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await listDaos({
+      const data = await listDaos(injectedProvider, {
+        withLogo: false,
         withPlugins: false,
       });
 
