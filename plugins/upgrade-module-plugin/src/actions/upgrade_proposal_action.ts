@@ -2,16 +2,14 @@ import { IDAO } from '../extpoints/dao_app';
 import { executeUpgradeProposal } from '../utils/memberPluginAPI';
 
 class UpgradeProposalAction {
-  dao: IDAO;
   name: string;
 
-  constructor(dao: IDAO) {
-    this.dao = dao;
-    this.name = '0x1::UpgradeModulePlugin::UpgradeProposalAction';
+  constructor() {
+    this.name = '0x00000000000000000000000000000001::UpgradeModulePlugin::UpgradeModuleAction';
   }
 
   async execute(params: any) {
-    return executeUpgradeProposal(params.proposalId)
+    return executeUpgradeProposal(params.daoType, params.proposalId)
   }
 }
 
