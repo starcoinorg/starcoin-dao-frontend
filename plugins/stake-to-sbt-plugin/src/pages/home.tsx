@@ -23,7 +23,7 @@ import {
     nweUnstakeParams,
     queryStakeTokenType,
     QueryStakeTypeResult
-} from "../utils/stakeSBTPluginAPI"
+} from "../utils/api"
 import TextBox from "../components/TextBox"
 import ListStake from "../components/listStake"
 import MainViewLayout from '../components/mainViewLayout'

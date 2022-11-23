@@ -4,7 +4,7 @@ import HookForm from "./hookForm"
 import {
     newCreateTokenAcceptProposalParams,
     createTokenAcceptProposal,
-} from '../utils/stakeSBTPluginAPI'
+} from '../utils/api'
 
 const CreateAcceptPropoalWidget = (props) => {
     const toast = useToast({

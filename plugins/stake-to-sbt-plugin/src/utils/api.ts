@@ -1,8 +1,18 @@
 import {utils, bcs} from "@starcoin/starcoin"
 import {hexlify} from '@ethersproject/bytes'
-import {callContract, getWeb3Provder} from "./stcWalletSdk";
-import {nodeUrlMap} from "./consts";
-import {str, uint128, uint64} from "@starcoin/starcoin/dist/src/lib/runtime/serde";
+import {
+    uint128,
+    uint64
+} from "@starcoin/starcoin/dist/src/lib/runtime/serde"
+
+import {
+    callContract,
+    getWeb3Provder,
+    listResource
+} from "./stcWalletSdk"
+import {nodeUrlMap} from "./consts"
+
+const std = "0x00000000000000000000000000000001"
 
 export type Types = {
     dao_type: string,
@@ -28,9 +38,6 @@ export async function stakeSBT(params: StakeParams): Promise<string> {
     const functionId = '0x1::StakeToSBTPlugin::stake_entry'
     const tyArgs = [params.dao_type, params.token_type]
     const args = [params.amount, params.lock_time]
-
-    console.log(tyArgs)
-    console.log(args)
 
     return await callContarctWithSigner(functionId, tyArgs, args)
 }
@@ -85,8 +92,6 @@ export async function queryStakeTokenType(address: string, daoType: string): Pro
         ]
     })
 
-    console.log(result.resources)
-
     let type = new Array<QueryStakeTypeResult>()
 
     for (let key in result.resources) {
@@ -109,7 +114,7 @@ export type  QueryTokenStakeLimitResult = {
     weight: uint64
 }
 
-export async function queryTokenStakeLimit(address:string, daoType: string, tokenType: string): Promise<Array<QueryTokenStakeLimitResult>> {
+export async function queryTokenStakeLimit(address: string, daoType: string, tokenType: string): Promise<Array<QueryTokenStakeLimitResult>> {
     const type = `0x1::Config::Config<0x1::StakeToSBTPlugin::LockWeightConfig<${daoType}, ${tokenType}>>`
     const result = await window.starcoin.request({
         method: 'state.list_resource',
@@ -124,47 +129,29 @@ export async function queryTokenStakeLimit(address:string, daoType: string, toke
         ]
     })
 
-    console.log("result:", result)
-
     return result.resources[type.replaceAll("0x1", "0x00000000000000000000000000000001")].json.payload.weight_vec
 }
 
-export type queryTokenInfoResult = {
+export type QueryTokenInfoResult = {
     scaling_factor: number,
     token: string
 }
 
-export async function queryTokenInfo(): Promise<any> {
+export async function queryTokenInfo(tokenType: string): Promise<QueryTokenInfoResult> {
 
-    const type = `0x1::Token::TokenInfo`
-    const result = await window.starcoin.request({
-        method: 'state.list_resource',
-        params: [
-            "0x1",
-            {
-                resource_types: [type],
-                decode: true,
-                start_index: 0,
-                max_size: 100
-            }
-        ]
-    })
+    const type = `${std}::Token::TokenInfo<${tokenType}>`
 
-    let infos = new Map<string, queryTokenInfoResult>()
+    const result = await listResource(std, [type])
 
-    for (let key in result.resources) {
-        const token = key.substring(
+    const key = Object.keys(result.resources)[0]
+
+    return {
+        token: key.substring(
             key.indexOf('<') + 1,
             key.lastIndexOf('>'),
-          );
-
-          infos.set(token, {
-            token: token,
-            scaling_factor: result.resources[key].json.scaling_factor,
-          })
+        ),
+        scaling_factor: result.resources[key].json.scaling_factor
     }
-
-    return infos
 }
 
 export async function queryStakeCount(types: Types): Promise<number> {
@@ -178,7 +165,7 @@ export async function queryStakeList(types: Types): Promise<any> {
 
     let resType = `0x00000000000000000000000000000001::StakeToSBTPlugin::StakeList<${types.dao_type},${types.token_type}>`
 
-    const result  = await window.starcoin.request({
+    const result = await window.starcoin.request({
         method: 'state.list_resource',
         params: [
             window.starcoin.selectedAddress,

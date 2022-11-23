@@ -5,17 +5,18 @@ import {
     Avatar,
     FormControl,
     InputGroup,
-    InputLeftAddon, FormHelperText
-} from '@chakra-ui/react';
+    InputLeftAddon,
+    FormHelperText
+} from '@chakra-ui/react'
 
 import {
     AutoComplete,
     AutoCompleteInput,
     AutoCompleteItem,
     AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
+} from "@choc-ui/chakra-autocomplete"
 
-import TextBox from "./TextBox";
+import TextBox from "./TextBox"
 
 const AutoCompleteInputWidget = (props) => {
 
@@ -33,18 +34,18 @@ const AutoCompleteInputWidget = (props) => {
                      borderTopEndRadius='5px'
                      borderBottomEndRadius='5px'
                 >
-                    <AutoComplete 
-                    background='red'
-                    openOnFocus
-                                  onChange={props.onChange}>
+                    <AutoComplete
+                        key={props.title}
+                        openOnFocus
+                        onChange={props.onChange}>
                         <AutoCompleteInput
                             h='38px'
                             variant="filled"
-                            placeholder="Select..."
+                            placeholder={props.placeholder ? props.placeholder : "Select..."}
                             background='#03051b'
-                            _selected={{ bg: "#EB8A23" }}
-                            _focus={{ bg: "#EB8A23" }}
-                            _hover={{ bg: "#EB8A23" }}
+                            _selected={{bg: "#EB8A23"}}
+                            _focus={{bg: "#EB8A23"}}
+                            _hover={{bg: "#EB8A23"}}
                             border='0'
                             borderTopStartRadius='0'
                             borderBottomStartRadius='0'
@@ -52,14 +53,14 @@ const AutoCompleteInputWidget = (props) => {
                             borderBottomEndRadius='5px'
                         />
                         <AutoCompleteList>
-                            
+
                             {props.options.map((t, i) => (
                                 <AutoCompleteItem
                                     key={`option-${i}`}
                                     value={t}
                                     background='#03051b'
-                                    _selected={{ bg: "#EB8A23" }}
-                                    _focus={{ bg: "#EB8A23" }}
+                                    _selected={{bg: "#EB8A23"}}
+                                    _focus={{bg: "#EB8A23"}}
                                 >
                                     <Avatar size="sm" name={t}/>
                                     <Text ml="4">{t}</Text>

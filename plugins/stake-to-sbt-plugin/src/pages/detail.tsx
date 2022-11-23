@@ -11,7 +11,7 @@ import {
     ModalCloseButton,
     useDisclosure,
 } from '@chakra-ui/react'
-import { rgba } from 'polished'
+import {rgba} from 'polished'
 import {useParams} from 'react-router-dom'
 
 import Back from "../components/back"
@@ -22,7 +22,7 @@ import CreateWeightProposalWidget from "../components/createWeightProposal"
 import {
     queryTokenStakeLimit,
     QueryTokenStakeLimitResult
-} from '../utils/stakeSBTPluginAPI'
+} from '../utils/api'
 
 export const CARD_BG = '#0b0b0b';
 
@@ -37,10 +37,10 @@ const TypePage = (props) => {
         const fetchData = async () => {
             let result = await queryTokenStakeLimit(dao.address, dao.daoType, type)
             console.log(result)
-            // result.push({
-            //     lock_time: -1n,
-            //     weight: -1n
-            // })
+            result.push({
+                lock_time: -1n,
+                weight: -1n
+            })
             setDataList(result)
             setLoading(false)
         }
@@ -62,13 +62,13 @@ const TypePage = (props) => {
             headerEl={Back('Back')}
         >
             <Modal isOpen={isOpen} onClose={onClose} size='full'>
-            <ModalOverlay bgColor={rgba(CARD_BG, 0.8)} />
+                <ModalOverlay bgColor={rgba(CARD_BG, 0.8)}/>
                 <ModalContent rounded='lg'
-                bg={CARD_BG}
-                borderWidth='1px'
-                borderColor='whiteAlpha.200'
-                py={3}
-                px={9}>
+                              bg={CARD_BG}
+                              borderWidth='1px'
+                              borderColor='whiteAlpha.200'
+                              py={3}
+                              px={9}>
                     <ModalHeader>Create a new stake weight</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>

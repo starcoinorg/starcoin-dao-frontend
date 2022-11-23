@@ -1,26 +1,29 @@
-import React, {useState, useEffect} from 'react'
-import {Flex, useToast} from '@chakra-ui/react'
+import React, {
+    useState
+} from 'react'
+import {
+    Flex,
+    useToast
+} from '@chakra-ui/react'
+
 import HookForm from "./hookForm"
 import {
     newCreateWeightProposalParams,
     createWeightProposal,
-    queryStakeTokenType,
-    QueryStakeTypeResult
-} from '../utils/stakeSBTPluginAPI'
-import AutoCompleteInputWidget from './autoCompleteInput'
+} from '../utils/api'
 
 const CreateWeightProposalWidget = (props) => {
 
-    const {daoAddress, daoType } = props.dao
+    const {daoType} = props.dao
     const {tokenType} = props
 
     const toast = useToast()
     const [loading, setLoading] = useState(false)
 
     const onSubmit = async data => {
-
-        data.sbt.lock_time = data.sbt.lock_time * 60*1000
-        data.propsal.action_delay = data.propsal.action_delay * 60*1000
+        data.sbt.lock_time = data.sbt.lock_time * 60 * 1000
+        data.propsal.action_delay = data.propsal.action_delay * 60 * 1000
+        
         setLoading(true)
         createWeightProposal({
             ...data,
@@ -51,9 +54,7 @@ const CreateWeightProposalWidget = (props) => {
                 loading={loading}
                 onSubmit={onSubmit}
                 startW='22%'
-                rightAddon={new Map().
-                    set("propsal.action_delay", "min").
-                    set("sbt.lock_time", "min")}
+                rightAddon={new Map().set("propsal.action_delay", "min").set("sbt.lock_time", "min")}
             />
         </Flex>
     )
