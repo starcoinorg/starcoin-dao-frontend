@@ -15,9 +15,11 @@ import {
   RiFileList2Line,
 } from 'react-icons/ri';
 import { FaDiscourse } from 'react-icons/fa';
+import { VscHome } from 'react-icons/vsc';
 
 // no slash on the path
 export const defaultDaoData = [
+  { icon: VscHome, label: 'Home', path: '' },
   { icon: RiBookMarkLine, label: 'Proposals', path: 'proposals' },
   // { icon: RiBankLine, label: 'Vaults', path: 'vaults' },
   // { icon: RiTeamLine, label: 'Members', path: 'members' },
@@ -31,6 +33,7 @@ export const defaultDaoData = [
   // { icon: RiRocket2Line, label: 'Boosts', path: 'settings/boosts' },
 ];
 export const defaultHubData = [
+  { icon: VscHome, label: 'Home', path: '/' },
   { icon: RiSearch2Line, label: 'Explore', path: '/explore' },
   // { icon: RiFireLine, label: 'Summon', path: '/summon' },
   // {
@@ -40,22 +43,9 @@ export const defaultHubData = [
   // },
 ];
 
-export const generateDaoLinks = (
-  chainID,
-  daoID,
-  proposals,
-  vaults,
-  metadata,
-) => {
+export const generateDaoLinks = (chainID, daoID) => {
   let links = [...defaultDaoData];
-  const hasNfts = vaults.some(v => v.nfts.length);
-  if (!hasNfts) {
-    links = links.filter(link => link.label !== 'Gallery');
-  }
-  const boosts = metadata.boosts;
-  if (!('POSTER' in boosts)) {
-    links = links.filter(link => link.label !== 'Documents');
-  }
+
   return links.map(link => {
     const path = `/dao/${chainID}/${daoID}/${link.path}`;
     return {

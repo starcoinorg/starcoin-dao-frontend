@@ -31,6 +31,7 @@ import useCanInteract from '../hooks/useCanInteract';
 import { useRequest } from '../hooks/useRequest';
 
 const ProposalsList = ({ customTerms }) => {
+  const { injectedProvider } = useInjectedProvider();
   const { daoMember } = useDaoMember();
   const { address } = useInjectedProvider();
   const { isActive } = useBoost();
@@ -56,7 +57,7 @@ const ProposalsList = ({ customTerms }) => {
 
   if (isChainDao) {
     useEffect(() => {
-      listDaoProposals(daoid)
+      listDaoProposals(injectedProvider, daoid)
         .then(proposals => {
           setProposals(proposals);
         })

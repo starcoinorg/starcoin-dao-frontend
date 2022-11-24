@@ -10,25 +10,42 @@ import MainViewLayout from '../components/mainViewLayout';
 import { getProfileActivites } from '../utils/activities';
 import { handleGetProfile } from '../utils/3box';
 import { initTokenData } from '../utils/tokenValue';
+import { getMemberNFT } from '../utils/dao';
 
 const Profile = ({ members, overview, daoTokens, activities }) => {
-  const { userid, daochain } = useParams();
-  const { address } = useInjectedProvider();
+  const { daoid, daochain, userid } = useParams();
+  const { injectedProvider, address } = useInjectedProvider();
   const [profile, setProfile] = useState(null);
 
   const [memberEntity, setMemberEntity] = useState(null);
   const [tokensReceivable, setTokensReceivable] = useState([]);
 
   useEffect(() => {
-    if (members) {
-      setMemberEntity(
-        members?.find(
-          member =>
-            member?.memberAddress?.toLowerCase() === userid?.toLowerCase(),
-        ),
-      );
-    }
-  }, [members]);
+    const getMyMemberNFT = async () => {
+      try {
+        const nft = await getMemberNFT(injectedProvider, daoid, userid);
+        console.log('member nft', nft);
+
+        if (nft) {
+          setMemberEntity({
+            exists: true,
+            memberAddress: userid,
+            tokenBalances: [],
+            shares: nft.init_sbt,
+          });
+        } else {
+          setMemberEntity({
+            exists: false,
+            shares: 0,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getMyMemberNFT();
+  }, [daochain, daoid, userid]);
 
   useEffect(() => {
     const getProfile = async () => {

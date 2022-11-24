@@ -22,13 +22,7 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
     if (dao?.chainID && dao?.daoID) {
       const navLinks =
         dao.daoProposals && dao.daoVaults && dao.daoMetaData
-          ? generateDaoLinks(
-              dao.chainID,
-              dao.daoID,
-              dao.daoProposals,
-              dao.daoVaults,
-              dao.daoMetaData,
-            )
+          ? generateDaoLinks(dao.chainID, dao.daoID)
           : generateDaoLinksLoading(dao.chainID, dao.daoID);
       setNavLinks(navLinks);
       setPluginLinks(dao.pluginMenus);
@@ -62,6 +56,7 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
             />
           );
         })}
+
       {pluginLinks &&
         pluginLinks.map(config => {
           return (
