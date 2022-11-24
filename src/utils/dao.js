@@ -259,3 +259,26 @@ export const getDAOAccountCap = async (provider, address) => {
 
   return cap ? cap.json : null;
 };
+
+export const getMemberNFT = async (provider, daoId, address) => {
+  const identifierNFT = await provider.send('state.get_resource', [
+    address,
+    `0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoId}>, 0x00000000000000000000000000000001::DAOSpace::DAOMemberBody<${daoId}>>`,
+    {
+      decode: true,
+    },
+  ]);
+
+  if (identifierNFT) {
+    return {
+      id: identifierNFT.json.nft.vec[0].id,
+      nft_name: utils.hexToString(identifierNFT.json.nft.vec[0].base_meta.name),
+      image_data: utils.hexToString(
+        identifierNFT.json.nft.vec[0].base_meta.image_data,
+      ),
+      init_sbt: identifierNFT.json.nft.vec[0].body.sbt.value,
+    };
+  }
+
+  return null;
+};

@@ -11,7 +11,7 @@ import {
 import { useOverlay } from '../contexts/OverlayContext';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 
-const ChangeUser = isDao => {
+const ChangeUser = ({ isDao }) => {
   const { requestWallet, address } = useInjectedProvider();
   const { setDaoAccountModal, setHubAccountModal } = useOverlay();
 

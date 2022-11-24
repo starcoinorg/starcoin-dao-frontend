@@ -37,36 +37,44 @@ export const InjectedProvider = ({ children }) => {
   const hasListeners = useRef(null);
 
   const connectProvider = async () => {
-    const providerOptions = getProviderOptions();
-    if (!providerOptions) {
-      setInjectedProvider(null);
-      setAddress(null);
-      setWeb3Modal(defaultModal);
-      window.localStorage.removeItem('WEB3_CONNECT_CACHED_PROVIDER');
-      errorToast({ title: 'Could not connect to unsupported network' });
-      return;
-    }
-
-    const web3Modal = new SafeAppWeb3Modal({
-      providerOptions,
-      cacheProvider: true,
-      theme: 'dark',
-    });
-
-    const provider = await web3Modal.requestProvider();
-    provider.selectedAddress = deriveSelectedAddress(provider);
-    const chainId = deriveChainId(provider);
-
-    const chain = {
-      ...supportedChains[chainId],
-      chainId,
+    const initialData = initialStarCoin();
+    const status = () => {
+      if (!initialData.isStarMaskInstalled) {
+        return 0;
+      } else if (initialData.isStarMaskConnected) {
+        initialData.onboarding?.stopOnboarding();
+        return 2;
+      } else {
+        return 1;
+      }
     };
-    const web3 = new Web3(provider);
-    if (web3?.currentProvider?.selectedAddress) {
-      setInjectedProvider(web3);
-      setAddress(web3.currentProvider.selectedAddress.toLowerCase());
-      setInjectedChain(chain);
-      setWeb3Modal(web3Modal);
+
+    const _status = status();
+    if (_status === 0) {
+      initialData.onboarding.startOnboarding();
+    } else if (_status === 1) {
+      try {
+        const newAccounts = await window.starcoin.request({
+          method: 'stc_requestAccounts',
+        });
+        const chain = await window.starcoin.request({
+          method: 'chain.id',
+        });
+
+        let chainInfo = {
+          chainId: chain.id,
+          name: chain.name,
+        };
+
+        const provider = new providers.Web3Provider(window.starcoin, chainInfo);
+
+        setAddress(newAccounts[0]);
+        setInjectedChain(chainInfo);
+        setNetwork(chainInfo.name);
+        setInjectedProvider(provider);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -101,52 +109,7 @@ export const InjectedProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const initialData = initialStarCoin();
-    const status = () => {
-      if (!initialData.isStarMaskInstalled) {
-        return 0;
-      } else if (initialData.isStarMaskConnected) {
-        initialData.onboarding?.stopOnboarding();
-        return 2;
-      } else {
-        return 1;
-      }
-    };
-
-    const initial = async () => {
-      const _status = status();
-      if (_status === 0) {
-        initialData.onboarding.startOnboarding();
-      } else if (_status === 1) {
-        try {
-          const newAccounts = await window.starcoin.request({
-            method: 'stc_requestAccounts',
-          });
-          const chain = await window.starcoin.request({
-            method: 'chain.id',
-          });
-
-          let chainInfo = {
-            chainId: chain.id,
-            name: chain.name,
-          };
-
-          const provider = new providers.Web3Provider(
-            window.starcoin,
-            chainInfo,
-          );
-
-          setAddress(newAccounts[0]);
-          setInjectedChain(chainInfo);
-          setNetwork(chainInfo.name);
-          setInjectedProvider(provider);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
-
-    initial();
+    connectProvider();
   }, []);
 
   // This useEffect handles the initialization of EIP-1193 listeners

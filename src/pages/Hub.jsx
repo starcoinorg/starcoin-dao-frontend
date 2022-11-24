@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 
 import { CustomThemeContext } from '../contexts/CustomThemeContext';
-import HubAccountModal from '../modals/hubAccountModal';
 import Layout from '../components/layout';
 import Main from './Main';
 import { defaultHubData } from '../utils/navLinks';
@@ -15,15 +14,8 @@ const Hub = () => {
     }
   }, [theme, resetTheme]);
 
-  const HubScopedModals = () => (
-    <>
-      <HubAccountModal />
-    </>
-  );
-
   return (
     <Layout navLinks={defaultHubData}>
-      <HubScopedModals />
       <Main />
     </Layout>
   );

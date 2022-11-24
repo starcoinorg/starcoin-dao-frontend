@@ -57,7 +57,7 @@ const HubAccountModal = () => {
             _hover={{ color: 'secondary.600', cursor: 'pointer' }}
             my={6}
           >
-            Connect a different wallet
+            ReConnect wallet
           </Box>
           <Divider color='primary.300' />
           <Box as={Stack} spacing={4} my={6}>

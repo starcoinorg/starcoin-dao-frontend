@@ -90,7 +90,7 @@ const DesktopNav = ({ dao }) => {
           order={[3, null, null, 3]}
           mt={[0, null, null, 6]}
         >
-          <ChangeUser isDao={daoid} />
+          <ChangeUser isDao={daoid !== undefined} />
         </Box>
       </Flex>
     </Flex>

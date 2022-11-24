@@ -93,7 +93,7 @@ const DaoAccountModal = () => {
                   color='secondary.400'
                   _hover={{ color: 'secondary.600', cursor: 'pointer' }}
                 >
-                  Connect a different wallet
+                  ReConnect wallet
                 </Box>
               </Flex>
 
