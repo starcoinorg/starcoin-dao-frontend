@@ -72,7 +72,7 @@ const HomePage = () => {
 
         setAction(data);
 
-        data.action_delay = data.action_delay * 60
+        data.action_delay = data.action_delay * 60 * 1000
 
         createUpgradeProposal({...data, dao_type:dao.daoType}).then(v=> {
             toast({

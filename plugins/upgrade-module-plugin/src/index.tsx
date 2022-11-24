@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import RootComponent from './root';
 import { providers } from "@starcoin/starcoin"
-// import AcceptProposalAction from './actions/acceptProposalAction';
 import {VscCloudUpload} from 'react-icons/vsc';
+import UpgradeProposalAction from './actions/upgrade_proposal_action';
 
 // 在首次加载和执行时会触发该函数
 export const provider = (props) => {
@@ -52,7 +52,7 @@ export const setup = (ctx: IDaoPluginContext) => {
     },
   })
 
-  // ctx.registerAction(new AcceptProposalAction(ctx.daoType))
+  ctx.registerAction(new UpgradeProposalAction())
 }
 
 export const teardown = () => {

@@ -97,13 +97,27 @@ export const pluginPresets = chainId => {
       author: 'dao Space',
       version: '0.1',
     },
-    // {
-    //   presetName: 'any-member-plugin',
-    //   presetSubtitle: 'xxx',
-    //   presetDescription: 'xxx',
-    //   author: 'dao Space',
-    //   version: '0.1',
-    // },
+    {
+      presetName: 'AnyMemberPlugin',
+      presetSubtitle: 'xxx',
+      presetDescription: 'xxx',
+      author: 'dao Space',
+      version: '0.1',
+    },
+    {
+      presetName: 'WithdrawPlugin',
+      presetSubtitle: 'xxx',
+      presetDescription: 'xxx',
+      author: 'dao Space',
+      version: '0.1',
+    },
+    {
+      presetName: 'UpgradeModulePlugin',
+      presetSubtitle: 'xxx',
+      presetDescription: 'xxx',
+      author: 'dao Space',
+      version: '0.1',
+    },
   ];
 
   return presets;
