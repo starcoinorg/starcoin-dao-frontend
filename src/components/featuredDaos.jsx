@@ -19,15 +19,16 @@ import VenturesAvatar from '../assets/img/ventures__avatar.jpg';
 import RaidAvatar from '../assets/img/raidguild__avatar.png';
 
 const featuredDaoList = [
+  // {
+  //   address: 'starswap_dao',
+  //   network: '0x1',
+  //   name: 'Starswap DAO',
+  //   description: 'Starswap DAO',
+  //   badges: ['DEX', 'AMM', 'Starcoin', 'STC', 'swap', 'dao'],
+  // },
+  ///dao/${daoData?.meta?.chainID}/${daoData.id}/
   {
-    address: 'starswap_dao',
-    network: '0x1',
-    name: 'Starswap DAO',
-    description: 'Starswap DAO',
-    badges: ['DEX', 'AMM', 'Starcoin', 'STC', 'swap', 'dao'],
-  },
-  {
-    address: 'starcoin_dao',
+    address: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
     network: '0x1',
     name: 'Starcoin DAO',
     description: 'Starcoin DAO',
@@ -49,7 +50,7 @@ const FeaturedDaos = () => (
           _hover={{ transform: 'scale(1.05)' }}
           direction='column'
           as={RouterLink}
-          to={`/dao/${dao.network}/${dao.address}`}
+          to={`/dao/${window.starcoin.networkVersion}/${dao.address}`}
           justify='start'
           align='center'
           key={dao.name}
@@ -58,7 +59,7 @@ const FeaturedDaos = () => (
           <Text>{dao.name}</Text>
           <Text fontSize='xs'>{dao.description}</Text>
           <HStack mt={2} justify='center'>
-            <Badge variant='outline' colorScheme='secondary' textAlign='center'>
+            <Badge variant='outline' colorScheme='primary' textAlign='center'>
               {dao.badges[0]}
             </Badge>
             <Badge variant='outline' colorScheme='primary' textAlign='center'>

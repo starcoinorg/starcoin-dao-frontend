@@ -120,10 +120,10 @@ const HookForm = (props) => {
                                                 ref={register({required: true})}
                                                 name={v.name}
                                                 borderTopStartRadius='0'
-                                               _selected={{ bg: "black" }}
-                                               autocomplete="off"
-                                               _focus={{ bg: "black" }}
-                                               _hover={{ bg: "black" }}
+                                                _selected={{bg: "black"}}
+                                                autocomplete="off"
+                                                _focus={{bg: "black"}}
+                                                _hover={{bg: "black"}}
                                                 onChange={(v1) => {
                                                     if (props.onChange) {
                                                         props.onChange(v.name, v1.target.value)
@@ -137,10 +137,10 @@ const HookForm = (props) => {
                                         :
                                         <Input ref={register({required: true})}
                                                defaultValue={v.defaultValue}
-                                               _selected={{ bg: "black" }}
-                                               _focus={{ bg: "black" }}
+                                               _selected={{bg: "black"}}
+                                               _focus={{bg: "black"}}
                                                autocomplete="off"
-                                               _hover={{ bg: "black" }}
+                                               _hover={{bg: "black"}}
                                                placeholder={v.title + "..."}
                                                onChange={(v) => {
                                                }}
@@ -157,10 +157,10 @@ const HookForm = (props) => {
                                 }
                             </InputGroup>
                             {
-                                props.helpers? 
-                                <FormHelperText>
-                                {props.helpers.get(v.name)}
-                                </FormHelperText>:<></>
+                                props.helpers ?
+                                    <FormHelperText>
+                                        {props.helpers.get(v.name)}
+                                    </FormHelperText> : <></>
                             }
                         </FormControl>
                 })
@@ -172,7 +172,6 @@ const HookForm = (props) => {
                         <Spinner margin='0 auto'/> :
                         "Submit"
                     }
-
                 </Button>
             }
 

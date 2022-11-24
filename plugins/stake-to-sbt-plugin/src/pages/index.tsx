@@ -5,12 +5,11 @@ import React, {
 import {
     Flex,
     Spinner,
-    useToast
 } from "@chakra-ui/react"
 import {useHistory} from 'react-router-dom'
 
 import {useSubAppContext} from "../contexts/SubAppContext"
-import {queryStakeTokenType} from "../utils/stakeSBTPluginAPI"
+import {queryStakeTokenType} from "../utils/api"
 import CreateAcceptPropoalWidget from "../components/createAcceptProposal"
 import MainViewLayout from "../components/mainViewLayout"
 import TextBox from "../components/TextBox"
