@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom';
 import RootComponent from './root';
 import { IDaoPluginContext, IAction } from './extpoints/dao_app';
 import { providers } from "@starcoin/starcoin"
-import AcceptProposalAction from './actions/acceptProposalAction';
+import ProposalAction from './actions/index';
 import {VscPackage} from 'react-icons/vsc';
 
-// 在首次加载和执行时会触发该函数
 export const provider = (props) => {
    const root = props.dom
      ? props.dom.querySelector("#root")
@@ -53,7 +52,7 @@ export const setup = (ctx: IDaoPluginContext) => {
     },
   })
 
-  ctx.registerAction(new AcceptProposalAction(ctx.daoType))
+    ctx.registerAction(new ProposalAction(ctx.daoType))
 }
 
 export const teardown = () => {
@@ -62,7 +61,6 @@ export const teardown = () => {
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
-  let walletAddress = "";
 
   const ctx = {
     name: "StarcoinDAO",

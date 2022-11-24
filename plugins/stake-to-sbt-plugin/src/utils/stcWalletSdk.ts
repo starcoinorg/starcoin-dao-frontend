@@ -1,6 +1,5 @@
 import {providers} from "@starcoin/starcoin"
 import {getLocalNetwork} from "./localHelper";
-import {Web3Provider} from "@starcoin/starcoin/dist/src/providers";
 import {nodeUrlMap} from "./consts";
 
 export async function requestAccounts() {
@@ -31,13 +30,56 @@ export async function getRpcProvder() {
 
 export async function callContract(function_id: string, type_args: any[], args: any[]): Promise<any> {
 
-    const starcoinProvider = await getRpcProvder()
+    console.log("call contract function_id: ", function_id, "----------start---------")
+    console.log("args: ", args)
+    console.log("type_args: ", type_args)
 
-    return await starcoinProvider.callV2({
+    const starcoinProvider = await getRpcProvder()
+    const result = await starcoinProvider.callV2({
         function_id,
         type_args,
         args,
     })
+
+    console.log("result: ", result)
+    console.log("function_id: ", function_id, "-----------end----------")
+
+    return result
+}
+
+export async function listResource(address: string, resource_types: Array<any>) : Promise<any> {
+    console.log("list_resource ---------start----------")
+    console.log("address: ", address)
+    console.log("resource_types: ", resource_types)
+    const result = await  window.starcoin.request({
+        method: 'state.list_resource',
+        params: [
+            address,
+            {
+                resource_types: resource_types,
+                decode: true,
+            }
+        ]
+    })
+    console.log("result: ", result)
+    console.log("list_resource ----------end-----------")
+    return result
+}
+
+
+export async function listResourceWithPages(address: string, params: any) : Promise<any> {
+    const result = await window.starcoin.request({
+        method: 'state.list_resource',
+        params: [
+            address,
+            {
+                resource_types: [params],
+                decode: true,
+            }
+        ]
+    })
+
+    return result
 }
 
 export function isValidateAddress(address: string) {

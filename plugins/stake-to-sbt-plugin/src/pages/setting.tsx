@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 import {useHistory} from 'react-router-dom'
-import { rgba } from 'polished'
+import {rgba} from 'polished'
 import Card from '../components/card'
 import Back from "../components/back"
 import MainViewLayout from '../components/mainViewLayout'
@@ -24,7 +24,7 @@ import CreateAcceptProposalWidget from '../components/createAcceptProposal'
 import {
     queryStakeTokenType,
     QueryStakeTypeResult
-} from '../utils/stakeSBTPluginAPI'
+} from '../utils/api'
 
 const CARD_BG = '#0b0b0b';
 
@@ -36,7 +36,6 @@ const SettingPage = () => {
     const {isOpen, onOpen, onClose} = useDisclosure()
 
     useEffect(() => {
-        console.log("haishdoiahsdiohsaiodhaioshido")
         const fetchData = async () => {
             let result = await queryStakeTokenType(dao.address, dao.daoType)
             result.push({
@@ -44,10 +43,11 @@ const SettingPage = () => {
                 type: "-"
             })
             setDataList(result)
-            setLoading(false)
         }
 
-        fetchData().catch(console.log)
+        fetchData()
+            .catch(console.log)
+            .finally(() => setLoading(false))
     }, [])
 
     return (
@@ -56,14 +56,14 @@ const SettingPage = () => {
             headerEl={Back('Back')}
         >
             <Modal isOpen={isOpen} onClose={onClose} size='full'>
-            <ModalOverlay bgColor={rgba(CARD_BG, 0.8)} />
-                <ModalContent  
-                rounded='lg'
-                bg={CARD_BG}
-                borderWidth='1px'
-                borderColor='whiteAlpha.200'
-                py={3}
-                px={9}>
+                <ModalOverlay bgColor={rgba(CARD_BG, 0.8)}/>
+                <ModalContent
+                    rounded='lg'
+                    bg={CARD_BG}
+                    borderWidth='1px'
+                    borderColor='whiteAlpha.200'
+                    py={3}
+                    px={9}>
                     <ModalHeader>Create a new stake Token</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
@@ -81,7 +81,7 @@ const SettingPage = () => {
                             :
                             dataList.map(function (data) {
                                 const {title, type} = data;
-                                const plus = title == "-"
+                                const plus = title === "-"
                                 return (
                                     <Card
                                         key={type}
