@@ -1,18 +1,19 @@
-import React from 'react';
-import { Box } from '@chakra-ui/react';
+import React from 'react'
+import {Box} from '@chakra-ui/react'
 
-import PageHeader from './pageHeader';
+import PageHeader from './pageHeader'
 
-const MainViewLayout = ({ children, header}) => {
-  return (
-    <>
-      <PageHeader
-        header={header}
-      />
-      <Box p={6}>{children}</Box>
-    </>
-  );
-};
+const MainViewLayout = (props) => {
+    const {children, header} = props
+    return (
+        <>
+            <PageHeader
+                header={header}
+            />
+            <Box p={6}>{children}</Box>
+        </>
+    )
+}
 
 
-export default MainViewLayout;
+export default MainViewLayout

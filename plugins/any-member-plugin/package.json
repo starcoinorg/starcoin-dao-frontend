@@ -1,5 +1,5 @@
 {
-  "name": "@daospace/upgrade-module-plugin",
+  "name": "@daospace/any-member-plugin",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
