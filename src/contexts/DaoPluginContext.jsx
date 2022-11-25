@@ -85,9 +85,6 @@ export const DaoPluginProvider = ({ children }) => {
         entry: 'cached',
       });
 
-      console.log('添加chajian ');
-      console.log(this.name);
-
       pluginMenus.push({
         key: this.name,
         icon: appIcon,
