@@ -85,6 +85,9 @@ export const DaoPluginProvider = ({ children }) => {
         entry: 'cached',
       });
 
+      console.log('添加chajian ');
+      console.log(this.name);
+
       pluginMenus.push({
         key: this.name,
         icon: appIcon,
@@ -108,6 +111,16 @@ export const DaoPluginProvider = ({ children }) => {
 
   const loadDaoPlugins = async () => {
     const daoPlugins = daoMetaData.installedPlugins;
+
+    daoPlugins.sort((a, b) => {
+      {
+        if (a.name === '0x1::InstallPluginProposalPlugin') {
+          return 1;
+        }
+        return -1;
+      }
+    });
+
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
       console.log('plugin_info:', plugin_info);
