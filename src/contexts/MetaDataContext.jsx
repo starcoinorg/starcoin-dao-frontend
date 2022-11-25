@@ -10,15 +10,13 @@ import React, {
 import { useParams } from 'react-router-dom';
 
 import { useCustomTheme } from './CustomThemeContext';
-import { useUser } from './UserContext';
 import { proposalConfigReducer } from '../reducers/proposalConfig';
-import { fetchMetaData } from '../utils/metadata';
-import { DaoService } from '../services/daoService';
-
+import { getDaoDetail } from '../utils/dao';
+import { useInjectedProvider } from './InjectedProviderContext';
 export const MetaDataContext = createContext();
 
 export const MetaDataProvider = ({ children }) => {
-  const { userHubDaos, refetchUserHubDaos } = useUser();
+  const { injectedProvider } = useInjectedProvider();
   const { updateTheme, resetTheme } = useCustomTheme();
   const { daoid, daochain } = useParams();
 
@@ -32,11 +30,9 @@ export const MetaDataProvider = ({ children }) => {
   const hasFetchedMetadata = useRef(false);
   const shouldUpdateTheme = useRef(true);
 
-  const daoService = new DaoService();
-
   const fetchData = useCallback(async () => {
     try {
-      const data = await daoService.getDao(daoid);
+      const data = await getDaoDetail(injectedProvider, daoid);
       console.log('current DAO data:', data);
       if (shouldUpdateTheme.current && !daoMetaData) {
         if (data.customThemeConfig) {
@@ -62,7 +58,7 @@ export const MetaDataProvider = ({ children }) => {
 
   const refetchMetaData = () => {
     shouldUpdateTheme.current = true;
-    refetchUserHubDaos();
+    fetchData();
   };
 
   return (

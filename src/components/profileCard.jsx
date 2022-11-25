@@ -160,27 +160,10 @@ const ProfileCard = ({
             </Flex>
             <Flex justify='space-between' align='flex-end' mt={4}>
               <Box w='30%'>
-                <TextBox size='xs'>Power</TextBox>
-                <Skeleton isLoaded={profile || memberEntity}>
-                  <TextBox size='xl' variant='value'>
-                    {daoTokens && overview && calcPower(memberEntity, overview)}
-                    %
-                  </TextBox>
-                </Skeleton>
-              </Box>
-              <Box w='30%'>
-                <TextBox size='xs'>Shares</TextBox>
+                <TextBox size='xs'>SBT</TextBox>
                 <Skeleton isLoaded={!memberEntity || memberEntity?.shares >= 0}>
                   <TextBox size='xl' variant='value'>
                     {memberEntity?.shares || '0'}
-                  </TextBox>
-                </Skeleton>
-              </Box>
-              <Box w='30%'>
-                <TextBox size='xs'>Loot</TextBox>
-                <Skeleton isLoaded={!memberEntity || memberEntity?.loot >= 0}>
-                  <TextBox size='xl' variant='value'>
-                    {memberEntity?.loot || '0'}
                   </TextBox>
                 </Skeleton>
               </Box>

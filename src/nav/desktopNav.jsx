@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { RiLinksLine } from 'react-icons/ri';
 import {
   Flex,
@@ -13,11 +14,13 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   Portal,
+  Spacer,
 } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
 import Brand from './brand';
 import ChangeDao from './changeDao';
+import ChangeUser from '../components/changeUser';
 import NavLinkList from './navLinkList';
 import SocialsLinkList from './socialsLinkList';
 import {
@@ -33,23 +36,7 @@ const TemporaryPopoverFix = styled.span`
 `;
 
 const DesktopNav = ({ dao }) => {
-  const { socialLinks, discourseLinkData } = useMemo(() => {
-    return {
-      socialLinks: dao?.daoMetaData?.links
-        ? generateDaoSocials(dao?.daoMetaData?.links)
-        : defaultSocialLinks,
-      discourseLinkData: dao?.daoMetaData?.boosts?.DISCOURSE?.active
-        ? generateDiscourseLink(dao.daoMetaData.boosts.DISCOURSE.metadata)
-        : // discourseLinkData: dao?.daoMetaData?.boosts?.discourse?.active
-          // ? generateDiscourseLink(dao.daoMetaData.boosts.discourse.metadata)
-          null,
-    };
-  }, [dao]);
-
-  const isCommunityLinkProvided = useMemo(
-    () => socialLinks.length > 0 || discourseLinkData,
-    [discourseLinkData, socialLinks],
-  );
+  const { daoid, daochain } = useParams();
 
   return (
     <Flex
@@ -80,6 +67,16 @@ const DesktopNav = ({ dao }) => {
           wrap='wrap'
         >
           <Brand dao={dao} />
+        </Flex>
+      </Flex>
+      <Flex direction='column' wrap='wrap'>
+        <>
+          <NavLinkList dao={dao} view='desktop' />
+        </>
+      </Flex>
+      <Spacer />
+      <Flex direction='column' wrap='wrap'>
+        {daoid && (
           <Box
             w={['auto', null, null, '100%']}
             order={[3, null, null, 3]}
@@ -87,42 +84,17 @@ const DesktopNav = ({ dao }) => {
           >
             <ChangeDao />
           </Box>
-        </Flex>
-      </Flex>
-      <Flex direction='column' wrap='wrap'>
-        <>
-          <NavLinkList dao={dao} view='desktop' />
-          {/* <Box>
-            <Popover placement='right' w='auto' enabled={false}>
-              <Tooltip
-                label='Community Links'
-                aria-label='Community Links'
-                placement='right'
-                hasArrow
-                shouldWrapChildren
-              >
-                <PopoverTrigger>
-                  <Button
-                    variant='sideNav'
-                    _hover={{
-                      backgroundColor: isCommunityLinkProvided
-                        ? 'white'
-                        : 'transparent',
-                      cursor: isCommunityLinkProvided
-                        ? 'pointed'
-                        : 'not-allowed',
-                    }}
-                    mt={3}
-                  >
-                    <Icon as={RiLinksLine} w={6} h={6} />
-                  </Button>
-                </PopoverTrigger>
-              </Tooltip>
-            </Popover>
-          </Box> */}
-        </>
+        )}
+        <Box
+          w={['auto', null, null, '100%']}
+          order={[3, null, null, 3]}
+          mt={[0, null, null, 6]}
+        >
+          <ChangeUser isDao={daoid !== undefined} />
+        </Box>
       </Flex>
     </Flex>
   );
 };
+
 export default DesktopNav;

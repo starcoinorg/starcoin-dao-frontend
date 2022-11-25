@@ -27,16 +27,6 @@ const PageHeader = ({ isDao, header, headerEl, customTerms }) => {
         ) : null}
         {headerEl}
       </Flex>
-      <Flex
-        direction='row'
-        justify='flex-end'
-        align='center'
-        d={['none', null, null, 'flex']}
-      >
-        {isDao && <WrongNetworkToolTip />}
-        {/* <HausBalance /> */}
-        <Web3SignIn isDao={isDao} />
-      </Flex>
     </Flex>
   );
 };

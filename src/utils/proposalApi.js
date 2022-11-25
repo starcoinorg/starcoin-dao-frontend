@@ -247,19 +247,16 @@ function convert_proposal(daoType, proposalInfo) {
     blockStateRoot: proposalInfo.state_root,
   };
 }
-export const listDaoProposals = async daoId => {
+export const listDaoProposals = async (provider, daoId) => {
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
 
-  const globalProposals = await window.starcoin.request({
-    method: 'state.get_resource',
-    params: [
-      daoAddress,
-      '0x00000000000000000000000000000001::DAOSpace::GlobalProposals',
-      {
-        decode: true,
-      },
-    ],
-  });
+  const globalProposals = await provider.send('state.get_resource', [
+    daoAddress,
+    '0x00000000000000000000000000000001::DAOSpace::GlobalProposals',
+    {
+      decode: true,
+    },
+  ]);
 
   let proposals = [];
 

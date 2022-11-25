@@ -26,10 +26,8 @@ import {
 import MainViewLayout from '../components/mainViewLayout';
 import { createMemberProposal } from '../utils/memberPluginAPI';
 import { useSubAppContext } from '../contexts/SubAppContext';
-import MemberCard from '../components/memberCard';
 import MemberInviteList from '../components/memberInviteList';
 import MyMemberInviteList from '../components/myMemberInviteList';
-import { fileToBase64 } from '../utils/fileUtils';
 import { isValidateAddress } from '../utils/stcWalletSdk';
 
 const Members = () => {
@@ -141,20 +139,14 @@ const Members = () => {
       >
         <Tabs size='md' variant='enclosed'>
           <TabList>
-            <Tab>My Profile</Tab>
-            <Tab>All Invite</Tab>
-            <Tab>My Invite</Tab>
+            <Tab>All Member Invites</Tab>
+            <Tab>My Member Invite</Tab>
           </TabList>
           <TabPanels
             w={['100%', null, null, '100%', '80%']}
             pr={[0, null, null, null, 6]}
             pb={6}
           >
-            <TabPanel>
-              <Flex as={Stack} direction='column' spacing={4} w='100%'>
-                <MemberCard daoId={dao.daoType}/>
-              </Flex>
-            </TabPanel>
             <TabPanel>
               <MemberInviteList daoId={dao.daoType} />
             </TabPanel>
