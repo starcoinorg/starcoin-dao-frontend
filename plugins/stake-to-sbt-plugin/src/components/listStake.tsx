@@ -114,37 +114,6 @@ const ListStake = (props) => {
 
         return nAmount
     }
-
-    const countAmount = () => {
-        let v = 0
-
-        if (props.data) {
-
-            for (const i in props.data.items) {
-                v += props.data.items[i].token.value / props.tokenInfo.scaling_factor
-                console.log(props.data.items[i].sbt_amount)
-            }
-
-        }
-
-        return v
-    }
-
-    const countSbt = () => {
-        let v = 0
-
-        if (props.data) {
-
-            for (const i in props.data.items) {
-                v += props.data.items[i].token.value / props.tokenInfo.scaling_factor
-                console.log(props.data.items[i].sbt_amount)
-            }
-
-        }
-
-        return v
-    }
-
     useEffect(() => {
         if (!props.data) {
             return
@@ -215,7 +184,7 @@ const ListStake = (props) => {
                                 <Td>{v.lock_status}</Td>
                                 <Td>
                                     <Button w='46%'
-
+                                        disabled={!v.lock_status.includes("Unstake")}
                                             onClick={() => {
                                                 onItemClick(v)
                                             }}>
