@@ -16,7 +16,7 @@ import {GoSettings} from 'react-icons/go'
 import {useHistory} from 'react-router-dom'
 
 import {
-    queryStakeCount,
+    Pages,
     queryStakeList,
     unstakeSBT,
     unstakeAllSBT,
@@ -43,11 +43,11 @@ const HomePage = () => {
 
     const [loading, setLoading] = useState(true)
     const [unStakeloading, setUnStakeloading] = useState(false)
-    const [listPages, setListPages] = useState({
-        total: 0,
-        index: 0,
-        limitCount: 10,
-    })
+//    const [listPages, setListPages] = useState({
+//        total: 0,
+//        index: 0,
+//        limitCount: 6,
+//    })
 
     const [tokenType, setTokenType] = useState<string>("")
     const [tokenTypes, setTokenTypes] = useState<Array<QueryStakeTypeResult>>()
@@ -58,11 +58,7 @@ const HomePage = () => {
     useEffect(() => {
         const initFetch = async () => {
             const result = await queryStakeTokenType(dao.address, dao.daoType)
-
-            setTokenTypes(result.concat({
-                title: "sui",
-                type: "sui"
-            }))
+            setTokenTypes(result)
 
             const defaultToken = result[0].type
             setTokenType(defaultToken)
@@ -78,20 +74,27 @@ const HomePage = () => {
             const tokenInfo = await queryTokenInfo(tokenType)
             setTokenInfos(new Map().set(tokenType, tokenInfo))
 
-            const count = await queryStakeCount({
-                dao_type: dao.daoType,
-                token_type: tokenType
-            })
-            console.log(count)
-            setListPages({
-                ...listPages,
-                total: count
-            })
+            // list_resource not support pageing
 
-            const stakeList = await queryStakeList({
-                dao_type: dao.daoType,
-                token_type: tokenType
-            })
+//            const count = await queryStakeCount({
+//                dao_type: dao.daoType,
+//                token_type: tokenType
+//            })
+//
+//            setListPages({
+//                ...listPages,
+//                total: count
+//            })
+
+            const stakeList = await queryStakeList(
+                dao.address,
+                {
+                    dao_type: dao.daoType,
+                    token_type: tokenType
+                },
+                new Pages(0, 0)
+            )
+
             setListData(stakeList)
         } catch (e) {
             console.log(e)
@@ -99,6 +102,7 @@ const HomePage = () => {
     }
 
     const onRefresh = async () => {
+
         setRefreshLoading(true)
         await fetchData(tokenType)
         setRefreshLoading(false)
@@ -193,14 +197,15 @@ const HomePage = () => {
                     <Select placeholder='All'>
                     </Select>
                 </HStack>
-                <Button
-                    disabled={unStakeloading}
-                    onClick={unStakeAll}>
-                    {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
-                </Button>
+                {
+                    listData ? <Button
+                        disabled={unStakeloading}
+                        onClick={unStakeAll}>
+                        {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
+                    </Button> : <></>
+                }
                 <Button onClick={onRefresh}>
                     {refreshLoading ? <Spinner margin='0 auto'/> : "Refresh"}
-
                 </Button>
             </HStack>
             {
@@ -215,21 +220,24 @@ const HomePage = () => {
                             w='15%'
                             margin='0 auto'
                             mt={6}
-                            onClick={() => {
-                                history.push(`/stake`)
-                            }}
+                            onClick={() => history.push(`/stake`)}
                         >
                             Stake Your First SBT
                         </Button>
                     </Flex>
                     :
                     <Flex direction='column'>
-                        <ListStake data={listData} tokenInfo={tokenInfos.get(tokenType)} onItemClick={unStake}/>
+                        <ListStake
+                            data={listData}
+                            tokenInfo={tokenInfos.get(tokenType)}
+                            onItemClick={unStake}/>
+                        <Flex justifyContent="space-between" m={4} alignItems="center">
+
+                        </Flex>
                     </Flex>
             }
-
         </MainViewLayout>
     )
 }
 
-export default HomePage;
+export default HomePage
