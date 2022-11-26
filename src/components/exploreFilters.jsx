@@ -8,9 +8,9 @@ import ExploreSearch from './exploreSearch';
 import ListSort from './listSort';
 import { SORT_OPTIONS } from '../utils/exploreContent';
 
-const ExploreFilters = ({ daoCount }) => {
+const ExploreFilters = () => {
   const [sort, setSort] = useState();
-  const { dispatch } = useContext(ExploreContext);
+  const { dispatch, state } = useContext(ExploreContext);
 
   useEffect(() => {
     if (sort) {
@@ -27,13 +27,13 @@ const ExploreFilters = ({ daoCount }) => {
           fontFamily='heading'
           fontSize={['sm', null, null, 'md']}
         >
-          {daoCount} DAOS
+          {state.pages.total} DAOS
         </Box>
         {/* <ExploreSearch /> */}
-        <Box mr={6}>
+        {/* <Box mr={6}>
           <ListSort sort={sort} setSort={setSort} options={SORT_OPTIONS} />
         </Box>
-        <ExploreFilterList />
+        <ExploreFilterList /> */}
       </Flex>
 
       <ExploreTagList />

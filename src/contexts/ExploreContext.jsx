@@ -27,10 +27,34 @@ const initialState = {
   searchTerm: null,
   sort: SORT_OPTIONS[0],
   tags: [],
+  pages: {
+    index: 0,
+    offset: 8,
+    total: 0,
+  },
+  allDaos: new Map(),
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'nextPage': {
+      if (state.pages.index * state.pages.offset > state.total) {
+        return state;
+      }
+      state.pages.index++;
+      return {
+        ...state,
+      };
+    }
+    case 'previousPage': {
+      if (state.pages.index > 0) {
+        state.pages.index--;
+        return {
+          ...state,
+        };
+      }
+      return state;
+    }
     case 'resetExplore': {
       return {
         ...state,
@@ -74,7 +98,8 @@ const reducer = (state, action) => {
 
 export const ExploreContextProvider = ({ children }) => {
   const { injectedProvider } = useInjectedProvider();
-  const [exploreDaos, setExploreDaos] = useSessionStorage('exploreDaoData', {
+  // const [allDaos, setAllDaos] = useState(new Map());
+  const [exploreDaos, setExploreDaos] = useState({
     loaded: false,
     chains: [],
     data: [],
@@ -82,16 +107,41 @@ export const ExploreContextProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   useEffect(() => {
+    console.log(state);
+    if (state.allDaos) {
+      const exData = state.allDaos.get(state.pages.index);
+
+      if (exData) {
+        setExploreDaos({
+          loaded: true,
+          chains: [],
+          data: exData,
+        });
+        return;
+      }
+    }
+
+    setExploreDaos({
+      loaded: false,
+      chains: [],
+      data: null,
+    });
+
     const fetchData = async () => {
-      console.log('刷新');
-      // const daoTotal = await getDaoQuantity(injectedProvider);
+      const daoTotal = await getDaoQuantity(injectedProvider);
+      state.pages.total = daoTotal;
 
-      // console.log(daoTotal);
+      const data = await listDaos(
+        injectedProvider,
+        state.pages.index,
+        state.pages.offset,
+        {
+          withLogo: false,
+          withPlugins: false,
+        },
+      );
 
-      const data = await listDaos(injectedProvider, {
-        withLogo: false,
-        withPlugins: false,
-      });
+      state.allDaos = new Map(state.allDaos).set(state.pages.index, data);
 
       setExploreDaos({
         loaded: true,
@@ -101,7 +151,7 @@ export const ExploreContextProvider = ({ children }) => {
     };
 
     fetchData();
-  }, []);
+  }, [state]);
 
   return (
     <ExploreContext.Provider

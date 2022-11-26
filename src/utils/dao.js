@@ -118,10 +118,13 @@ export const getDaoQuantity = async provider => {
   );
 };
 
-export const listDaos = async (provider, _opts) => {
+export const listDaos = async (provider, index, offset, _opts) => {
   const opts = {
     ..._opts,
   };
+
+  console.log(index);
+  console.log(offset);
 
   const daoEntrys = await provider.send('state.list_resource', [
     '0x1',
@@ -130,8 +133,8 @@ export const listDaos = async (provider, _opts) => {
         '0x00000000000000000000000000000001::DAORegistry::DAORegistryEntry',
       ],
       decode: true,
-      start_index: 0,
-      max_size: 3,
+      start_index: index * offset,
+      max_size: (index + 1) * offset,
     },
   ]);
 
