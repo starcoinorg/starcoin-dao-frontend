@@ -100,6 +100,24 @@ export const getDaoNFTImage = async (provider, daoType) => {
   return null;
 };
 
+export const getDaoQuantity = async provider => {
+  const result = await provider.send('state.list_resource', [
+    '0x1',
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::DAORegistry::DAORegistry',
+      ],
+      decode: true,
+    },
+  ]);
+
+  console.log(result);
+
+  return (
+    result.resources[Object.keys(result.resources)[0]].json.next_dao_id - 1
+  );
+};
+
 export const listDaos = async (provider, _opts) => {
   const opts = {
     ..._opts,
@@ -113,7 +131,7 @@ export const listDaos = async (provider, _opts) => {
       ],
       decode: true,
       start_index: 0,
-      max_size: 10,
+      max_size: 3,
     },
   ]);
 

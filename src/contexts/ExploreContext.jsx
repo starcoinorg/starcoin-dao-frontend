@@ -6,7 +6,7 @@ import { exploreChainQuery } from '../utils/theGraph';
 import { getApiMetadata } from '../utils/metadata';
 import { SORT_OPTIONS, EXPLORE_FILTER_OPTIONS } from '../utils/exploreContent';
 import { supportedChains } from '../utils/chain';
-import { listDaos } from '../utils/dao';
+import { getDaoQuantity, listDaos } from '../utils/dao';
 import { useInjectedProvider } from './InjectedProviderContext';
 
 export const ExploreContext = createContext();
@@ -83,6 +83,11 @@ export const ExploreContextProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log('刷新');
+      // const daoTotal = await getDaoQuantity(injectedProvider);
+
+      // console.log(daoTotal);
+
       const data = await listDaos(injectedProvider, {
         withLogo: false,
         withPlugins: false,
