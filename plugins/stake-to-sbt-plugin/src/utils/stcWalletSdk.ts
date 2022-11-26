@@ -47,37 +47,28 @@ export async function callContract(function_id: string, type_args: any[], args: 
     return result
 }
 
-export async function listResource(address: string, resource_types: Array<any>) : Promise<any> {
+export async function listResource(address: string, resource_types: Array<any>, pages?: any): Promise<any> {
+
     console.log("list_resource ---------start----------")
     console.log("address: ", address)
     console.log("resource_types: ", resource_types)
-    const result = await  window.starcoin.request({
+    console.log("pages", pages)
+
+    const result = await window.starcoin.request({
         method: 'state.list_resource',
-        params: [
+        params:[
             address,
             {
                 resource_types: resource_types,
                 decode: true,
+                start_index: 0,
+                max_size: 6,
             }
         ]
     })
+
     console.log("result: ", result)
     console.log("list_resource ----------end-----------")
-    return result
-}
-
-
-export async function listResourceWithPages(address: string, params: any) : Promise<any> {
-    const result = await window.starcoin.request({
-        method: 'state.list_resource',
-        params: [
-            address,
-            {
-                resource_types: [params],
-                decode: true,
-            }
-        ]
-    })
 
     return result
 }

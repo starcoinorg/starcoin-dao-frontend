@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
 import {
     Table,
@@ -23,13 +23,14 @@ const title = [
     'lock time',
     'weight',
     'sbt',
-    'expire time',
+    'lock status',
     'option',
 ]
 
 const ListStake = (props) => {
 
     const [actionLoading, setActionLoading] = useState<Map<String, boolean>>(new Map())
+    const [data, setData] = useState()
 
     const onItemClick = (v: any, fouce?: boolean) => {
 
@@ -60,11 +61,88 @@ const ListStake = (props) => {
         expire.setSeconds(lock_time)
 
         if (now.getTime() > expire.getTime()) {
-            return "Expired"
+            return `Unlocked`
         } else {
-            return expire.toLocaleString()
+            return `Locking ${expire.toLocaleString()}`
         }
     }
+
+    const formatLockTime = (time: number) => {
+
+        let remain = time
+        let c = ""
+
+        const hour = 60 * 60
+        if (remain > hour) {
+            const s = Math.floor((remain / hour))
+            c += `${s} hours `
+            remain = remain - s * hour
+        }
+
+        const minute = 60
+        if (remain > minute) {
+            const s = Math.floor((remain / minute))
+            c += `${s} minutes `
+            remain = remain - s * minute
+        }
+
+        if (remain > 0) {
+            c += `${remain} seconds`
+        }
+
+        return c
+    }
+
+    const formatAmount = (amount: number) => {
+        if (amount < 100) {
+            return amount
+        }
+
+        let nAmount = amount.toString()
+        let length = nAmount.length
+
+        let s = Math.floor(length / 3)
+
+        for (let i = 1; i <= s; i++) {
+            const p = nAmount.substring(0, i * 3 + i - 1)
+            const b = nAmount.substring(i * 3 + i - 1, nAmount.length)
+            if (b == "") {
+                continue
+            }
+            nAmount = p + "," + b
+        }
+
+        return nAmount
+    }
+    useEffect(() => {
+        if (!props.data) {
+            return
+        }
+
+        let countToken = 0
+        let countSbt = 0
+        const items = props.data.items.map(v => {
+            countToken += v.token.value
+            countSbt += v.sbt_amount
+
+            return {
+                id: v.id,
+                stake_time: formatTime(v.stake_time),
+                token: formatAmount(v.token.value / props.tokenInfo.scaling_factor),
+                weight: v.weight,
+                lock_time: formatLockTime(v.lock_time),
+                sbt_amount: formatAmount(v.sbt_amount),
+                lock_status: formatExpire(v.stake_time, v.lock_time)
+            }
+        })
+
+        setData({
+            sbt: countSbt,
+            token: countToken / props.tokenInfo.scaling_factor,
+            items: items
+        })
+
+    }, [props.data])
 
     return (
         <TableContainer>
@@ -73,34 +151,44 @@ const ListStake = (props) => {
                     <TextBox>
                         {props.data ? `Time zone ${Intl.DateTimeFormat().resolvedOptions().timeZone}` : ''}
                     </TextBox>
+                    <TextBox mt='4'>
+                        {data ? `Total stake token ${data.token} - Results total sbt ${data.sbt}` : ''}
+                    </TextBox>
                 </TableCaption>
                 <Thead>
                     <Tr>
                         {
-                            title.map((v, i) => (
-                                <Th key={`!${i.toString()}`}>{v}</Th>
-                            ))
+                            title.map((v, i) => {
+//                                if (i === 2) {
+//                                    return <Th key={`!${i.toString()}`}>{`${v} (${data ? data.token : 0})`}</Th>
+//                                } else if (i === 5) {
+//                                    return <Th key={`!${i.toString()}`}>{`${v} (${data ? data.sbt : 0})`}</Th>
+//                                }
+
+                                return <Th key={`!${i.toString()}`}>{v}</Th>
+                            })
                         }
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {props.data
+                    {data
                         ?
-                        props.data.items.map((v, i) => (
+                        data.items.map((v, i) => (
                             <Tr key={`#${v.id.toString()}`}>
                                 <Td>{v.id}</Td>
-                                <Td>{formatTime(v.stake_time)}</Td>
-                                <Td>{v.token.value}</Td>
+                                <Td>{v.stake_time}</Td>
+                                <Td>{v.token}</Td>
                                 <Td>{v.lock_time}</Td>
                                 <Td>{v.weight}</Td>
                                 <Td>{v.sbt_amount}</Td>
-                                <Td>{formatExpire(v.stake_time, v.lock_time)}</Td>
+                                <Td>{v.lock_status}</Td>
                                 <Td>
-                                    <Button w='46%' disabled={formatExpire(v.stake_time, v.lock_time) != "Expired"}
+                                    <Button w='46%'
+                                        disabled={!v.lock_status.includes("Unstake")}
                                             onClick={() => {
                                                 onItemClick(v)
                                             }}>
-                                        {actionLoading.get(v.id) ? <Spinner margin='0 auto'/> : "unstake"}
+                                        {actionLoading.get(v.id) ? <Spinner margin='0 auto'/> : "Unstake"}
                                     </Button>
                                 </Td>
                             </Tr>
