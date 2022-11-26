@@ -19,6 +19,8 @@ export const SupportInnerPluginNames = [
   'inner-plugin://member-proposal-plugin',
   'inner-plugin://stake-to-sbt-plugin',
   'inner-plugin://upgrade-module-plugin',
+  'inner-plugin://any-member-plugin',
+  'inner-plugin://withdraw-plugin',
 ];
 
 export const DaoPluginContext = createContext();
