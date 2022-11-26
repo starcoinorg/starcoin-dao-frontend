@@ -60,7 +60,7 @@ const NetworkList = () => {
           </Box>
           <Flex justify='space-between' alignItems='center' mb={6}>
             <TextBox as={RouterLink} to='/explore'>
-              Explore DAOs
+              Explore DAO
             </TextBox>
             <TextBox as={RouterLink} to='/register-dao' ml={6}>
               Register DAO
