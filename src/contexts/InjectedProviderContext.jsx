@@ -27,12 +27,19 @@ const defaultModal = new SafeAppWeb3Modal({
 export const InjectedProviderContext = createContext();
 
 export const InjectedProvider = ({ children }) => {
-  const [injectedProvider, setInjectedProvider] = useState(null);
+  const [network, setNetwork] = useLocalStorage('dao_fe_network', 'main');
+
+  const [injectedProvider, setInjectedProvider] = useState(() => {
+    if (window.starcoin) {
+      return new providers.Web3Provider(window.starcoin, network);
+    }
+    return null;
+  });
+
   const [address, setAddress] = useState(null);
   const [injectedChain, setInjectedChain] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(defaultModal);
   const { errorToast } = useContext(OverlayContext);
-  const [network, setNetwork] = useLocalStorage('dao_fe_network', 'main');
 
   const hasListeners = useRef(null);
 
