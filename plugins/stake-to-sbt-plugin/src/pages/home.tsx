@@ -16,13 +16,13 @@ import {GoSettings} from 'react-icons/go'
 import {useHistory} from 'react-router-dom'
 
 import {
-    queryStakeCount,
+    Pages,
     queryStakeList,
     unstakeSBT,
     unstakeAllSBT,
     nweUnstakeParams,
     queryStakeTokenType,
-    QueryStakeTypeResult
+    QueryStakeTypeResult, queryTokenInfo, QueryTokenInfoResult
 } from "../utils/api"
 import TextBox from "../components/TextBox"
 import ListStake from "../components/listStake"
@@ -43,61 +43,92 @@ const HomePage = () => {
 
     const [loading, setLoading] = useState(true)
     const [unStakeloading, setUnStakeloading] = useState(false)
-    const [listPages, setListPages] = useState({
-        total: 0,
-        index: 0,
-        limitCount: 10,
-    })
+//    const [listPages, setListPages] = useState({
+//        total: 0,
+//        index: 0,
+//        limitCount: 6,
+//    })
 
     const [tokenType, setTokenType] = useState<string>("")
     const [tokenTypes, setTokenTypes] = useState<Array<QueryStakeTypeResult>>()
     const [listData, setListData] = useState<any>()
     const [refreshLoading, setRefreshLoading] = useState(false)
+    const [tokenInfos, setTokenInfos] = useState<Map<String, QueryTokenInfoResult>>(new Map())
 
     useEffect(() => {
-        queryStakeTokenType(dao.address, dao.daoType)
-            .then(v => {
-                setTokenTypes(v)
-                setTokenType(v[0].type)
-                fetch(v[0].type)
-            })
-            .catch(e => {
-                console.log(e)
-                setLoading(false)
-            })
+        const initFetch = async () => {
+            const result = await queryStakeTokenType(dao.address, dao.daoType)
+            setTokenTypes(result)
+
+            const defaultToken = result[0].type
+            setTokenType(defaultToken)
+            await fetchData(defaultToken)
+        }
+
+        initFetch().catch(console.log).finally(() => setLoading(false))
     }, [])
 
-    const fetch = (tokenType: string) => {
-        console.log(`fetch ${tokenType}`)
-        queryStakeCount({
-            dao_type: dao.daoType,
-            token_type: tokenType
-        }).then(v => {
-            setListPages({
-                ...listPages,
-                total: v[0]
-            })
-            queryStakeList({
-                dao_type: dao.daoType,
-                token_type: tokenType
-            }).then(setListData)
-                .finally(() => {
-                    setLoading(false)
-                    setRefreshLoading(false)
-                })
-        }).catch(e => {
+    const fetchData = async (tokenType: string) => {
+        try {
+
+            const tokenInfo = await queryTokenInfo(tokenType)
+            setTokenInfos(new Map().set(tokenType, tokenInfo))
+
+            // list_resource not support pageing
+
+//            const count = await queryStakeCount({
+//                dao_type: dao.daoType,
+//                token_type: tokenType
+//            })
+//
+//            setListPages({
+//                ...listPages,
+//                total: count
+//            })
+
+            const stakeList = await queryStakeList(
+                dao.address,
+                {
+                    dao_type: dao.daoType,
+                    token_type: tokenType
+                },
+                new Pages(0, 0)
+            )
+
+            setListData(stakeList)
+        } catch (e) {
             console.log(e)
-            setLoading(false)
-            setRefreshLoading(false)
-        })
+        }
+    }
+
+    const onRefresh = async () => {
+
+        setRefreshLoading(true)
+        await fetchData(tokenType)
+        setRefreshLoading(false)
+    }
+
+    const onStakeTokenTypeChange = async (v) => {
+        const {target} = v
+        const type = target.selectedOptions[0].value
+
+        setLoading(true)
+        setListData(undefined)
+        setTokenType(type)
+
+        await fetchData(type)
+
+        setLoading(false)
     }
 
     const unStakeAll = async () => {
         try {
-            const result = await unStakeAll()
+            setUnStakeloading(true)
+            await unstakeAllSBT({dao_type: dao.daoType, token_type: tokenType})
         } catch (e) {
             console.log(e)
         }
+        setUnStakeloading(false)
     }
 
     const unStake = async (id) => {
@@ -107,7 +138,7 @@ const HomePage = () => {
                 status: 'success',
                 description: `Unstake of id ${id} is success \n tx: ${v}`,
             })
-            fetch(tokenType)
+            await fetchData(tokenType)
         } catch (e) {
             console.log("haha")
             toast({
@@ -145,6 +176,38 @@ const HomePage = () => {
                 </Flex>
             }
         >
+            <HStack spacing={6} mb={6}>
+                <HStack>
+                    <TextBox>Token</TextBox>
+                    <Select onChange={onStakeTokenTypeChange}>
+                        {
+                            tokenTypes?.map((v, i) => (
+                                <option key={i.toString()} value={v.type}>{v.title}</option>
+                            ))
+                        }
+                    </Select>
+                </HStack>
+                <HStack>
+                    <TextBox>CreateAt</TextBox>
+                    <Select placeholder='All'>
+                    </Select>
+                </HStack>
+                <HStack>
+                    <TextBox>Expire</TextBox>
+                    <Select placeholder='All'>
+                    </Select>
+                </HStack>
+                {
+                    listData ? <Button
+                        disabled={unStakeloading}
+                        onClick={unStakeAll}>
+                        {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
+                    </Button> : <></>
+                }
+                <Button onClick={onRefresh}>
+                    {refreshLoading ? <Spinner margin='0 auto'/> : "Refresh"}
+                </Button>
+            </HStack>
             {
                 !loading && !listData
                     ?
@@ -157,64 +220,24 @@ const HomePage = () => {
                             w='15%'
                             margin='0 auto'
                             mt={6}
-                            onClick={() => {
-                                history.push(`/stake`)
-                            }}
+                            onClick={() => history.push(`/stake`)}
                         >
                             Stake Your First SBT
                         </Button>
                     </Flex>
                     :
                     <Flex direction='column'>
-                        {
-                            listData ? <HStack spacing={6} mb={6}>
-                                <HStack>
-                                    <TextBox>Token</TextBox>
-                                    <Select>
-                                        {
-                                            tokenTypes?.map((v, i) => (
-                                                <option key={i.toString()} value={v.type}>{v.title}</option>
-                                            ))
-                                        }
-                                    </Select>
-                                </HStack>
-                                <HStack>
-                                    <TextBox>CreateAt</TextBox>
-                                    <Select placeholder='All'>
-                                    </Select>
-                                </HStack>
-                                <HStack>
-                                    <TextBox>Expire</TextBox>
-                                    <Select placeholder='All'>
-                                    </Select>
-                                </HStack>
-                                <Button
-                                    disabled={unStakeloading}
-                                    onClick={
-                                        () => {
-                                            setUnStakeloading(true)
-                                            unstakeAllSBT({dao_type: dao.daoType, token_type: tokenType})
-                                                .catch(console.log)
-                                                .finally(() => setUnStakeloading(false))
-                                        }
-                                    }>
-                                    {unStakeloading ? <Spinner margin='0 auto'/> : "Unstake all"}
-                                </Button>
-                                <Button onClick={() => {
-                                    setRefreshLoading(true)
-                                    fetch(tokenType)
-                                }}>
-                                    {refreshLoading ? <Spinner margin='0 auto'/> : "Refresh"}
+                        <ListStake
+                            data={listData}
+                            tokenInfo={tokenInfos.get(tokenType)}
+                            onItemClick={unStake}/>
+                        <Flex justifyContent="space-between" m={4} alignItems="center">
 
-                                </Button>
-                            </HStack> : <div/>
-                        }
-                        <ListStake data={listData} onItemClick={unStake}/>
+                        </Flex>
                     </Flex>
             }
-
         </MainViewLayout>
     )
 }
 
-export default HomePage;
+export default HomePage

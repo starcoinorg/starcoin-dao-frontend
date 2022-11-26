@@ -101,7 +101,7 @@ export const ExploreContextProvider = ({ children }) => {
     };
 
     fetchData();
-  }, [exploreDaos, setExploreDaos]);
+  }, []);
 
   return (
     <ExploreContext.Provider

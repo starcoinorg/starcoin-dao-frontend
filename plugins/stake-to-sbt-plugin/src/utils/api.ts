@@ -19,6 +19,16 @@ export type Types = {
     token_type: string,
 }
 
+export class Pages {
+    start_index: number
+    max_size: number
+
+    constructor(startIndex: number, maxSize: number) {
+        this.start_index = startIndex
+        this.max_size = maxSize
+    }
+}
+
 export interface StakeParams extends Types {
     amount: uint128,
     lock_time: uint64
@@ -71,42 +81,43 @@ export async function unstakeAllSBT(params: Types): Promise<string> {
     return await callContarctWithSigner(functionId, tyArgs, [])
 }
 
-export type QueryStakeTypeResult = {
+export class QueryStakeTypeResult {
     title: string
     type: string
-}
 
-export async function queryStakeTokenType(address: string, daoType: string): Promise<Array<QueryStakeTypeResult>> {
-    const result = await window.starcoin.request({
-        method: 'state.list_resource',
-        params: [
-            address,
-            {
-                resource_types: [
-                    '0x1::Config::ModifyConfigCapabilityHolder<0x1::StakeToSBTPlugin::LockWeightConfig>'
-                ],
-                decode: true,
-                start_index: 0,
-                max_size: 100
+    constructor(title: string, type: string) {
+        this.title = title
+        this.type = type
+    }
+
+    static paras(v: any, daoType: string) {
+        let type = new Array<QueryStakeTypeResult>()
+
+        for (let key in v.resources) {
+            const tmp = key.split(",")
+
+            if (!tmp[0].includes(daoType)) {
+                continue
             }
-        ]
-    })
 
-    let type = new Array<QueryStakeTypeResult>()
-
-    for (let key in result.resources) {
-        const tmp = key.split(",")
-
-        if (!tmp[0].includes(daoType)) {
-            continue
+            type = type.concat(new QueryStakeTypeResult(
+                tmp[1].replace(">>", "").trim().split("::")[2],
+                tmp[1].replace(">>", "").trim(),
+            ))
         }
 
-        type = type.concat({
-            type: tmp[1].replace(">>", "").trim(),
-            title: tmp[1].replace(">>", "").trim().split("::")[2],
-        })
+        return type
     }
-    return type
+}
+
+
+export async function queryStakeTokenType(address: string, daoType: string): Promise<Array<QueryStakeTypeResult>> {
+
+    const resType = ['0x1::Config::ModifyConfigCapabilityHolder<0x1::StakeToSBTPlugin::LockWeightConfig>']
+
+    const result = await listResource(address, resType)
+
+    return QueryStakeTypeResult.paras(result, daoType)
 }
 
 export type  QueryTokenStakeLimitResult = {
@@ -161,20 +172,11 @@ export async function queryStakeCount(types: Types): Promise<number> {
     return (await callContract(functionId, [types.dao_type, types.token_type], [window.starcoin.selectedAddress]))[0]
 }
 
-export async function queryStakeList(types: Types): Promise<any> {
+export async function queryStakeList(address: string, types: Types, pages: Pages): Promise<any> {
 
-    let resType = `0x00000000000000000000000000000001::StakeToSBTPlugin::StakeList<${types.dao_type},${types.token_type}>`
+    let resType = [`0x00000000000000000000000000000001::StakeToSBTPlugin::StakeList<${types.dao_type},${types.token_type}>`]
 
-    const result = await window.starcoin.request({
-        method: 'state.list_resource',
-        params: [
-            window.starcoin.selectedAddress,
-            {
-                resource_types: [resType],
-                decode: true
-            }
-        ]
-    })
+    const result = await listResource(window.starcoin.selectedAddress, resType, pages)
 
     return Object.values(result.resources)[0].json
 }

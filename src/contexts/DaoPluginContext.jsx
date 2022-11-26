@@ -19,6 +19,8 @@ export const SupportInnerPluginNames = [
   'inner-plugin://member-proposal-plugin',
   'inner-plugin://stake-to-sbt-plugin',
   'inner-plugin://upgrade-module-plugin',
+  'inner-plugin://any-member-plugin',
+  'inner-plugin://withdraw-plugin',
 ];
 
 export const DaoPluginContext = createContext();
@@ -108,6 +110,16 @@ export const DaoPluginProvider = ({ children }) => {
 
   const loadDaoPlugins = async () => {
     const daoPlugins = daoMetaData.installedPlugins;
+
+    daoPlugins.sort((a, b) => {
+      {
+        if (a.name === '0x1::InstallPluginProposalPlugin') {
+          return 1;
+        }
+        return -1;
+      }
+    });
+
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
       console.log('plugin_info:', plugin_info);

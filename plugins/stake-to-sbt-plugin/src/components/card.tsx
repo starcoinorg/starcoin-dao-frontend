@@ -4,7 +4,7 @@ import {
     Text,
     Link,
     Button,
-    Stack
+    Stack, Skeleton
 } from "@chakra-ui/react";
 
 function Card(props) {
@@ -25,31 +25,46 @@ function Card(props) {
                 mt={{base: 4, md: 0}}
                 ml={{md: 6}}
             >
-                <Text
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    fontSize="lg"
-                    letterSpacing="wide"
-                    color="teal.600"
-                >
-                    {product}
-                </Text>
-                <Link
-                    my={1}
-                    display="block"
-                    fontSize="md"
-                    lineHeight="normal"
-                    fontWeight="semibold"
-                    href="#"
-                >
-                    {summary}
-                </Link>
-                <Text my={2} color="gray.500">
-                    {longLine}
-                </Text>
-                <Button maxWidth="100px" my={2} onClick={actionCallback} disabled={action==="Delete"}>
-                    {action}
-                </Button>
+                {
+                    product ?
+                        <Text
+                            fontWeight="bold"
+                            textTransform="uppercase"
+                            fontSize="lg"
+                            letterSpacing="wide"
+                            color="#EB8A23"
+                        >
+                            {product}
+                        </Text> :
+                        <Skeleton h='20px' w='100px'/>
+                }
+                {
+                    summary ? <Link
+                            my={1}
+                            display="block"
+                            fontSize="md"
+                            lineHeight="normal"
+                            fontWeight="semibold"
+                            href="#"
+                        >
+                            {summary}
+                        </Link> :
+                        <Skeleton h='20px' w='200px'/>
+                }
+                {
+                    longLine ?
+                        <Text my={2} color="gray.500">
+                            {longLine}
+                        </Text> :
+                        <Skeleton h='20px' w='200px'/>
+                }
+                {
+                    action?
+                    <Button w="200px" my={2} onClick={actionCallback} disabled={action === "Delete"}>
+                        {action}
+                    </Button>:
+                    <Skeleton h='38px' w='200px'/>
+                }
             </Stack>
         </Box>
     );
