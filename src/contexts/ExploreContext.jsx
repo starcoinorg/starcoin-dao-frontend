@@ -86,6 +86,7 @@ export const ExploreContextProvider = ({ children }) => {
       const data = await listDaos(injectedProvider, {
         withLogo: false,
         withPlugins: false,
+        withConfig: false,
       });
 
       setExploreDaos({

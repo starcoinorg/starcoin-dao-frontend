@@ -125,6 +125,7 @@ export const listDaos = async (provider, _opts) => {
       daoId,
       opts.withLogo,
       opts.withPlugins,
+      opts.withConfig,
     );
     daos.push(dao);
   }
@@ -176,11 +177,36 @@ export const getDaoInstalledPlugins = async (provider, daoId) => {
   return plugins;
 };
 
+export const getDaoConfig = async (provider, daoId) => {
+  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+
+  const daoConfig = await provider.send('state.get_resource', [
+    daoAddress,
+    '0x00000000000000000000000000000001::Config::Config<0x00000000000000000000000000000001::DAOSpace::DAOConfig>',
+    {
+      decode: true,
+    },
+  ]);
+
+  if (daoConfig) {
+    return {
+      min_action_delay: daoConfig.json.payload.min_action_delay,
+      min_proposal_deposit: daoConfig.json.payload.min_proposal_deposit,
+      voting_delay: daoConfig.json.payload.voting_delay,
+      voting_period: daoConfig.json.payload.voting_period,
+      voting_quorum_rate: daoConfig.json.payload.voting_quorum_rate,
+    };
+  }
+
+  return null;
+};
+
 export const getDaoDetail = async (
   provider,
   daoId,
   withLogo = true,
   withPlugins = true,
+  withConfig = false,
 ) => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
@@ -211,6 +237,11 @@ export const getDaoDetail = async (
     }
   }
 
+  let daoConfig = {};
+  if (withConfig) {
+    daoConfig = await getDaoConfig(provider, daoId);
+  }
+
   return {
     daoId: daoTypeTag,
     name: daoInfo.name,
@@ -230,6 +261,7 @@ export const getDaoDetail = async (
     daoTypeTag: daoTypeTag,
     onChainAddress: null,
     deactivated: null,
+    daoConfig: daoConfig,
     createdBy: null,
     updatedBy: null,
     createdAt: null,
