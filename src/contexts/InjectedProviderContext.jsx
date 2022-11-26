@@ -33,6 +33,7 @@ export const InjectedProvider = ({ children }) => {
     if (window.starcoin) {
       return new providers.Web3Provider(window.starcoin, network);
     }
+    return null;
   });
 
   const [address, setAddress] = useState(null);
@@ -115,7 +116,6 @@ export const InjectedProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log('connectProvider -------------------------------------------');
     connectProvider();
   }, []);
 
