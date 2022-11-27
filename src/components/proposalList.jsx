@@ -31,9 +31,9 @@ import useCanInteract from '../hooks/useCanInteract';
 import { useRequest } from '../hooks/useRequest';
 
 const ProposalsList = ({ customTerms }) => {
-  const { injectedProvider } = useInjectedProvider();
+  const { injectedProvider, address } = useInjectedProvider();
+
   const { daoMember } = useDaoMember();
-  const { address } = useInjectedProvider();
   const { isActive } = useBoost();
   const interaction = useCanInteract(['isConnected', 'isSameChain']);
 

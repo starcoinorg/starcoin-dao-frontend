@@ -3,8 +3,7 @@ import {
     executeWidgthProposal
 } from '../utils/api'
 
-const executeWidgthProposalType = "0x00000000000000000000000000000001::StakeToSBTPlugin::LockWeight<0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO, 0x00000000000000000000000000000001::STC::STC>"
-
+const executeWidgthProposalType = "StakeToSBTPlugin::LockWeight"
 class ProposalAction {
     daoType: string
     name: string
@@ -15,12 +14,15 @@ class ProposalAction {
     }
 
     async execute(params: any) {
+
+        console.log(params)
+
         const types = {
             dao_type: params.daoType,
             token_type: params.actionType.split(",")[1].replace(">", "").trim()
         }
 
-        if (params.actionType === executeWidgthProposalType) {
+        if (params.actionType.includes(executeWidgthProposalType)) {
             return executeWidgthProposal(types, params.proposalId)
         } else {
             return executeTokenAcceptProposal(types, params.proposalId)

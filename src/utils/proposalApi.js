@@ -2,6 +2,7 @@ import * as web3 from 'web3';
 import { providers, utils, bcs } from '@starcoin/starcoin';
 import { hexlify } from '@ethersproject/bytes';
 import { nodeUrlMap } from './consts';
+import { getDaoConfig } from './dao';
 
 export const ProposalState = {
   PENDING: 1,
@@ -185,7 +186,7 @@ export async function queue_proposal_action(provider, daoType, proposal_id) {
   }
 }
 
-function convert_proposal(daoType, proposalInfo) {
+function convert_proposal(daoType, daoConfig, proposalInfo) {
   const minion_address = daoType.substring(0, daoType.indexOf('::'));
 
   return {
@@ -198,7 +199,7 @@ function convert_proposal(daoType, proposalInfo) {
     categoryId: 1,
     votingType: 'YES_NO_ABSTAIN',
     title: web3.utils.hexToString(proposalInfo.title),
-    introduction: web3.utils.hexToString(proposalInfo.introduction),
+    description: web3.utils.hexToString(proposalInfo.introduction),
     extend: web3.utils.hexToString(proposalInfo.extend),
     proposalVotingChoices: [
       {
@@ -236,7 +237,9 @@ function convert_proposal(daoType, proposalInfo) {
         subtotalVotingPower: proposalInfo.abstain_votes,
       },
     ],
-    submittedAt: proposalInfo.start_time,
+    submittedAt: daoConfig
+      ? proposalInfo.start_time - daoConfig.voting_delay
+      : proposalInfo.start_time,
     submittedBy: proposalInfo.proposer,
     votingMethod: 'CHAIN',
     votingPeriodStart: proposalInfo.start_time,
@@ -265,8 +268,9 @@ export const listDaoProposals = async (provider, daoId) => {
     globalProposals.json &&
     globalProposals.json.proposals
   ) {
+    const daoConfig = await getDaoConfig(provider, daoId);
     for (const proposalInfo of globalProposals.json.proposals) {
-      proposals.push(convert_proposal(daoId, proposalInfo));
+      proposals.push(convert_proposal(daoId, daoConfig, proposalInfo));
     }
   }
 
@@ -285,7 +289,8 @@ export async function get_single_proposal(provider, daoType, proposalId) {
       args,
     });
 
-    return convert_proposal(daoType, result[0]);
+    const daoConfig = await getDaoConfig(provider, daoType);
+    return convert_proposal(daoType, daoConfig, result[0]);
   } catch (error) {
     console.log('provider.callV2 error:', error);
     throw error;
