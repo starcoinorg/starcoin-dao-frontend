@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Button, HStack, Stack, Tag, Text, Heading, Spacer, useToast  } from '@chakra-ui/react';
+import { Flex, Button, HStack, Stack, Tag, Text, Link, Heading, Spacer, useToast  } from '@chakra-ui/react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import ContentBox from './contentBox';
+import TextBox from './textBox';
+import { PropCardDate } from './primitives';
 import { useSubAppContext } from '../contexts/SubAppContext';
 import { installPluginProposal, starPlugin, unstarPlugin, hasStarPlugin, IPlugin } from '../utils/daoPluginApi';
 
@@ -110,15 +112,56 @@ const PluginCard = ({ daoId, plugin_info, installed }: PluginCardProps) => {
             Inner
           </Tag>
         </Flex>
+        <Flex
+          display='flex'
+          align={['none', 'center']}
+          direction={['column', 'row']}
+          justify={['none', 'space-between']}
+          mb='3'
+          mt={6}
+        >
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'voting start'}
+            </TextBox>
+            <PropCardDate
+              label=''
+              dateTimeMillis={plugin_info?.startTime}
+              opacity='1'
+            />
+          </Flex>
+          <Flex flexDirection='column'>
+            <TextBox size='xs' mb={2}>
+              {'voting end'}
+            </TextBox>
+            <PropCardDate
+              label=''
+              dateTimeMillis={plugin_info?.votingPeriodEnd}
+              opacity='1'
+            />
+          </Flex>
+        </Flex>
         <Flex as={HStack} spacing={2} align='right'>
           <Spacer />
+          <Button
+            as={Link}
+            fontWeight='bold'
+            to={`/plugin/${plugin_info.id}/detail`}
+            variant='outline'
+            size='sm'
+            width='8rem'
+            mt={['4', '4', '0']}
+          >
+            View Detail
+          </Button>
+
           {
             installed ? (
-              <Button colorScheme='teal' size='md' onClick={onUninstallPlugin}>
+              <Button size='sm' minW='4rem' onClick={onUninstallPlugin}>
                 Uninstall
               </Button>
             ) : (
-              <Button colorScheme='teal' size='md' onClick={onInstallPlugin}>
+              <Button size='sm' minW='4rem' onClick={onInstallPlugin}>
                 Install
               </Button>
             )
