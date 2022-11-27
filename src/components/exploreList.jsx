@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Flex } from '@chakra-ui/react';
+import { Flex, SimpleGrid } from '@chakra-ui/react';
 import ExploreCard from './exploreCard';
 
 const ExploreList = ({ daoList }) => {
@@ -10,9 +10,10 @@ const ExploreList = ({ daoList }) => {
   return (
     <>
       {daoList.length ? (
-        <Flex wrap='wrap' align='start' justify='flex-start' w='100%' ml={5}>
+        <SimpleGrid columns={[1, 4]} ml={5}>
+          {/* <Flex wrap='wrap' align='start' justify='flex-start' w='100%' ml={5}> */}
           {daoListRender}
-        </Flex>
+        </SimpleGrid>
       ) : null}
     </>
   );
