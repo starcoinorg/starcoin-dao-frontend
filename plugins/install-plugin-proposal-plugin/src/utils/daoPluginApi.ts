@@ -3,18 +3,26 @@ import {hexlify} from '@ethersproject/bytes'
 import {nodeUrlMap} from "./consts";
 import { utils as web3Utils } from 'web3'
 
+export interface IVersion {
+  number: number,
+  tag: string,
+  implement_extpoints?: Array<string>,
+  depend_extpoints?: Array<string>,
+  js_entry_uri?: string,
+  created_at?: number
+}
+
 export interface IPlugin {
   id: string,
   type: string,
   name: string,
   description: string,
+  labels: Array<string>,
   version_number?: number,
-  version?: string,
+  versions?: Array<IVersion>,
   star_count: number,
-  implement_extpoints?: Array<string>,
-  depend_extpoints?: Array<string>,
-  js_entry_uri?: string,
   created_at?: number,
+  updated_at?: number,
 }
 
 export const hexVectorToStringArray = (vec):Array<string> => {
@@ -29,6 +37,10 @@ export const hexVectorToStringArray = (vec):Array<string> => {
 };
 
 export const getDaoInstalledPluginIds = async (provider: providers.JsonRpcProvider, daoId: string): Promise<Array<string>> => {
+  if (!daoId) {
+    return new Array<string>();
+  }
+
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
 
   const installedPluginInfos = await provider.send('state.list_resource', [
@@ -60,7 +72,7 @@ export const getDaoInstalledPlugins = async (provider: providers.JsonRpcProvider
   for (const i in pluginIds) {
     const plugin = await getPluginInfo(provider, pluginIds[i]);
 
-    if (plugin && plugin.js_entry_uri) {
+    if (plugin && plugin.versions && plugin.versions.length > 0) {
       plugins.push(plugin);
     }
   }
@@ -68,30 +80,54 @@ export const getDaoInstalledPlugins = async (provider: providers.JsonRpcProvider
   return plugins;
 };
 
+const decodePluginVersion = (version): IVersion => {
+  return {
+    number: version.number,
+    tag: web3Utils.hexToString(version.tag),
+    implement_extpoints: hexVectorToStringArray(version.implement_extpoints),
+    depend_extpoints: hexVectorToStringArray(version.depend_extpoints),
+    js_entry_uri: web3Utils.hexToString(version.js_entry_uri),
+    created_at: version.created_at * 1000,
+  };
+}
+
 const decodePlugin = (pluginType, plugin): IPlugin => {
-  const plugin_info = {
+  let plugin_info = {
     id: plugin.id,
     type: pluginType,
     name: web3Utils.hexToString(plugin.name),
     description: web3Utils.hexToString(plugin.description),
+    labels: new Array<string>(),
+    versions: new Array<IVersion>(),
     star_count: plugin.star_count,
+    created_at: plugin.created_at * 1000,
+    updated_at: plugin.updated_at * 1000,
   };
+
+  let labels = new Array<string>();
+  if (plugin.labels) {
+    if (plugin_info.name.startsWith("0x1::")) {
+      labels.push("inner");
+    }
+
+    const otherLabels = hexVectorToStringArray(plugin.labels);
+    if (otherLabels) {
+      labels = labels.concat(otherLabels);
+    }
+  }
+  plugin_info.labels = labels;
 
   if (plugin.next_version_number == 1) {
     return plugin_info;
   }
 
-  const version = plugin.versions[plugin.next_version_number - 2];
+  let versions = new Array<IVersion>();
+  for (let v in plugin.versions) {
+    versions.push(decodePluginVersion(plugin.versions[v]));
+  }
+  plugin_info.versions = versions;
 
-  return {
-    ...plugin_info,
-    version_number: version.number,
-    version: web3Utils.hexToString(version.tag),
-    implement_extpoints: hexVectorToStringArray(version.implement_extpoints),
-    depend_extpoints: hexVectorToStringArray(version.depend_extpoints),
-    js_entry_uri: web3Utils.hexToString(version.js_entry_uri),
-    created_at: version.created_at,
-  };
+  return plugin_info;
 }
 
 export const getPluginInfo = async (provider: providers.JsonRpcProvider, plugin_type: string): Promise<IPlugin|null> => {
