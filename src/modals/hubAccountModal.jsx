@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Modal,
+  ModalHeader,
   ModalContent,
   ModalOverlay,
   Box,
@@ -17,9 +18,10 @@ import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { useCustomTheme } from '../contexts/CustomThemeContext';
 import HubProfileCard from '../components/hubProfileCard';
 import UserDaoList from '../components/userDaoList';
+import AddressAvatar from '../components/addressAvatar';
 
 const HubAccountModal = () => {
-  const { disconnectDapp, requestWallet } = useInjectedProvider();
+  const { disconnectDapp, address } = useInjectedProvider();
   const { hubAccountModal, setHubAccountModal } = useOverlay();
   const { theme } = useCustomTheme();
 
@@ -44,17 +46,17 @@ const HubAccountModal = () => {
       >
         <ModalCloseButton />
         <ModalBody flexDirection='column' display='flex'>
-          <HubProfileCard />
+          <AddressAvatar hideCopy addr={address} />
+          <Divider color='primary.300' my={6} />
           <Box
             onClick={handleSwitchWallet}
             color='secondary.400'
             _hover={{ color: 'secondary.600', cursor: 'pointer' }}
-            my={6}
           >
             Disconnect wallet
           </Box>
-          <Divider color='primary.300' />
-          <Box as={Stack} spacing={4} my={6}>
+          <Divider color='primary.300' my={6} />
+          <Box as={Stack} spacing={4}>
             <Text fontSize='l' fontFamily='heading'>
               My DAOs:
             </Text>

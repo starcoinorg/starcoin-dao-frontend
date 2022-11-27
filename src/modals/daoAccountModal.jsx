@@ -5,6 +5,7 @@ import {
   Flex,
   Link,
   Box,
+  ModalHeader,
   ModalContent,
   ModalOverlay,
   ModalCloseButton,
@@ -22,6 +23,7 @@ import { listUserDaoTypes } from '../utils/dao';
 import HubProfileCard from '../components/hubProfileCard';
 import MemberInfoGuts from '../components/memberInfoGuts';
 import UserDaoList from '../components/userDaoList';
+import AddressAvatar from '../components/addressAvatar';
 
 const DaoAccountModal = () => {
   const { daoAccountModal, setDaoAccountModal } = useOverlay();
@@ -58,11 +60,7 @@ const DaoAccountModal = () => {
       >
         <ModalCloseButton />
         <ModalBody flexDirection='column' display='flex'>
-          {isMember ? (
-            <MemberInfoGuts member={daoMember} showMenu={false} hideCopy />
-          ) : (
-            <HubProfileCard />
-          )}
+          <AddressAvatar hideCopy addr={address} />
           <Divider color='primary.300' my={6} />
           <Box>
             <Flex direction='row' justify='space-between' align='flex-start'>
