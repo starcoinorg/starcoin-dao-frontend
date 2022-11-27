@@ -28,7 +28,7 @@ const UserDaoList = ({ handleClose }) => {
           </Link>
         ))
       ) : (
-        <Box color='secondary.400'>No Daos</Box>
+        <Box color='secondary.400'>No DAOs Here Yet.</Box>
       )}
     </Flex>
   );
