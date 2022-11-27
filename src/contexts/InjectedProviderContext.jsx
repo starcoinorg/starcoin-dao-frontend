@@ -5,6 +5,7 @@ import React, {
   createContext,
   useRef,
 } from 'react';
+import { useHistory } from 'react-router-dom';
 import Web3 from 'web3';
 import { SafeAppWeb3Modal } from '@gnosis.pm/safe-apps-web3modal';
 import StarMaskOnboarding from '@starcoin/starmask-onboarding';
@@ -27,6 +28,7 @@ const defaultModal = new SafeAppWeb3Modal({
 export const InjectedProviderContext = createContext();
 
 export const InjectedProvider = ({ children }) => {
+  const history = useHistory();
   const [network, setNetwork] = useLocalStorage('dao_fe_network', 'main');
 
   const [injectedProvider, setInjectedProvider] = useState(() => {
@@ -154,11 +156,14 @@ export const InjectedProvider = ({ children }) => {
     setAddress(null);
     setWeb3Modal(defaultModal);
     web3Modal.clearCachedProvider();
+
     if (localStorage.getItem('walletconnect')) {
       // cleanup cache if it was using WalletConnect
       localStorage.removeItem('walletconnect');
       window.localStorage.removeItem('WEB3_CONNECT_CACHED_PROVIDER');
     }
+
+    history.push('/');
   };
 
   return (

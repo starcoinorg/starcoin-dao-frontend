@@ -16,7 +16,7 @@ import { useOverlay } from '../contexts/OverlayContext';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { useCustomTheme } from '../contexts/CustomThemeContext';
 import HubProfileCard from '../components/hubProfileCard';
-import TxList from '../components/TxList';
+import UserDaoList from '../components/userDaoList';
 
 const HubAccountModal = () => {
   const { disconnectDapp, requestWallet } = useInjectedProvider();
@@ -27,7 +27,6 @@ const HubAccountModal = () => {
   const handleSwitchWallet = () => {
     setHubAccountModal(false);
     disconnectDapp();
-    requestWallet();
   };
 
   return (
@@ -44,12 +43,7 @@ const HubAccountModal = () => {
         py={6}
       >
         <ModalCloseButton />
-        <ModalBody
-          flexDirection='column'
-          display='flex'
-          maxH='600px'
-          overflowY='scroll'
-        >
+        <ModalBody flexDirection='column' display='flex'>
           <HubProfileCard />
           <Box
             onClick={handleSwitchWallet}
@@ -57,14 +51,14 @@ const HubAccountModal = () => {
             _hover={{ color: 'secondary.600', cursor: 'pointer' }}
             my={6}
           >
-            ReConnect wallet
+            Disconnect wallet
           </Box>
           <Divider color='primary.300' />
           <Box as={Stack} spacing={4} my={6}>
             <Text fontSize='l' fontFamily='heading'>
-              Transactions will show here
+              My DAOs:
             </Text>
-            <TxList />
+            <UserDaoList handleClose={handleClose} />
           </Box>
         </ModalBody>
       </ModalContent>

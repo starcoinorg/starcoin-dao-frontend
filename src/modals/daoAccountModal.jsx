@@ -21,6 +21,7 @@ import { listUserDaoTypes } from '../utils/dao';
 
 import HubProfileCard from '../components/hubProfileCard';
 import MemberInfoGuts from '../components/memberInfoGuts';
+import UserDaoList from '../components/userDaoList';
 
 const DaoAccountModal = () => {
   const { daoAccountModal, setDaoAccountModal } = useOverlay();
@@ -43,25 +44,7 @@ const DaoAccountModal = () => {
   const handleSwitchWallet = () => {
     setDaoAccountModal(false);
     disconnectDapp();
-    requestWallet();
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-
-      try {
-        const daos = await listUserDaoTypes(injectedProvider, address);
-        setUserDaos(daos);
-      } catch (err) {
-        console.error('Error fetching user daos', err);
-      }
-
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [address]);
 
   return (
     <Modal isOpen={daoAccountModal} onClose={handleClose} isCentered>
@@ -113,7 +96,7 @@ const DaoAccountModal = () => {
                   color='secondary.400'
                   _hover={{ color: 'secondary.600', cursor: 'pointer' }}
                 >
-                  ReConnect wallet
+                  Disconnect wallet
                 </Box>
               </Flex>
 
@@ -133,29 +116,7 @@ const DaoAccountModal = () => {
             <Box fontSize='l' fontFamily='heading' mb={6}>
               My Daos:
             </Box>
-            <Flex direction='row' wrap='wrap'>
-              {!loading ? (
-                Object.keys(userDaos).length > 0 ? (
-                  Object.values(userDaos).map(dao => (
-                    <Link
-                      as={RouterLink}
-                      to={`/dao/${daochain}/${dao.daoId}`}
-                      onClick={handleClose}
-                      color='secondary.400'
-                      _hover={{ color: 'secondary.600' }}
-                      mb='4px'
-                      mr={6}
-                    >
-                      {dao.daoName}
-                    </Link>
-                  ))
-                ) : (
-                  <Box color='secondary.400'>No Daos</Box>
-                )
-              ) : (
-                <Box>Loading...</Box>
-              )}
-            </Flex>
+            <UserDaoList handleClose={handleClose} />
           </Box>
         </ModalBody>
       </ModalContent>
