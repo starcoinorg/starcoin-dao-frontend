@@ -47,6 +47,7 @@ export const DaoPluginProvider = ({ children }) => {
       return `https://ipfs.filebase.io/ipfs/${ipfs_cid}/`.toString();
     } else if (res.startsWith('inner-plugin://')) {
       const plugin_name = res.substring(15);
+      console.log(plugin_name);
       return `/plugins/${plugin_name}/`.toString();
     } else {
       return res.toString();

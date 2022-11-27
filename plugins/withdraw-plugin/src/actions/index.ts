@@ -1,4 +1,4 @@
-import { executeProposal } from '../utils/memberPluginAPI'
+import { executeProposal } from '../utils/api'
 
 class Action {
   name: string
@@ -8,7 +8,13 @@ class Action {
   }
 
   async execute(params: any) {
-    const tokenType=  params.actionType.split(",")[1].replace(">", "").trim()
+      console.log(params)
+
+    const tokenType=  params.actionType.substring(
+              params.actionType.indexOf('<') + 1,
+              params.actionType.lastIndexOf('>'),
+              )
+      
     return executeProposal(params.daoType, tokenType, params.proposalId)
   }
 }
