@@ -148,6 +148,24 @@ export const getPluginInfo = async (provider: providers.JsonRpcProvider, plugin_
   }
 };
 
+export const getPluginCount =async (provider: providers.JsonRpcProvider) => {
+
+  const result = await provider.send('state.list_resource', [
+    '0x1',
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::DAOPluginMarketplace::PluginRegistry',
+      ],
+      decode: true,
+    },
+  ]);
+
+  return (
+    result.resources[Object.keys(result.resources)[0]].json.next_plugin_id - 1
+  );
+  
+}
+
 export const listPlugins = async (provider: providers.JsonRpcProvider, startIndex:number, count: number) => {
   const pluginEntrys = await provider.send('state.list_resource', [
     '0x1',
@@ -160,6 +178,10 @@ export const listPlugins = async (provider: providers.JsonRpcProvider, startInde
       max_size: count,
     },
   ]);
+
+  console.log("api");
+  console.log(startIndex);
+  console.log(count);
 
   let plugins = new Array<IPlugin>();
   for (const key in pluginEntrys.resources) {
