@@ -19,7 +19,7 @@ const HomePage = () => {
 
     return (
         <MainViewLayout
-            header='Upgrade'
+            header='Any Member'
         >
             <Button onClick={onSubmit}>
                 Join
