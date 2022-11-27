@@ -27,9 +27,13 @@ const NavLinkList = ({ dao, view, toggleNav = null }) => {
       setNavLinks(navLinks);
       setPluginLinks(dao.pluginMenus);
     } else {
-      setNavLinks(defaultHubData);
+      if (address) {
+        setNavLinks(defaultHubData);
+      } else {
+        setNavLinks([]);
+      }
     }
-  }, [dao]);
+  }, [address, dao]);
 
   return (
     <Stack

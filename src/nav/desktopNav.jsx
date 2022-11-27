@@ -76,15 +76,6 @@ const DesktopNav = ({ dao }) => {
       </Flex>
       <Spacer />
       <Flex direction='column' wrap='wrap'>
-        {daoid && (
-          <Box
-            w={['auto', null, null, '100%']}
-            order={[3, null, null, 3]}
-            mt={[0, null, null, 6]}
-          >
-            <ChangeDao />
-          </Box>
-        )}
         <Box
           w={['auto', null, null, '100%']}
           order={[3, null, null, 3]}
