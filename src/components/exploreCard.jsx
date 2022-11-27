@@ -52,13 +52,12 @@ const ExploreCard = ({ dao }) => {
   const renderTags = () => {
     if (daoData.meta?.tags) {
       return (
-        <Flex direction='row' wrap='wrap'>
+        <Flex direction='row' justify='flex-start' wrap='wrap'>
           {daoData.meta.tags.map(tag => {
             return (
               <Badge
                 key={tag}
                 onClick={() => handleTagSelect(tag)}
-                colorScheme='secondary.500'
                 variant='outline'
                 fontSize='9px'
                 _notLast={{ marginRight: '3px' }}
@@ -122,37 +121,16 @@ const ExploreCard = ({ dao }) => {
       >
         {daoData.meta?.description}
       </Text>
-
-      <Box fontSize='md' mt={2} fontFamily='heading'>
-        {/* ${numberWithCommas(dao.guildBankValue.toFixed(2))} */}
-      </Box>
-      {/* <Flex direction='row' align='center'>
-        <Box fontSize='sm' mr={3}>
-          {daoData?.members
-            ? `${
-                daoData.members.length === 100
-                  ? `${daoData.members.length}+`
-                  : `${daoData.members.length}`
-              }
-          Members`
-            : null}
-        </Box>
-        <Box fontSize='sm' mr={3}>
-          |
-        </Box>
-        <Box fontSize='sm'>
-          {daoData?.tokens?.length} Token
-          {daoData?.tokens?.length > 1 && 's'}
-        </Box>
-      </Flex> */}
-      <Flex direction='row' align='center' mt={3}>
-        {/* <Badge colorScheme='secondary' variant='outline' m='3px 5px 3px 0px'>
-          {daoData.meta?.purpose}
-        </Badge> */}
-        <Badge colorScheme='primary' variant='outline' m='3px 5px 3px 0px'>
+      {/* <Flex direction='row' align='center' mt={3}>
+        <Badge
+          colorScheme='primary'
+          variant='outline'
+          border='none'
+          m='3px 5px 3px 0px'
+        >
           {daoData.meta?.network}
         </Badge>
-      </Flex>
+      </Flex> */}
 
       {renderTags()}
       <Flex justify='flex-end' w='100%'>
