@@ -123,9 +123,6 @@ export const listDaos = async (provider, index, offset, _opts) => {
     ..._opts,
   };
 
-  console.log(index);
-  console.log(offset);
-
   const daoEntrys = await provider.send('state.list_resource', [
     '0x1',
     {
@@ -134,7 +131,7 @@ export const listDaos = async (provider, index, offset, _opts) => {
       ],
       decode: true,
       start_index: index * offset,
-      max_size: (index + 1) * offset,
+      max_size: offset,
     },
   ]);
 
