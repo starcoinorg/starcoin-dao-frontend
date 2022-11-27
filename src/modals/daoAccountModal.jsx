@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import {
   Modal,
@@ -17,16 +17,24 @@ import { useCustomTheme } from '../contexts/CustomThemeContext';
 import { useDaoMember } from '../contexts/DaoMemberContext';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { useOverlay } from '../contexts/OverlayContext';
+import { listUserDaoTypes } from '../utils/dao';
+
 import HubProfileCard from '../components/hubProfileCard';
 import MemberInfoGuts from '../components/memberInfoGuts';
-import TxList from '../components/TxList';
 
 const DaoAccountModal = () => {
   const { daoAccountModal, setDaoAccountModal } = useOverlay();
   const { daoMember, isMember } = useDaoMember();
-  const { address, disconnectDapp, requestWallet } = useInjectedProvider();
+  const {
+    injectedProvider,
+    address,
+    disconnectDapp,
+    requestWallet,
+  } = useInjectedProvider();
   const { daoid, daochain } = useParams();
   const { theme } = useCustomTheme();
+  const [userDaos, setUserDaos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setDaoAccountModal(false);
@@ -37,6 +45,23 @@ const DaoAccountModal = () => {
     disconnectDapp();
     requestWallet();
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        const daos = await listUserDaoTypes(injectedProvider, address);
+        setUserDaos(daos);
+      } catch (err) {
+        console.error('Error fetching user daos', err);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [address]);
 
   return (
     <Modal isOpen={daoAccountModal} onClose={handleClose} isCentered>
@@ -49,12 +74,7 @@ const DaoAccountModal = () => {
         py={6}
       >
         <ModalCloseButton />
-        <ModalBody
-          flexDirection='column'
-          display='flex'
-          maxH='600px'
-          overflowY='scroll'
-        >
+        <ModalBody flexDirection='column' display='flex'>
           {isMember ? (
             <MemberInfoGuts member={daoMember} showMenu={false} hideCopy />
           ) : (
@@ -111,9 +131,31 @@ const DaoAccountModal = () => {
           <Divider color='primary.300' my={6} />
           <Box>
             <Box fontSize='l' fontFamily='heading' mb={6}>
-              Transactions will show here
+              My Daos:
             </Box>
-            <TxList />
+            <Flex direction='row' wrap='wrap'>
+              {!loading ? (
+                Object.keys(userDaos).length > 0 ? (
+                  Object.values(userDaos).map(dao => (
+                    <Link
+                      as={RouterLink}
+                      to={`/dao/${daochain}/${dao.daoId}`}
+                      onClick={handleClose}
+                      color='secondary.400'
+                      _hover={{ color: 'secondary.600' }}
+                      mb='4px'
+                      mr={6}
+                    >
+                      {dao.daoName}
+                    </Link>
+                  ))
+                ) : (
+                  <Box color='secondary.400'>No Daos</Box>
+                )
+              ) : (
+                <Box>Loading...</Box>
+              )}
+            </Flex>
           </Box>
         </ModalBody>
       </ModalContent>

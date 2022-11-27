@@ -335,3 +335,47 @@ export const getMemberNFT = async (provider, daoId, address) => {
 
   return null;
 };
+
+export const listUserDaoTypes = async (provider, address) => {
+  const daoEntrys = await provider.send('state.list_resource', [
+    address,
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT',
+      ],
+      decode: true,
+      start_index: 0,
+      max_size: 1000,
+    },
+  ]);
+
+  let daoTypes = [];
+  for (const key in daoEntrys.resources) {
+    const nftTypeArgs = key
+      .substring(key.indexOf('<') + 1, key.lastIndexOf('>'))
+      .split(',');
+
+    if (nftTypeArgs.length > 1) {
+      const daoMemberTypeArg = nftTypeArgs[0];
+
+      if (
+        daoMemberTypeArg.startsWith(
+          '0x00000000000000000000000000000001::DAOSpace::DAOMember',
+        )
+      ) {
+        const daoId = daoMemberTypeArg.substring(
+          daoMemberTypeArg.indexOf('<') + 1,
+          daoMemberTypeArg.lastIndexOf('>'),
+        );
+
+        const daoName = daoId.split('::')[2];
+        daoTypes.push({
+          daoId: daoId,
+          daoName: daoName,
+        });
+      }
+    }
+  }
+
+  return daoTypes;
+};
