@@ -14,6 +14,7 @@ import InstalledPluginList from '../components/installedPluginList';
 import RecommendedPluginList from '../components/recommendedPluginList';
 import AllPluginList from '../components/allPluginList';
 import { getDaoInstalledPluginIds } from '../utils/daoPluginApi';
+import { mode } from '@chakra-ui/theme-tools' // import utility to set light and dark mode props
 
 const PluginManagement = () => {
     const { injectedProvider, dao } = useSubAppContext();
@@ -35,16 +36,31 @@ const PluginManagement = () => {
       loadPlugins();
     }, [dao.daoType]);
 
+    const tab = (text) => {
+      return (
+        <Tab _selected= {{
+          color:'#EB8A23',
+          borderColor: '#EB8A23',
+          borderBottom: '2px',
+          variant:'solid'
+        }}
+        borderBottom='none'
+        >
+          {text}
+        </Tab>
+      )
+    }
+
     return (
       <MainViewLayout
         header='Plugins'
         headerEl={ctaButton}
       >
-        <Tabs size='md' variant='enclosed'>
+        <Tabs size='md'>
           <TabList>
-            <Tab>Installled</Tab>
-            <Tab>Recommended</Tab>
-            <Tab>All</Tab>
+            {tab('Installled')}
+            {tab('Recommended')}
+            {tab('All')}
           </TabList>
           <TabPanels 
             w={['100%', null, null, '100%', '80%']}
