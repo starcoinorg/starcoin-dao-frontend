@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import {
   BrowserRouter,
   Switch,
@@ -27,7 +27,7 @@ export type AppInfo = {
 };
 
 const RootComponent = (appInfo: AppInfo) => {
-
+  
   return (
     <SubAppProvider value={{
       initDao: appInfo.dao,

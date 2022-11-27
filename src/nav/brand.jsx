@@ -17,6 +17,7 @@ const Brand = React.memo(({ dao }) => {
 
   return (
     <Avatar
+      margin='0 auto'
       d='block'
       as={RouterLink}
       to={brandLink}

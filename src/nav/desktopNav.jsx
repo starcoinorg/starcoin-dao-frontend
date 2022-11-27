@@ -43,7 +43,7 @@ const DesktopNav = ({ dao }) => {
       p={5}
       position={['relative', 'relative', 'relative', 'fixed']}
       direction='column'
-      align='start'
+      align='center'
       justifyContent='start'
       bg='primary.500'
       zIndex='1'

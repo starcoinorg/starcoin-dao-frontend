@@ -16,7 +16,7 @@ import AllPluginList from '../components/allPluginList';
 import { getDaoInstalledPluginIds } from '../utils/daoPluginApi';
 
 const PluginManagement = () => {
-    const { dao } = useSubAppContext();
+    const { injectedProvider, dao } = useSubAppContext();
     const [installedPluginIds, setInstalledPluginIds] = useState<Array<string>>([]);
     const ctaButton = (
       <></>
@@ -25,7 +25,7 @@ const PluginManagement = () => {
     useEffect(() => {
       const loadPlugins = async () => {
         try {
-          const pluginIds = await getDaoInstalledPluginIds(dao.daoType);
+          const pluginIds = await getDaoInstalledPluginIds(injectedProvider, dao.daoType);
           setInstalledPluginIds(pluginIds);
         } catch (err) {
           console.log(err);
