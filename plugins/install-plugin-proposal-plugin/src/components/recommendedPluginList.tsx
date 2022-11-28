@@ -36,14 +36,14 @@ const RecommendedPluginList = ({ daoId, installedPluginIds }) => {
         Object.keys(plugins).length > 0 ? (
           Object.values(plugins)
             .slice(0, 10)
-            .map(plugin_info => (
-              <PluginCard
+            .map(plugin_info => {
+                return isPluginInstalled(installedPluginIds, plugin_info.type) ? <></> : <PluginCard
                 key={plugin_info.id}
                 daoId={daoId}
                 plugin_info={plugin_info}
-                installed={isPluginInstalled(installedPluginIds, plugin_info.type)}
               />
-            ))
+              }
+            )
         ) : (
           <Flex mt='100px' w='100%' justify='center'>
             No Plughin.
