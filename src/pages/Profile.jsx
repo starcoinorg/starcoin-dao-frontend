@@ -10,7 +10,8 @@ import MainViewLayout from '../components/mainViewLayout';
 import { getProfileActivites } from '../utils/activities';
 import { handleGetProfile } from '../utils/3box';
 import { initTokenData } from '../utils/tokenValue';
-import { getMemberNFT } from '../utils/dao';
+import { getMemberNFT, listUserOffers } from '../utils/dao';
+import OfferCard from '../components/offerCard';
 
 const Profile = ({ members, overview, daoTokens, activities }) => {
   const { daoid, daochain, userid } = useParams();
@@ -19,6 +20,7 @@ const Profile = ({ members, overview, daoTokens, activities }) => {
 
   const [memberEntity, setMemberEntity] = useState(null);
   const [tokensReceivable, setTokensReceivable] = useState([]);
+  const [offer, setOffer] = useState(null);
 
   useEffect(() => {
     const getMyMemberNFT = async () => {
@@ -50,6 +52,19 @@ const Profile = ({ members, overview, daoTokens, activities }) => {
   useEffect(() => {
     const getProfile = async () => {
       try {
+        console.log('-------------------------------------------');
+        console.log(userid);
+        const offers = await listUserOffers(daoid, address);
+        if (offers.length > 0) {
+          offers[0].time_lock = new Date(
+            offers[0].time_lock * 1000,
+          ).toLocaleString();
+
+          setOffer(offers[0]);
+        }
+
+        console.log(offers);
+
         const profile = await handleGetProfile(userid);
         if (!profile) return;
         setProfile(profile);
@@ -103,6 +118,18 @@ const Profile = ({ members, overview, daoTokens, activities }) => {
             memberEntity={memberEntity}
             refreshProfile={setProfile}
           />
+          {offer ? (
+            <OfferCard
+              tokens={tokensReceivable}
+              hasBalance={hasBalance()}
+              offer={offer}
+              profile
+              daoType={daoid}
+              provider={injectedProvider}
+            />
+          ) : (
+            <></>
+          )}
           <BankList
             tokens={tokensReceivable}
             hasBalance={hasBalance()}
