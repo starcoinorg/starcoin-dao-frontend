@@ -41,8 +41,9 @@ export async function join(daoType: string, imageData: string, imageUrl: string)
 }
 
 export const getMemberNFT = async (daoId, address) => {
-
-    const identifierNFT = await window.starcoin.request({
+    console.log(daoId)
+    console.log(address)
+    const result =  await window.starcoin.request({
         method: 'state.list_resource',
         params: [
             address,
@@ -53,17 +54,9 @@ export const getMemberNFT = async (daoId, address) => {
         ]
     })
 
-    return identifierNFT
-
-    //    if (identifierNFT) {
-    //        return {
-    //            id: identifierNFT.json.nft.vec[0].id,
-    //            nft_name: utils.hexToString(identifierNFT.json.nft.vec[0].base_meta.name),
-    //            image_data: utils.hexToString(
-    //                    identifierNFT.json.nft.vec[0].base_meta.image_data,
-    //                    ),
-    //            init_sbt: identifierNFT.json.nft.vec[0].body.sbt.value,
-    //        }
-    //    }
-
+    if (Object.values(result.resources).length > 0) {
+        return result.resources
+    } else {
+        return null
+    }
 }

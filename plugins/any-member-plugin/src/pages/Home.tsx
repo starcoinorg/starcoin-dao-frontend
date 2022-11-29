@@ -18,6 +18,7 @@ const HomePage = () => {
         setLoading(true)
         const fetch = async () => {
             const s = await getMemberNFT(dao.daoType, window.starcoin.selectedAddress);
+            console.log(s)
             if (s) {
                 setEx(true)
             }
