@@ -205,12 +205,11 @@ const ProposalDetailsForChain = ({
         <Flex
           mt={3}
           mb={6}
-          justify='space-between'
           direction={['column', 'row']}
           pr={memberVote(proposal, address) !== null && '5%'}
           w='100%'
         >
-          <Box minW={'19.0625rem'}>
+          <Box w='50%'>
             <MemberIndicator
               address={proposal?.submittedBy}
               label='submitted by'
@@ -245,12 +244,11 @@ const ProposalDetailsForChain = ({
         <Flex
           mt={3}
           mb={6}
-          justify='space-between'
           direction={['column', 'row']}
           pr={memberVote(proposal, address) !== null && '5%'}
           w='100%'
         >
-          <Flex flexDirection='column'>
+          <Flex flexDirection='column' w='50%'>
             <TextBox size='xs' mb={2}>
               {'voting start'}
             </TextBox>

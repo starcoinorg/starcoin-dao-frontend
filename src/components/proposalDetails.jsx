@@ -206,17 +206,16 @@ const ProposalDetails = ({
           mb={6}
           justify='space-between'
           direction={['column', 'row']}
-          pr={memberVote(proposal, address) !== null && '5%'}
           w='100%'
         >
-          <Box minW={'19.0625rem'}>
+          <Box w='50%'>
             <MemberIndicator
               address={proposal?.submittedBy}
               label='submitted by'
               shouldFetchProfile
             />
           </Box>
-          <Flex flexDirection='column'>
+          <Flex flexDirection='column' w='50%'>
             <TextBox size='xs' mb={2}>
               {'submitted at'}
             </TextBox>
@@ -232,24 +231,23 @@ const ProposalDetails = ({
             shouldFetchProfile
           /> */}
           {/* {handleRecipient()} */}
-          <Flex align='center' visibility='hidden'>
+          {/* <Flex align='center' visibility='hidden'>
             {memberVote(proposal, address) !== null &&
               (+memberVote(proposal, address) === 1 ? (
                 <Vote thumbsUp />
               ) : (
                 <Vote thumbsDown />
               ))}
-          </Flex>
+          </Flex> */}
         </Flex>
         <Flex
           mt={3}
           mb={6}
           justify='space-between'
           direction={['column', 'row']}
-          pr={memberVote(proposal, address) !== null && '5%'}
           w='100%'
         >
-          <Flex flexDirection='column'>
+          <Flex flexDirection='column' w='50%'>
             <TextBox size='xs' mb={2}>
               {'voting start'}
             </TextBox>
@@ -259,7 +257,7 @@ const ProposalDetails = ({
               opacity='1'
             />
           </Flex>
-          <Flex flexDirection='column'>
+          <Flex flexDirection='column' w='50%'>
             <TextBox size='xs' mb={2}>
               {'voting end'}
             </TextBox>
@@ -269,14 +267,14 @@ const ProposalDetails = ({
               opacity='1'
             />
           </Flex>
-          <Flex align='center' visibility='hidden'>
+          {/* <Flex align='center' visibility='hidden'>
             {memberVote(proposal, address) !== null &&
               (+memberVote(proposal, address) === 1 ? (
                 <Vote thumbsUp />
               ) : (
                 <Vote thumbsDown />
               ))}
-          </Flex>
+          </Flex> */}
         </Flex>
       </ContentBox>
     </Box>
