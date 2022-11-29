@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Flex, Center, Spinner, Stack } from '@chakra-ui/react';
 import { useSubAppContext } from '../contexts/SubAppContext';
 import PluginCard from './pluginCard';
+import { Divider } from '@chakra-ui/react';
 import { getDaoInstalledPlugins, isPluginInstalled, IPlugin } from '../utils/daoPluginApi';
 
 const InstalledPluginList = ({ daoId, installedPluginIds }) => {

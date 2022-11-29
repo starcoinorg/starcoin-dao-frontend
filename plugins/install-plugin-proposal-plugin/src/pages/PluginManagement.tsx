@@ -13,7 +13,8 @@ import {useSubAppContext} from '../contexts/SubAppContext';
 import InstalledPluginList from '../components/installedPluginList';
 import RecommendedPluginList from '../components/recommendedPluginList';
 import AllPluginList from '../components/allPluginList';
-import {getDaoInstalledPluginIds} from '../utils/daoPluginApi';
+import { getDaoInstalledPluginIds } from '../utils/daoPluginApi';
+import { mode } from '@chakra-ui/theme-tools' // import utility to set light and dark mode props
 
 const PluginManagement = () => {
     const {injectedProvider, dao} = useSubAppContext();
@@ -35,39 +36,54 @@ const PluginManagement = () => {
         loadPlugins();
     }, [dao.daoType]);
 
-    return (
-        <MainViewLayout
-            header='Plugins'
-            headerEl={ctaButton}
+    const tab = (text) => {
+      return (
+        <Tab _selected= {{
+          color:'#EB8A23',
+          borderColor: '#EB8A23',
+          borderBottom: '2px',
+          variant:'solid'
+        }}
+        borderBottom='none'
         >
-            <Tabs size='md' variant='enclosed'>
-                <TabList>
-                    <Tab>Installled</Tab>
-                    <Tab>Recommended</Tab>
-                    <Tab>All</Tab>
-                </TabList>
-                <TabPanels
-                    w={['100%', null, null, '100%', '80%']}
-                    pr={[0, null, null, null, 6]}
-                    pb={6}>
-                    <TabPanel>
-                        <Flex as={Stack} direction='column' spacing={4}>
-                            <InstalledPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
-                        </Flex>
-                    </TabPanel>
-                    <TabPanel>
-                        <Flex as={Stack} direction='column' spacing={4}>
-                            <RecommendedPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
-                        </Flex>
-                    </TabPanel>
-                    <TabPanel>
-                        <Flex as={Stack} direction='column' spacing={4}>
-                            <AllPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
-                        </Flex>
-                    </TabPanel>
-                </TabPanels>
-            </Tabs>
-        </MainViewLayout>
+          {text}
+        </Tab>
+      )
+    }
+
+    return (
+      <MainViewLayout
+        header='Plugins'
+        headerEl={ctaButton}
+      >
+        <Tabs size='md'>
+          <TabList>
+            {tab('Installled')}
+            {tab('Recommended')}
+            {tab('All')}
+          </TabList>
+          <TabPanels 
+            pb={6}
+            algin='center'
+            >
+            <TabPanel>
+              <Flex as={Stack} direction='column' spacing={4}>
+                <InstalledPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds} />
+              </Flex>
+            </TabPanel>
+            <TabPanel>
+              <Flex as={Stack} direction='column' spacing={4}>
+                <RecommendedPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
+              </Flex>
+            </TabPanel>
+            <TabPanel>
+                <Flex as={Stack} direction='column' spacing={4}>
+                  <AllPluginList daoId={dao?.daoType} installedPluginIds={installedPluginIds}/>
+                </Flex>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </MainViewLayout>
     );
 }
 
