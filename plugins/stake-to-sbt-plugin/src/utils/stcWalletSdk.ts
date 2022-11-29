@@ -61,8 +61,7 @@ export async function listResource(address: string, resource_types: Array<any>, 
             {
                 resource_types: resource_types,
                 decode: true,
-                start_index: 0,
-                max_size: 6,
+                ...pages
             }
         ]
     })

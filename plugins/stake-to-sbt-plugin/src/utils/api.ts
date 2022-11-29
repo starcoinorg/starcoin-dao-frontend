@@ -152,7 +152,7 @@ export async function queryTokenInfo(tokenType: string): Promise<QueryTokenInfoR
 
     const type = `${std}::Token::TokenInfo<${tokenType}>`
 
-    const result = await listResource(std, [type])
+    const result = await listResource(tokenType.split("::")[0], [type])
 
     const key = Object.keys(result.resources)[0]
 

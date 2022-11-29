@@ -15,6 +15,7 @@ import {
 
 import {Skeleton} from '@chakra-ui/react'
 import TextBox from './TextBox'
+import {formatLockTime} from "../utils/formt";
 
 const title = [
     'id',
@@ -24,6 +25,7 @@ const title = [
     'weight',
     'sbt',
     'lock status',
+    'expire time',
     'option',
 ]
 
@@ -60,37 +62,10 @@ const ListStake = (props) => {
         const expire = new Date(time * 1000)
         expire.setSeconds(lock_time)
 
-        if (now.getTime() > expire.getTime()) {
-            return `Unlocked`
-        } else {
-            return `Locking ${expire.toLocaleString()}`
+        return {
+            status: now.getTime() > expire.getTime() ? 'Unlocked' : 'Locking',
+            time: expire.toLocaleString()
         }
-    }
-
-    const formatLockTime = (time: number) => {
-
-        let remain = time
-        let c = ""
-
-        const hour = 60 * 60
-        if (remain > hour) {
-            const s = Math.floor((remain / hour))
-            c += `${s} hours `
-            remain = remain - s * hour
-        }
-
-        const minute = 60
-        if (remain > minute) {
-            const s = Math.floor((remain / minute))
-            c += `${s} minutes `
-            remain = remain - s * minute
-        }
-
-        if (remain > 0) {
-            c += `${remain} seconds`
-        }
-
-        return c
     }
 
     const formatAmount = (amount: number) => {
@@ -125,6 +100,7 @@ const ListStake = (props) => {
             countToken += v.token.value
             countSbt += v.sbt_amount
 
+            const {status, time} = formatExpire(v.stake_time, v.lock_time)
             return {
                 id: v.id,
                 stake_time: formatTime(v.stake_time),
@@ -132,7 +108,8 @@ const ListStake = (props) => {
                 weight: v.weight,
                 lock_time: formatLockTime(v.lock_time),
                 sbt_amount: formatAmount(v.sbt_amount),
-                lock_status: formatExpire(v.stake_time, v.lock_time)
+                lock_status: status,
+                expire_time: time
             }
         })
 
@@ -182,9 +159,10 @@ const ListStake = (props) => {
                                 <Td>{v.weight}</Td>
                                 <Td>{v.sbt_amount}</Td>
                                 <Td>{v.lock_status}</Td>
+                                <Td>{v.expire_time}</Td>
                                 <Td>
                                     <Button w='46%'
-                                        disabled={!v.lock_status.includes("Unstake")}
+                                            disabled={!v.lock_status.includes("Unlocked")}
                                             onClick={() => {
                                                 onItemClick(v)
                                             }}>
