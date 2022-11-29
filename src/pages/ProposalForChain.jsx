@@ -34,8 +34,9 @@ const ProposalForChain = ({
   const { injectedProvider, injectedChain, address } = useInjectedProvider();
 
   const handleRefreshDao = () => {
-    const skipVaults = true;
-    refreshDao(skipVaults);
+    // const skipVaults = true;
+    // refreshDao(skipVaults);
+    window.location.reload();
   };
 
   const loadProposal = async () => {
