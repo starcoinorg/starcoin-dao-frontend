@@ -1,7 +1,7 @@
 import {utils, bcs} from "@starcoin/starcoin"
 import {hexlify} from '@ethersproject/bytes'
-import {getProvder} from "./stcWalletSdk";
-import {nodeUrlMap} from "./consts";
+import {getProvder} from "./stcWalletSdk"
+import {nodeUrlMap} from "./consts"
 
 export async function callContarctWithSigner(functionId, tyArgs, args): Promise<string> {
     try {
@@ -38,4 +38,32 @@ export async function join(daoType: string, imageData: string, imageUrl: string)
     console.log("createMemberProposal args:", args)
 
     return await callContarctWithSigner(functionId, tyArgs, args)
+}
+
+export const getMemberNFT = async (daoId, address) => {
+
+    const identifierNFT = await window.starcoin.request({
+        method: 'state.list_resource',
+        params: [
+            address,
+            {
+                resource_types: [`0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoId}>, 0x00000000000000000000000000000001::DAOSpace::DAOMemberBody<${daoId}>>`],
+                decode: true,
+            }
+        ]
+    })
+
+    return identifierNFT
+
+    //    if (identifierNFT) {
+    //        return {
+    //            id: identifierNFT.json.nft.vec[0].id,
+    //            nft_name: utils.hexToString(identifierNFT.json.nft.vec[0].base_meta.name),
+    //            image_data: utils.hexToString(
+    //                    identifierNFT.json.nft.vec[0].base_meta.image_data,
+    //                    ),
+    //            init_sbt: identifierNFT.json.nft.vec[0].body.sbt.value,
+    //        }
+    //    }
+
 }
