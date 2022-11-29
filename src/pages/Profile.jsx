@@ -52,8 +52,6 @@ const Profile = ({ members, overview, daoTokens, activities }) => {
   useEffect(() => {
     const getProfile = async () => {
       try {
-        console.log('-------------------------------------------');
-        console.log(userid);
         const offers = await listUserOffers(daoid, address);
         if (offers.length > 0) {
           offers[0].time_lock = new Date(

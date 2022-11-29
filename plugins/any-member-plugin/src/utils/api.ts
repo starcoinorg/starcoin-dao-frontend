@@ -1,7 +1,7 @@
 import {utils, bcs} from "@starcoin/starcoin"
 import {hexlify} from '@ethersproject/bytes'
-import {getProvder} from "./stcWalletSdk";
-import {nodeUrlMap} from "./consts";
+import {getProvder} from "./stcWalletSdk"
+import {nodeUrlMap} from "./consts"
 
 export async function callContarctWithSigner(functionId, tyArgs, args): Promise<string> {
     try {
@@ -38,4 +38,25 @@ export async function join(daoType: string, imageData: string, imageUrl: string)
     console.log("createMemberProposal args:", args)
 
     return await callContarctWithSigner(functionId, tyArgs, args)
+}
+
+export const getMemberNFT = async (daoId, address) => {
+    console.log(daoId)
+    console.log(address)
+    const result =  await window.starcoin.request({
+        method: 'state.list_resource',
+        params: [
+            address,
+            {
+                resource_types: [`0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT<0x00000000000000000000000000000001::DAOSpace::DAOMember<${daoId}>, 0x00000000000000000000000000000001::DAOSpace::DAOMemberBody<${daoId}>>`],
+                decode: true,
+            }
+        ]
+    })
+
+    if (Object.values(result.resources).length > 0) {
+        return result.resources
+    } else {
+        return null
+    }
 }

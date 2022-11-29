@@ -134,8 +134,6 @@ export async function queryTokenStakeLimit(address: string, daoType: string, tok
             {
                 resource_types: [type],
                 decode: true,
-                start_index: 0,
-                max_size: 100
             }
         ]
     })
