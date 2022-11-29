@@ -2,6 +2,7 @@ import { utils } from 'web3';
 import { BOOSTS } from '../data/boosts';
 import { MINIONS } from '../data/minions';
 import { handleExtractBoosts } from './metadata';
+import { hexVectorToStringArray } from './hex';
 
 export const devBoostList = {
   name: 'DEV Boosts',
@@ -48,17 +49,6 @@ export const getSettingsLink = (settings, params) => {
 };
 
 export const PluginMarketplace_Address = '0x7dA9Cd8048A4620fda9e22977750C517';
-
-export const hexVectorToStringArray = vec => {
-  let rets = new Array();
-
-  for (const i in vec) {
-    const item = utils.hexToString(vec[i]);
-    rets.push(item);
-  }
-
-  return rets;
-};
 
 export const getPluginInfo = async plugin_type => {
   try {

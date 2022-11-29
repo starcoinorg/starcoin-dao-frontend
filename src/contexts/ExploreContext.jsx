@@ -138,6 +138,7 @@ export const ExploreContextProvider = ({ children }) => {
         {
           withLogo: false,
           withPlugins: false,
+          withExtInfo: true,
         },
       );
 

@@ -4,6 +4,7 @@ import { MINION_TYPES } from './proposalUtils';
 import { hexlify } from '@ethersproject/bytes';
 import { getPluginInfo } from './marketplace';
 import { nodeUrlMap } from './consts';
+import { hexVectorToStringArray } from './hex';
 
 const orderDaosByNetwork = (userHubDaos, userNetwork) => ({
   currentNetwork: userHubDaos.find(dao => dao.networkID === userNetwork) || [],
@@ -146,6 +147,7 @@ export const listDaos = async (provider, index, offset, _opts) => {
       opts.withLogo,
       opts.withPlugins,
       opts.withConfig,
+      opts.withExtInfo,
     );
     daos.push(dao);
   }
@@ -223,12 +225,50 @@ export const getDaoConfig = async (provider, daoId) => {
   return null;
 };
 
+export const getDaoExtInfo = async (provider, daoId) => {
+  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+  const daoModule = daoId.substring(0, daoId.lastIndexOf('::'));
+  const daoExt = `${daoModule}::Ext`;
+
+  const daoExtInfo = await provider.send('state.get_resource', [
+    daoAddress,
+    `0x00000000000000000000000000000001::DAOSpace::StorageItem<${daoId}, ${daoExt}>`,
+    {
+      decode: true,
+    },
+  ]);
+
+  if (daoExtInfo) {
+    const linkMap = {};
+    const links = hexVectorToStringArray(daoExtInfo.json.item.links);
+
+    for (let i = 0; i < links.length; i++) {
+      const tokens = links[i].split('=');
+      if (tokens.length == 2) {
+        linkMap[tokens[0]] = tokens[1];
+      }
+    }
+
+    return {
+      links: linkMap,
+      tags: hexVectorToStringArray(daoExtInfo.json.item.tags),
+      purpose: utils.hexToString(daoExtInfo.json.item.purpose),
+      long_description: utils.hexToString(
+        daoExtInfo.json.item.long_description,
+      ),
+    };
+  }
+
+  return null;
+};
+
 export const getDaoDetail = async (
   provider,
   daoId,
   withLogo = true,
   withPlugins = true,
   withConfig = false,
+  withExtInfo = true,
 ) => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
@@ -238,6 +278,17 @@ export const getDaoDetail = async (
   let tags = ['DAO'];
   let links = {};
   let long_description = '';
+  let purpose = '';
+
+  if (withExtInfo) {
+    const daoExtInfo = await getDaoExtInfo(provider, daoTypeTag);
+    if (daoExtInfo) {
+      tags = daoExtInfo.tags;
+      links = daoExtInfo.links;
+      long_description = daoExtInfo.long_description;
+      purpose = daoExtInfo.purpose;
+    }
+  }
 
   let daoLogo = '';
   if (withLogo) {
@@ -272,12 +323,15 @@ export const getDaoDetail = async (
     description: daoInfo.description,
     daoAddress: daoAddress,
     longDescription: long_description,
-    purposeId: null,
+    purposeId: purpose,
     tags: tags.join(','),
     communityLinksTwitter: links['twitter'],
     communityLinksDiscord: links['discord'],
     communityLinksTelegram: links['telegram'],
-    logoUrl: null,
+    communityLinksMedium: links['medium'],
+    communityLinksOther: links['other'],
+    communityLinksWebsite: links['website'],
+    logoUrl: daoLogo,
     installedPlugins: plugins,
     moreTags: null,
     sequenceId: 1,
