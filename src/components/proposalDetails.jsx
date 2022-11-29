@@ -87,17 +87,6 @@ const ProposalDetails = ({
               <TextBox size='xs' mb={[3, null, null, 0]}>
                 {getCustomProposalTerm(customTerms, proposal?.proposalType)}
               </TextBox>
-              {/* <Box fontSize={['sm', null, null, 'md']}>
-                {proposal?.proposalIndex ? (
-                  <>{status && getProposalDetailStatus(proposal, status)}</>
-                ) : (
-                  <Skeleton isLoaded={status}>
-                    <Badge>
-                      {status && getProposalCountdownText(proposal, status)}
-                    </Badge>
-                  </Skeleton>
-                )}
-              </Box> */}
             </Flex>
             <Skeleton isLoaded={proposal?.title}>
               {proposal?.title && <Text fontSize='3xl'>{proposal?.title}</Text>}
