@@ -74,14 +74,13 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
   }, [members]);
 
   const renderTags = () => {
-    if (daoData?.daoMetaData?.tags) {
+    if (daoMetaData?.tags) {
       return (
         <Flex direction='row' wrap='wrap'>
-          {daoData.daoMetaData?.tags.split(',').map(tag => {
+          {daoMetaData?.tags.split(',').map(tag => {
             return (
               <Badge
                 key={tag}
-                colorScheme='secondary.500'
                 variant='outline'
                 fontSize='9px'
                 _notLast={{ marginRight: '3px' }}
@@ -142,6 +141,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             {daoMetaData?.communityLinksTwitter ? (
               <a
                 href={daoMetaData?.communityLinksTwitter}
+                target='_blank'
                 style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
               >
                 <RiTwitterFill />
@@ -152,6 +152,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             {daoMetaData?.communityLinksDiscord ? (
               <a
                 href={daoMetaData?.communityLinksDiscord}
+                target='_blank'
                 style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
               >
                 <RiDiscordFill />
@@ -162,6 +163,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             {daoMetaData?.communityLinksTelegram ? (
               <a
                 href={daoMetaData?.communityLinksTelegram}
+                target='_blank'
                 style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
               >
                 <RiTelegramFill />
