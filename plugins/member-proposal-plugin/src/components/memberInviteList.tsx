@@ -49,7 +49,7 @@ const MyMemberInviteList = ({ daoId }) => {
           </Flex>
         )
       ) : (
-        <Spinner size='xl' />
+        <Spinner size='xl' margin='0 auto' mt='10' />
       )}
     </Flex>
   );
