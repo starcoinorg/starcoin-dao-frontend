@@ -132,19 +132,32 @@ const Members = () => {
       </Button>
     );
 
+    const tab = (text) => {
+      return (
+        <Tab _selected= {{
+          color:'#EB8A23',
+          borderColor: '#EB8A23',
+          borderBottom: '2px',
+          variant:'solid'
+        }}
+        borderBottom='none'
+        >
+          {text}
+        </Tab>
+      )
+    }
+
     return (
       <MainViewLayout
         header='Members'
         headerEl={ctaButton}
       >
-        <Tabs size='md' variant='enclosed'>
+        <Tabs size='md'>
           <TabList>
-            <Tab>All Member Invites</Tab>
-            <Tab>My Member Invite</Tab>
+            {tab('All Member Invites')}
+            {tab('My Member Invite')}
           </TabList>
           <TabPanels
-            w={['100%', null, null, '100%', '80%']}
-            pr={[0, null, null, null, 6]}
             pb={6}
           >
             <TabPanel>

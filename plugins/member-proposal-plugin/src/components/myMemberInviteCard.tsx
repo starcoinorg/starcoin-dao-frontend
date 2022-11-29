@@ -18,8 +18,8 @@ const MyMemberInviteCard = ({ offer, onAcceptOffer }) => {
           <Text variant='value'>{offer.init_sbt}</Text>
         </Flex>
         <Flex as={HStack} spacing={2} align='center'>
-          <Text>Time Lock:</Text>
-          <Text variant='value'>{offer.time_lock}</Text>
+          <Text>Invite Time:</Text>
+            <Text variant='value'>{new Date(offer.time_lock * 1000).toLocaleString()}</Text>
         </Flex>
         <Flex as={HStack} spacing={2} align='center'>
           <Button
