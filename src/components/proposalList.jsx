@@ -46,6 +46,7 @@ const ProposalsList = ({ customTerms }) => {
   const [filter, setFilter] = useSessionStorage(`${daoid}-filter`, null);
   const [sort, setSort] = useSessionStorage(`${daoid}-sort`, null);
   const [proposals, setProposals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
@@ -117,13 +118,15 @@ const ProposalsList = ({ customTerms }) => {
 
   const fetch = () => {
     console.log('刷新');
+    setLoading(true);
     listDaoProposals(injectedProvider, daoid)
       .then(proposals => {
         setProposals(proposals);
       })
       .catch(err => {
         console.error('Error fetching proposals', err);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleFilter = option => {
@@ -166,9 +169,7 @@ const ProposalsList = ({ customTerms }) => {
     setSort(null);
   };
 
-  const isLoaded = proposals;
-
-  console.log(isLoaded);
+  // const isLoaded = proposals;
   return (
     <>
       {
@@ -215,7 +216,7 @@ const ProposalsList = ({ customTerms }) => {
       </Flex>
 
       <Box mt={4}>
-        {isLoaded &&
+        {!loading &&
           paginatedProposals?.map(proposal => (
             <ProposalCardV2
               key={proposal.id}
@@ -226,7 +227,7 @@ const ProposalsList = ({ customTerms }) => {
           ))}
       </Box>
 
-      {isLoaded && proposals.length > 0 ? (
+      {!loading ? (
         <Paginator
           perPage={5}
           setRecords={setPageProposals}
