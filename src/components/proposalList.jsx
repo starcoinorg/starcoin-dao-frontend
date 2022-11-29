@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Flex, Spinner, Box } from '@chakra-ui/react';
+import { Flex, Spinner, Box, Button } from '@chakra-ui/react';
 
 import { useDaoMember } from '../contexts/DaoMemberContext';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
@@ -57,15 +57,10 @@ const ProposalsList = ({ customTerms }) => {
 
   if (isChainDao) {
     useEffect(() => {
-      listDaoProposals(injectedProvider, daoid)
-        .then(proposals => {
-          setProposals(proposals);
-        })
-        .catch(err => {
-          console.error('Error fetching proposals', err);
-        });
+      fetch();
     }, [daoid]);
   } else {
+    // BUG? max 100 ? or reomve this ?
     let { data: _proposals, loading } = useRequest(
       `proposals?daoId=${daoid}&page=0&size=100`,
       {
@@ -120,6 +115,17 @@ const ProposalsList = ({ customTerms }) => {
     );
   }, [filter, sort, proposals, daoMember, address]);
 
+  const fetch = () => {
+    console.log('刷新');
+    listDaoProposals(injectedProvider, daoid)
+      .then(proposals => {
+        setProposals(proposals);
+      })
+      .catch(err => {
+        console.error('Error fetching proposals', err);
+      });
+  };
+
   const handleFilter = option => {
     if (!option?.value || !option?.type || !option?.name) {
       console.error(
@@ -161,37 +167,52 @@ const ProposalsList = ({ customTerms }) => {
   };
 
   const isLoaded = proposals;
+
+  console.log(isLoaded);
   return (
     <>
-      <Flex wrap='wrap' position='relative' justifyContent='space-between'>
-        <ListSelect
-          currentOption={filter?.name}
-          options={filterOptions}
-          handleSelect={handleFilter}
-          label='Filter By'
-          count={proposals?.length}
-        />
-        <ListSelect
-          label='Sort By'
-          currentOption={sort?.name}
-          options={sortOptions}
-          handleSelect={handleSort}
-          // uses custom props to prevent overlap with search button
-          containerProps={{
-            // width: ['100%', null, null, '38%'],
-            zIndex: '10',
-            marginRight: '10%',
-            marginLeft: '5%',
-          }}
-        />
-        <ProposalSearch
-          performSearch={performSearch}
-          resetSearch={resetSearch}
-        />
-        {/* <CsvDownloadButton entityList={listProposals} typename='Proposals' /> */}
-      </Flex>
+      {
+        // <Flex wrap='wrap' position='relative' justifyContent='space-between'>
+        //   <ListSelect
+        //     currentOption={filter?.name}
+        //     options={filterOptions}
+        //     handleSelect={handleFilter}
+        //     label='Filter By'
+        //     count={proposals?.length}
+        //   />
+        //   <ListSelect
+        //     label='Sort By'
+        //     currentOption={sort?.name}
+        //     options={sortOptions}
+        //     handleSelect={handleSort}
+        //     // uses custom props to prevent overlap with search button
+        //     containerProps={{
+        //       // width: ['100%', null, null, '38%'],
+        //       zIndex: '10',
+        //       marginRight: '10%',
+        //       marginLeft: '5%',
+        //     }}
+        //   />
+        //   <ProposalSearch
+        //     performSearch={performSearch}
+        //     resetSearch={resetSearch}
+        //   />
+        //   {/* <CsvDownloadButton entityList={listProposals} typename='Proposals' /> */}
+        // </Flex>
+      }
 
-      {isLoaded && isActive('SPAM_FILTER') && <SpamFilterListNotification />}
+      {/* {isLoaded && isActive('SPAM_FILTER') && <SpamFilterListNotification />} */}
+      <Flex w='100%' align='center' justify='right'>
+        <Button
+          onClick={() => {
+            setProposals([]);
+            setPageProposals(null);
+            fetch();
+          }}
+        >
+          Refresh
+        </Button>
+      </Flex>
 
       <Box mt={4}>
         {isLoaded &&
@@ -205,14 +226,14 @@ const ProposalsList = ({ customTerms }) => {
           ))}
       </Box>
 
-      {isLoaded ? (
+      {isLoaded && proposals.length > 0 ? (
         <Paginator
           perPage={5}
           setRecords={setPageProposals}
           allRecords={proposals}
         />
       ) : (
-        <Flex w='100%' h='150px' align='center' justify='center'>
+        <Flex w='100%' h='100%' align='center' justify='center'>
           <Spinner
             thickness='6px'
             speed='0.45s'
@@ -223,13 +244,13 @@ const ProposalsList = ({ customTerms }) => {
           />
         </Flex>
       )}
-      {proposals && !proposals.length && (
+      {/* {proposals && !proposals.length && (
         <Box mt={6}>
           <NoListItem>
             <TextBox>No Proposals Here yet</TextBox>
           </NoListItem>
         </Box>
-      )}
+      )} */}
     </>
   );
 };
