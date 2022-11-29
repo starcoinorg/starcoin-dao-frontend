@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Modal,
+  ModalHeader,
   ModalContent,
   ModalOverlay,
   Box,
@@ -16,10 +17,11 @@ import { useOverlay } from '../contexts/OverlayContext';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { useCustomTheme } from '../contexts/CustomThemeContext';
 import HubProfileCard from '../components/hubProfileCard';
-import TxList from '../components/TxList';
+import UserDaoList from '../components/userDaoList';
+import AddressAvatar from '../components/addressAvatar';
 
 const HubAccountModal = () => {
-  const { disconnectDapp, requestWallet } = useInjectedProvider();
+  const { disconnectDapp, address } = useInjectedProvider();
   const { hubAccountModal, setHubAccountModal } = useOverlay();
   const { theme } = useCustomTheme();
 
@@ -27,7 +29,6 @@ const HubAccountModal = () => {
   const handleSwitchWallet = () => {
     setHubAccountModal(false);
     disconnectDapp();
-    requestWallet();
   };
 
   return (
@@ -44,27 +45,22 @@ const HubAccountModal = () => {
         py={6}
       >
         <ModalCloseButton />
-        <ModalBody
-          flexDirection='column'
-          display='flex'
-          maxH='600px'
-          overflowY='scroll'
-        >
-          <HubProfileCard />
+        <ModalBody flexDirection='column' display='flex'>
+          <AddressAvatar hideCopy addr={address} />
+          <Divider color='primary.300' my={6} />
           <Box
             onClick={handleSwitchWallet}
             color='secondary.400'
             _hover={{ color: 'secondary.600', cursor: 'pointer' }}
-            my={6}
           >
-            ReConnect wallet
+            Disconnect wallet
           </Box>
-          <Divider color='primary.300' />
-          <Box as={Stack} spacing={4} my={6}>
+          <Divider color='primary.300' my={6} />
+          <Box as={Stack} spacing={4}>
             <Text fontSize='l' fontFamily='heading'>
-              Transactions will show here
+              My DAOs:
             </Text>
-            <TxList />
+            <UserDaoList handleClose={handleClose} />
           </Box>
         </ModalBody>
       </ModalContent>

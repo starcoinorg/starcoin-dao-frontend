@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import {
   Modal,
   Flex,
   Link,
   Box,
+  ModalHeader,
   ModalContent,
   ModalOverlay,
   ModalCloseButton,
@@ -17,16 +18,26 @@ import { useCustomTheme } from '../contexts/CustomThemeContext';
 import { useDaoMember } from '../contexts/DaoMemberContext';
 import { useInjectedProvider } from '../contexts/InjectedProviderContext';
 import { useOverlay } from '../contexts/OverlayContext';
+import { listUserDaoTypes } from '../utils/dao';
+
 import HubProfileCard from '../components/hubProfileCard';
 import MemberInfoGuts from '../components/memberInfoGuts';
-import TxList from '../components/TxList';
+import UserDaoList from '../components/userDaoList';
+import AddressAvatar from '../components/addressAvatar';
 
 const DaoAccountModal = () => {
   const { daoAccountModal, setDaoAccountModal } = useOverlay();
   const { daoMember, isMember } = useDaoMember();
-  const { address, disconnectDapp, requestWallet } = useInjectedProvider();
+  const {
+    injectedProvider,
+    address,
+    disconnectDapp,
+    requestWallet,
+  } = useInjectedProvider();
   const { daoid, daochain } = useParams();
   const { theme } = useCustomTheme();
+  const [userDaos, setUserDaos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setDaoAccountModal(false);
@@ -35,7 +46,6 @@ const DaoAccountModal = () => {
   const handleSwitchWallet = () => {
     setDaoAccountModal(false);
     disconnectDapp();
-    requestWallet();
   };
 
   return (
@@ -49,17 +59,8 @@ const DaoAccountModal = () => {
         py={6}
       >
         <ModalCloseButton />
-        <ModalBody
-          flexDirection='column'
-          display='flex'
-          maxH='600px'
-          overflowY='scroll'
-        >
-          {isMember ? (
-            <MemberInfoGuts member={daoMember} showMenu={false} hideCopy />
-          ) : (
-            <HubProfileCard />
-          )}
+        <ModalBody flexDirection='column' display='flex'>
+          <AddressAvatar hideCopy addr={address} />
           <Divider color='primary.300' my={6} />
           <Box>
             <Flex direction='row' justify='space-between' align='flex-start'>
@@ -93,7 +94,7 @@ const DaoAccountModal = () => {
                   color='secondary.400'
                   _hover={{ color: 'secondary.600', cursor: 'pointer' }}
                 >
-                  ReConnect wallet
+                  Disconnect wallet
                 </Box>
               </Flex>
 
@@ -111,9 +112,9 @@ const DaoAccountModal = () => {
           <Divider color='primary.300' my={6} />
           <Box>
             <Box fontSize='l' fontFamily='heading' mb={6}>
-              Transactions will show here
+              My Daos:
             </Box>
-            <TxList />
+            <UserDaoList handleClose={handleClose} />
           </Box>
         </ModalBody>
       </ModalContent>

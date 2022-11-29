@@ -16,13 +16,14 @@ import { hubChainQuery } from '../utils/theGraph';
 import { supportedChains } from '../utils/chain';
 import { getApiMetadata } from '../utils/metadata';
 import { handleGetProfile } from '../utils/3box';
+import { listUserDaoTypes } from '../utils/dao';
 
 const numOfSupportedChains = Object.keys(supportedChains).length;
 
 export const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
-  const { address } = useInjectedProvider();
+  const { injectedProvider, address } = useInjectedProvider();
   const { successToast, errorToast } = useOverlay();
   const [addressProfile, setAddressProfile] = useState(null);
 
@@ -34,28 +35,24 @@ export const UserContextProvider = ({ children }) => {
   const hasLoadedHubData = userHubDaos?.length === numOfSupportedChains;
   const prevAddress = useRef(null);
 
+  const [userDaos, setUserDaos] = useState([]);
+
   useEffect(() => {
-    // const bigQuery = () => {
-    //   hubChainQuery({
-    //     query: HUB_MEMBERSHIPS,
-    //     supportedChains,
-    //     endpointType: 'subgraph_url',
-    //     apiFetcher: getApiMetadata,
-    //     reactSetter: setUserHubDaos,
-    //     setApiData,
-    //     variables: {
-    //       memberAddress: address,
-    //     },
-    //   });
-    // };
-    // if (!userHubDaos.length && address && prevAddress.current === null) {
-    //   bigQuery();
-    //   prevAddress.current = address;
-    // } else if (prevAddress.current !== address && address) {
-    //   setUserHubDaos([]);
-    //   prevAddress.current = null;
-    // }
-  }, [address, userHubDaos, setUserHubDaos]);
+    const fetchData = async () => {
+      try {
+        const daos = await listUserDaoTypes(injectedProvider, address);
+        setUserDaos(daos);
+      } catch (err) {
+        console.error('Error fetching user daos', err);
+      }
+    };
+
+    if (address && injectedProvider) {
+      fetchData();
+    } else {
+      setUserDaos([]);
+    }
+  }, [injectedProvider, address]);
 
   const resolvePoll = txHash => {
     if (!address) {
@@ -152,6 +149,7 @@ export const UserContextProvider = ({ children }) => {
         apiData,
         refreshMemberProfile,
         addressProfile,
+        userDaos,
       }}
     >
       {children}
@@ -169,6 +167,7 @@ export const useUser = () => {
     refetchUserHubDaos,
     refreshMemberProfile,
     addressProfile,
+    userDaos,
   } = useContext(UserContext);
   return {
     userHubDaos,
@@ -180,5 +179,6 @@ export const useUser = () => {
     refetchUserHubDaos,
     refreshMemberProfile,
     addressProfile,
+    userDaos,
   };
 };

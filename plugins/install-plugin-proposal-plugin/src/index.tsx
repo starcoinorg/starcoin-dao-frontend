@@ -30,7 +30,7 @@ export const setup = (ctx: IDaoPluginContext) => {
   console.log("plugin setup")
 
   ctx.registerApp({
-    name: "plugins",
+    name: "Plugins",
     activeWhen: "/plugin_management",
     icon: VscExtensions,
     provider: (props) => {

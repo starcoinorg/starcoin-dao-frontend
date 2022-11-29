@@ -2,6 +2,10 @@ import React, {useEffect, useState} from 'react'
 import {
     Box,
     useToast,
+    Select,
+    FormControl,
+    InputGroup,
+    InputLeftAddon,
 } from '@chakra-ui/react'
 
 import Back from "../components/back"
@@ -18,6 +22,8 @@ import {
     queryTokenInfo,
     QueryTokenInfoResult
 } from "../utils/api"
+import TextBox from "../components/TextBox";
+import {formatLockTime} from "../utils/formt";
 
 const StakePage = () => {
 
@@ -45,17 +51,22 @@ const StakePage = () => {
         setFetchingType(true)
 
         const fetch = async () => {
-            queryStakeTokenType(dao.address, dao.daoType)
-                .then(v => setTokenTypeOptions([...v]))
-                .catch(console.log)
+            const result = await queryStakeTokenType(dao.address, dao.daoType)
+            setTokenTypeOptions([...result])
+
+            setTokenType(result[0].type)
+            await fetchTypeCfg(result[0].type)
         }
 
-        fetch().catch(() => setFetchingType(false))
+        fetch().catch(console.log)
+
+        setFetchingType(false)
     }, [])
 
-    const onTokenTypeChange = async type => {
+    const fetchTypeCfg = async (type) => {
+
+        console.log("asidoahisdhasoihdio")
         console.log(type)
-        setTokenType(type)
         setFetchingTypeCfg(true)
 
         try {
@@ -70,6 +81,16 @@ const StakePage = () => {
         }
 
         setFetchingTypeCfg(false)
+    }
+
+    const onTokenTypeChange = async v => {
+
+        const {target} = v
+        const type = target.selectedOptions[0].value
+
+        setTokenType(type)
+
+        await fetchTypeCfg(type)
     }
 
     const onSubmit = async data => {
@@ -101,15 +122,20 @@ const StakePage = () => {
     }
 
     const buildStakeCfgOptions = (): Array<string> => {
+        console.log("重新构建")
+        console.log(tokenType)
+        console.log(tokenTypeLimits)
         if (tokenTypeLimits.get(tokenType)) {
             return tokenTypeLimits.get(tokenType)?.map(v => {
-                return `Lock time: ${v.lock_time}, Weight: ${v.weight}`
+                return `Lock time: ${formatLockTime(v.lock_time)}, Weight: ${v.weight}`
             })
         }
         return []
     }
 
     const onStakeCfgChange = (v: string) => {
+//        const {target} = v
+//        const type = target.selectedOptions[0].value
         let arr = v.trim().split(",")
 
         const lock_time = BigInt(arr[0].trim().split(":")[1])
@@ -131,19 +157,46 @@ const StakePage = () => {
         >
             <Box w='50%' margin='0 auto'>
 
-                <AutoCompleteInputWidget
-                    title="Token"
-                    placeholder="first step"
-                    options={tokenTypeOptions.map(v => v.type)}
-                    onChange={onTokenTypeChange}
-                />
+                <FormControl>
+                    <InputGroup>
+                        <InputLeftAddon bg='transparent' w='20%'>
+                            <TextBox size='sm'>
+                                Token
+                            </TextBox>
+                        </InputLeftAddon>
+                        <Select
+                            onChange={onTokenTypeChange}
+                            borderTopStartRadius='0'
+                            borderBottomStartRadius='0'
+                        >
+                            {
+                                tokenTypeOptions?.map((v, i) => (
+                                    <option key={i.toString()} value={v.type}>{v.type}</option>
+                                ))
+                            }
+                        </Select>
+                    </InputGroup>
+                </FormControl>
 
-                <AutoCompleteInputWidget
-                    title="Stake config"
-                    placeholder="after select"
-                    options={buildStakeCfgOptions()}
-                    onChange={onStakeCfgChange}
-                />
+                <FormControl mt='4' mb='4'>
+                    <InputGroup>
+                        <InputLeftAddon bg='transparent' w='20%'>
+                            <TextBox size='sm'>
+                                Stake config
+                            </TextBox>
+                        </InputLeftAddon>
+                        <Select
+                            borderTopStartRadius='0'
+                            borderBottomStartRadius='0'
+                        >
+                            {
+                                buildStakeCfgOptions()?.map((v, i) => (
+                                    <option key={i.toString()} value={v}>{v}</option>
+                                ))
+                            }
+                        </Select>
+                    </InputGroup>
+                </FormControl>
 
                 <HookForm
                     obj={{amount: 0n}}

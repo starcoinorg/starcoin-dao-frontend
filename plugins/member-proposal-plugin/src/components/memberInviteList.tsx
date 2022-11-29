@@ -7,23 +7,11 @@ import { listAllOffers, doAccecptOffer } from '../utils/memberPluginAPI';
 const MyMemberInviteList = ({ daoId }) => {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [address, setAddress] = useState('');
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const newAccounts = await window.starcoin.request({
-        method: 'stc_requestAccounts',
-      });
-      setAddress(newAccounts[0]);
-    };
-
-    getAddress();
-  }, [daoId]);
 
   useEffect(() => {
     const getMyOffers = async () => {
       try {
-        const offers = await listAllOffers(daoId, address);
+        const offers = await listAllOffers(daoId);
         setOffers(offers);
         setLoading(false);
       } catch (err) {
@@ -33,7 +21,7 @@ const MyMemberInviteList = ({ daoId }) => {
     };
 
     getMyOffers();
-  }, [daoId, address]);
+  }, [daoId]);
 
   const handleAccecptOffer = async (_, offer) => {
     console.log('accepting offer', offer);
@@ -57,7 +45,7 @@ const MyMemberInviteList = ({ daoId }) => {
             ))
         ) : (
           <Flex mt='100px' w='100%' justify='center'>
-            No Offer.
+            No Invites Here Yet.
           </Flex>
         )
       ) : (

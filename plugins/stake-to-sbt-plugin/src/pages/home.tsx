@@ -140,7 +140,6 @@ const HomePage = () => {
             })
             await fetchData(tokenType)
         } catch (e) {
-            console.log("haha")
             toast({
                 status: 'error',
                 description: `error ${e}`,

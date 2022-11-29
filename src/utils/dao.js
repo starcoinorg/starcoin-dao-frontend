@@ -1,7 +1,9 @@
-import { LinkError } from 'apollo-link/lib/linkUtils';
 import { utils } from 'web3';
+import { bcs } from '@starcoin/starcoin';
 import { MINION_TYPES } from './proposalUtils';
+import { hexlify } from '@ethersproject/bytes';
 import { getPluginInfo } from './marketplace';
+import { nodeUrlMap } from './consts';
 
 const orderDaosByNetwork = (userHubDaos, userNetwork) => ({
   currentNetwork: userHubDaos.find(dao => dao.networkID === userNetwork) || [],
@@ -123,9 +125,6 @@ export const listDaos = async (provider, index, offset, _opts) => {
     ..._opts,
   };
 
-  console.log(index);
-  console.log(offset);
-
   const daoEntrys = await provider.send('state.list_resource', [
     '0x1',
     {
@@ -134,7 +133,7 @@ export const listDaos = async (provider, index, offset, _opts) => {
       ],
       decode: true,
       start_index: index * offset,
-      max_size: (index + 1) * offset,
+      max_size: offset,
     },
   ]);
 
@@ -162,6 +161,8 @@ export const getDao = async (provider, daoAddress) => {
       decode: true,
     },
   ]);
+
+  console.log(daoInfo);
 
   return {
     id: daoInfo.json.id,
@@ -231,6 +232,7 @@ export const getDaoDetail = async (
 ) => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+  console.log(daoAddress);
   const daoInfo = await getDao(provider, daoAddress);
 
   let tags = ['DAO'];
@@ -334,4 +336,133 @@ export const getMemberNFT = async (provider, daoId, address) => {
   }
 
   return null;
+};
+
+export const listUserDaoTypes = async (provider, address) => {
+  const daoEntrys = await provider.send('state.list_resource', [
+    address,
+    {
+      resource_types: [
+        '0x00000000000000000000000000000001::IdentifierNFT::IdentifierNFT',
+      ],
+      decode: true,
+      start_index: 0,
+      max_size: 1000,
+    },
+  ]);
+
+  let daoTypes = [];
+  for (const key in daoEntrys.resources) {
+    const nftTypeArgs = key
+      .substring(key.indexOf('<') + 1, key.lastIndexOf('>'))
+      .split(',');
+
+    if (nftTypeArgs.length > 1) {
+      const daoMemberTypeArg = nftTypeArgs[0];
+
+      if (
+        daoMemberTypeArg.startsWith(
+          '0x00000000000000000000000000000001::DAOSpace::DAOMember',
+        )
+      ) {
+        const daoId = daoMemberTypeArg.substring(
+          daoMemberTypeArg.indexOf('<') + 1,
+          daoMemberTypeArg.lastIndexOf('>'),
+        );
+
+        const daoName = daoId.split('::')[2];
+        daoTypes.push({
+          daoId: daoId,
+          daoName: daoName,
+        });
+      }
+    }
+  }
+
+  return daoTypes;
+};
+
+const parseOffer = offer => {
+  console.log('offer', offer);
+  const { offered, time_lock } = offer;
+
+  return {
+    for_user: offer.for,
+    offered_image_data: offered.image_data,
+    offered_image_url: offered.image_url,
+    init_sbt: offered.init_sbt,
+    to_address: offered.to_address,
+    time_lock,
+  };
+};
+
+export const listUserOffers = async (daoId, address) => {
+  const daoAddress = daoId.substring(0, daoId.indexOf('::'));
+
+  const globalCheckpoints = await window.starcoin.request({
+    method: 'state.get_resource',
+    params: [
+      daoAddress,
+      `0x00000000000000000000000000000001::Offer::Offers<0x00000000000000000000000000000001::DAOSpace::MemeberOffer<${daoId}>>`,
+      {
+        decode: true,
+      },
+    ],
+  });
+
+  let offers = [];
+
+  if (globalCheckpoints && globalCheckpoints.json.offers) {
+    for (const offer of globalCheckpoints.json.offers) {
+      if (offer.for === address) {
+        offers.push(parseOffer(offer));
+      }
+    }
+  }
+
+  return offers.reverse();
+};
+
+export const doAccecptOffer = async (provider, daoType) => {
+  try {
+    const functionId = '0x1::DAOSpace::accept_member_offer_entry';
+    const tyArgs = [daoType];
+    const args = [];
+
+    console.log('doAccecptOffer tyArgs:', tyArgs);
+    console.log('doAccecptOffer args:', args);
+    console.log('window.starcoin:', window.starcoin);
+
+    const nodeUrl = nodeUrlMap[window.starcoin.networkVersion];
+    console.log('nodeUrl:', nodeUrl);
+
+    const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(
+      functionId,
+      tyArgs,
+      args,
+      nodeUrl,
+    );
+
+    // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+    const payloadInHex = (function() {
+      const se = new bcs.BcsSerializer();
+      scriptFunction.serialize(se);
+      return hexlify(se.getBytes());
+    })();
+    const txParams = {
+      data: payloadInHex,
+      expiredSecs: 10,
+    };
+
+    console.log('txParams:', txParams);
+
+    console.log('starcoinProvider:', provider);
+    const transactionHash = await provider
+      .getSigner()
+      .sendUncheckedTransaction(txParams);
+    return transactionHash;
+  } catch (error) {
+    console.log('doAccecptOffer error:', error);
+    throw error;
+  }
 };

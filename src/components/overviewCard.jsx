@@ -107,8 +107,8 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
         Details
       </TextBox>
       <ContentBox mt={2} w='100%'>
-        <Flex direction='row' align='center'>
-          <Skeleton isLoaded={daoMetaData?.name} ml={6}>
+        <Flex direction='row' align='center' ms='6'>
+          <Skeleton isLoaded={daoMetaData?.name}>
             <Flex align='center'>
               <Avatar
                 src={
@@ -124,35 +124,51 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             </Flex>
           </Skeleton>
         </Flex>
-        <Skeleton isLoaded={daoMetaData?.description}>
+        <Skeleton isLoaded={daoMetaData?.description} ms='6'>
           <Box mt={6}>
             {daoMetaData?.description ? daoMetaData.description : '--'}
             {renderTags()}
           </Box>
         </Skeleton>
-        <Flex mt={5}>
+        <Flex mt={5} ms='6'>
           <TextBox size='xs' color='whiteAlpha.900'>
-            Community Links:
+            {daoMetaData?.communityLinksTwitter ||
+            daoMetaData?.communityLinksDiscord ||
+            daoMetaData?.communityLinksTelegram
+              ? 'Community Links:'
+              : ''}
           </TextBox>
           <Flex ml={2} spacing={2} color='#fff'>
-            <a
-              href={daoMetaData?.communityLinksTwitter}
-              style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
-            >
-              <RiTwitterFill />
-            </a>
-            <a
-              href={daoMetaData?.communityLinksDiscord}
-              style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
-            >
-              <RiDiscordFill />
-            </a>
-            <a
-              href={daoMetaData?.communityLinksTelegram}
-              style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
-            >
-              <RiTelegramFill />
-            </a>
+            {daoMetaData?.communityLinksTwitter ? (
+              <a
+                href={daoMetaData?.communityLinksTwitter}
+                style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
+              >
+                <RiTwitterFill />
+              </a>
+            ) : (
+              <></>
+            )}
+            {daoMetaData?.communityLinksDiscord ? (
+              <a
+                href={daoMetaData?.communityLinksDiscord}
+                style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
+              >
+                <RiDiscordFill />
+              </a>
+            ) : (
+              <></>
+            )}
+            {daoMetaData?.communityLinksTelegram ? (
+              <a
+                href={daoMetaData?.communityLinksTelegram}
+                style={{ color: '#fff', fontSize: '24px', marginRight: '5px' }}
+              >
+                <RiTelegramFill />
+              </a>
+            ) : (
+              <></>
+            )}
           </Flex>
         </Flex>
         {/* <Flex direction='row' w='100%' justify='space-between' mt={6}>
@@ -193,19 +209,23 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
             </>
           )}
         </Box> */}
-        <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} />
-        <Flex flexDirection='column' mt={5}>
-          <Text mb={2} fontSize='xl'>
-            {'STRATEGY:'}
-          </Text>
-          <Text size='xs' ml={4} as='li'>
-            {daoData?.daoStrategies[0]?.strategyId || ''}
-          </Text>
-          <Text as='i' fontSize='xs' ml={4}>
-            {daoData?.daoStrategies[0]?.description || ''}
-          </Text>
-        </Flex>
-        <Flex mt={6}>
+        {/* <DocLink locationName={POST_LOCATIONS.FRONT_PAGE} /> */}
+        {daoData?.daoStrategies ? (
+          <Flex flexDirection='column' mt={5} ms='6'>
+            <Text mb={2} fontSize='xl'>
+              {'STRATEGY:'}
+            </Text>
+            <Text size='xs' ml={4} as='li'>
+              {daoData?.daoStrategies[0]?.strategyId || ''}
+            </Text>
+            <Text as='i' fontSize='xs' ml={4}>
+              {daoData?.daoStrategies[0]?.description || ''}
+            </Text>
+          </Flex>
+        ) : (
+          <></>
+        )}
+        <Flex mt={6} ms='6' align='center'>
           {/* <Button
             variant='outline'
             mr={6}
@@ -217,6 +237,7 @@ const OverviewCard = ({ daoOverview, members, daoVaults }) => {
           </Button> */}
           <Button
             mr={6}
+            margin='0 auto'
             onClick={() => history.push(`/dao/${daochain}/${daoid}/proposals`)}
             value='proposals'
             title={getTitle(customTerms, 'Proposals')}

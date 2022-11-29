@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import RootComponent from './root'
 import { providers } from "@starcoin/starcoin"
-import {VscCloudUpload} from 'react-icons/vsc'
+import { GiTakeMyMoney } from 'react-icons/gi'
 import Action from './actions/index'
 
 // 在首次加载和执行时会触发该函数
@@ -31,7 +31,7 @@ export const setup = (ctx: IDaoPluginContext) => {
   ctx.registerApp({
     name: "Withdraw",
     activeWhen: "/withdraw",
-    icon: VscCloudUpload,
+    icon: GiTakeMyMoney,
     provider: (props) => {
       props.theme = ctx.theme
       props.dao = {
