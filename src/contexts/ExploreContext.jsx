@@ -8,6 +8,7 @@ import { SORT_OPTIONS, EXPLORE_FILTER_OPTIONS } from '../utils/exploreContent';
 import { supportedChains } from '../utils/chain';
 import { getDaoQuantity, listDaos } from '../utils/dao';
 import { useInjectedProvider } from './InjectedProviderContext';
+import { off } from 'process';
 
 export const ExploreContext = createContext();
 
@@ -29,7 +30,9 @@ const initialState = {
   tags: [],
   pages: {
     index: 0,
-    offset: 8,
+    offset:
+      Math.floor(window.innerWidth / 340) *
+      Math.floor(window.innerHeight / 340),
     total: 0,
   },
   allDaos: new Map(),
@@ -37,6 +40,12 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'sizeChange': {
+      state.pages.offset = action.payload;
+      return {
+        ...state,
+      };
+    }
     case 'nextPage': {
       if (state.pages.index * state.pages.offset > state.total) {
         return state;
@@ -105,6 +114,25 @@ export const ExploreContextProvider = ({ children }) => {
     data: [],
   });
   const [state, dispatch] = React.useReducer(reducer, initialState);
+
+  // TODO: support dynamic condition
+  // useEffect(() => {
+  //   const handler = () => {
+  //     const offset =
+  //       Math.floor(window.innerWidth / 340) *
+  //       Math.floor(window.innerHeight / 340);
+
+  //     if (offset != state.offset) {
+  //       dispatch({ type: 'sizeChange', payload: offset });
+  //     }
+  //   };
+  //   handler();
+  //   window.addEventListener('resize', handler);
+
+  //   return () => {
+  //     window.removeEventListener('resize', handler);
+  //   };
+  // }, []);
 
   useEffect(() => {
     console.log(state);

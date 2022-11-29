@@ -164,8 +164,6 @@ export const getDao = async (provider, daoAddress) => {
     },
   ]);
 
-  console.log(daoInfo);
-
   return {
     id: daoInfo.json.id,
     name: utils.hexToString(daoInfo.json.name),
@@ -272,7 +270,6 @@ export const getDaoDetail = async (
 ) => {
   const daoTypeTag = daoId;
   const daoAddress = daoId.substring(0, daoId.indexOf('::'));
-  console.log(daoAddress);
   const daoInfo = await getDao(provider, daoAddress);
 
   let tags = ['DAO'];
