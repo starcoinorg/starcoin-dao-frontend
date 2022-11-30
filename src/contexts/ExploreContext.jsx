@@ -47,7 +47,7 @@ const reducer = (state, action) => {
       };
     }
     case 'nextPage': {
-      if (state.pages.index * state.pages.offset > state.total) {
+      if ((state.pages.index + 1) * state.pages.offset > state.pages.total) {
         return state;
       }
       state.pages.index++;
