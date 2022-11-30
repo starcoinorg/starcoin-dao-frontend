@@ -128,12 +128,6 @@ const HookForm = (props) => {
                                                 ref={register({required: true})}
                                                 name={v.name}
                                                 borderTopStartRadius='0'
-                                                autocomplete="off"
-                                                onChange={(v1) => {
-                                                    if (props.onChange) {
-                                                        props.onChange(v.name, v1.target.value)
-                                                    }
-                                                }}
                                                 borderBottomStartRadius='0'
                                                 borderTopEndRadius={rightAddon ? 0 : 5}
                                                 borderBottomEndRadius={rightAddon ? 0 : 5}

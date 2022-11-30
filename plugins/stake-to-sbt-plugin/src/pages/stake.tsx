@@ -5,7 +5,7 @@ import {
     Select,
     FormControl,
     InputGroup,
-    InputLeftAddon,
+    InputLeftAddon, FormHelperText,
 } from '@chakra-ui/react'
 
 import Back from "../components/back"
@@ -46,6 +46,7 @@ const StakePage = () => {
     const [tokenTypeLimits, setTokenTypeLimits] = useState<Map<string, Array<QueryTokenStakeLimitResult>>>(new Map())
     const [expectSBT, setExpectSBT] = useState(new Map().set("amount", `Expect sbt -`))
     const [tokenInfos, setTokenInfos] = useState<Map<String, QueryTokenInfoResult>>(new Map())
+    const [amount, setAmount] = useState(0);
 
     useEffect(() => {
         setFetchingType(true)
@@ -64,7 +65,6 @@ const StakePage = () => {
     }, [])
 
     const fetchTypeCfg = async (type) => {
-
         setFetchingTypeCfg(true)
 
         try {
@@ -74,6 +74,14 @@ const StakePage = () => {
 
             const tokenInfo = await queryTokenInfo(type)
             setTokenInfos(new Map().set(type, tokenInfo))
+
+            if (_tokenStakeLimit[0]) {
+                updateExpectSBT(amount, _tokenStakeLimit[0])
+            } else {
+                console.log("aalll")
+                updateExpectSBT(amount, _tokenStakeLimit[0], "-")
+            }
+
         } catch (e) {
             console.log(e)
         }
@@ -93,7 +101,10 @@ const StakePage = () => {
 
     const onSubmit = async data => {
 
-        setLoading(true)
+        if (!tokenTypeLimit) {
+            return
+        }
+
         const params = {
             amount: BigInt(data.amount * tokenInfos.get(tokenType).scaling_factor),
             lock_time: tokenTypeLimit?.lock_time,
@@ -117,30 +128,33 @@ const StakePage = () => {
         setLoading(false)
     }
 
-    const buildStakeCfgOptions = (): Array<string> => {
+    const buildStakeCfgOptions = (): Array<any> => {
         if (tokenTypeLimits.get(tokenType)) {
             return tokenTypeLimits.get(tokenType)?.map(v => {
-                return `Lock time: ${formatLockTime(v.lock_time)}, Weight: ${v.weight}`
+                return v
             })
         }
         return []
     }
 
-    const onStakeCfgChange = (v: string) => {
-//        const {target} = v
-//        const type = target.selectedOptions[0].value
-        let arr = v.trim().split(",")
+    const onStakeCfgChange = v => {
+        const {target} = v
+        const type = target.selectedOptions[0].value
+        const limit = tokenTypeLimits.get(tokenType)[type]
+        setTokenTypeLimit(limit)
+        updateExpectSBT(amount, limit)
+    }
 
-        const lock_time = BigInt(arr[0].trim().split(":")[1])
-        const weight = BigInt(arr[1].trim().split(":")[1])
-        tokenTypeLimits.get(tokenType)?.map(v => {
-            if (v.lock_time.toString() === lock_time.toString()) {
-                setTokenTypeLimit({
-                    lock_time: lock_time,
-                    weight: weight
-                })
-            }
-        })
+    const updateExpectSBT = (v, limit?, def?) => {
+
+        let weight = 0
+        if (limit) {
+            weight = limit.weight
+        } else {
+            weight = tokenTypeLimit?.weight
+        }
+
+        setExpectSBT(new Map().set("amount", `Expect sbt ${def ? def : v * Number(weight)}`))
     }
 
     return (
@@ -179,23 +193,33 @@ const StakePage = () => {
                             </TextBox>
                         </InputLeftAddon>
                         <Select
+                            onChange={onStakeCfgChange}
                             borderTopStartRadius='0'
                             borderBottomStartRadius='0'
                         >
                             {
                                 buildStakeCfgOptions()?.map((v, i) => (
-                                    <option key={i.toString()} value={v}>{v}</option>
+                                    <option key={i.toString()}
+                                            value={i}>{`Lock time: ${formatLockTime(v.lock_time)}, Weight: ${v.weight}`}</option>
                                 ))
                             }
                         </Select>
                     </InputGroup>
+                    {
+                        tokenTypeLimit ? <></>:<FormHelperText>
+                            There is no weight
+                </FormHelperText>
+                    }
                 </FormControl>
 
                 <HookForm
                     obj={{amount: 0n}}
                     loading={loading}
-                    onChange={(k, v: number) => {
-                        setExpectSBT(new Map().set("amount", `Expect sbt ${v * Number(tokenTypeLimit?.weight)}`))
+                    onChange={(v) => {
+                        if (v.id === 'amount') {
+                            setAmount(v.value)
+                            updateExpectSBT(v.value)
+                        }
                     }}
                     onSubmit={onSubmit}
                     helpers={expectSBT}
