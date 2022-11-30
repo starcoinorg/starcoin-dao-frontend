@@ -74,28 +74,16 @@ const HomePage = () => {
             const tokenInfo = await queryTokenInfo(tokenType)
             setTokenInfos(new Map().set(tokenType, tokenInfo))
 
-            // list_resource not support pageing
-
-//            const count = await queryStakeCount({
-//                dao_type: dao.daoType,
-//                token_type: tokenType
-//            })
-//
-//            setListPages({
-//                ...listPages,
-//                total: count
-//            })
-
             const stakeList = await queryStakeList(
                 dao.address,
                 {
                     dao_type: dao.daoType,
                     token_type: tokenType
                 },
-                new Pages(0, 0)
             )
 
             setListData(stakeList)
+            console.log("设置")
         } catch (e) {
             console.log(e)
         }

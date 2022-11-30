@@ -15,20 +15,25 @@ const CreateAcceptPropoalWidget = (props) => {
     });
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState()
+    const [tokenType, setTokenType] = useState()
+
+    const verifyTokenType = (v) => {
+        if (v.split("::").length !== 3) {
+            setErrors(new Map().set("token_type", "Invalid token type"))
+            return
+        }
+        setErrors(null)
+    }
 
     const onSubmit = data => {
 
-        console.log(data.token_type.split("::").length)
-        if (data.token_type.split("::").length !== 3) {
-            setErrors(new Map().
-            set("token_type", "Invalid token type"))
+        if (errors) {
             return
         }
 
-        setErrors(undefined)
-
         setLoading(true)
 
+        data.propsal.extend = "{}"
         data.propsal.action_delay = data.propsal.action_delay * 60 * 1000
 
         createTokenAcceptProposal({
@@ -55,13 +60,21 @@ const CreateAcceptPropoalWidget = (props) => {
             direction='column'
         >
             <HookForm
-                obj={newCreateTokenAcceptProposalParams()}
+                onChange={
+                    (v) => {
+                        if (v.id === 'token_type') {
+                            setTokenType(v.value)
+                            verifyTokenType(v.value)
+                        }
+                    }
+                }
+                obj={newCreateTokenAcceptProposalParams(`Apply new stake token type ${tokenType}`)}
                 loading={loading}
                 onSubmit={onSubmit}
                 formHelperText="asd"
                 startW='22%'
                 helpers={errors
-                    }
+                }
                 rightAddon={new Map().set("propsal.action_delay", "min")}
             />
         </Flex>

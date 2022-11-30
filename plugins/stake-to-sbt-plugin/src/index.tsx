@@ -64,9 +64,8 @@ if (!window.__GARFISH__) {
 
   const ctx = {
     name: "StarcoinDAO",
-//    address: "0x00000000000000000000000000000001",
-//    daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
-//     address: "0xae3d8bba513cb51486a50ec41d08b564",
+//    address: "0x000000000000000000Ï00000000000001::StarcoinDAO::StarcoinDAO',
+// address: "0xae3d8bba513cb51486a50ec41d08b564",
 //     daoType: '0xae3d8bba513cb51486a50ec41d08b564::TESTDAOA::TESTDAOA',
       address:"0xd3cca145da3f54c985995c40c5630c0c",
       daoType: '0xd3cca145da3f54c985995c40c5630c0c::ET3DAO::ET3DAO',

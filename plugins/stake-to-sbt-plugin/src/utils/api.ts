@@ -149,7 +149,6 @@ export type QueryTokenInfoResult = {
 export async function queryTokenInfo(tokenType: string): Promise<QueryTokenInfoResult> {
 
     const type = `${std}::Token::TokenInfo<${tokenType}>`
-
     const result = await listResource(tokenType.split("::")[0], [type])
 
     const key = Object.keys(result.resources)[0]
@@ -170,7 +169,7 @@ export async function queryStakeCount(types: Types): Promise<number> {
     return (await callContract(functionId, [types.dao_type, types.token_type], [window.starcoin.selectedAddress]))[0]
 }
 
-export async function queryStakeList(address: string, types: Types, pages: Pages): Promise<any> {
+export async function queryStakeList(address: string, types: Types, pages?: Pages): Promise<any> {
 
     let resType = [`0x00000000000000000000000000000001::StakeToSBTPlugin::StakeList<${types.dao_type},${types.token_type}>`]
 
@@ -180,27 +179,24 @@ export async function queryStakeList(address: string, types: Types, pages: Pages
 }
 
 export interface createTokenAcceptProposalParams extends Types {
-    info: {
+    propsal: {
         title: string,
         introduction: string,
         extend: string,
-    }
-    propsal: {
         action_delay: uint64,
     }
 }
 
-export function newCreateTokenAcceptProposalParams(): createTokenAcceptProposalParams {
+export function newCreateTokenAcceptProposalParams(title: string): createTokenAcceptProposalParams {
 
     return {
         dao_type: "-",
         token_type: "",
-        info: {
-            title: "",
-            introduction: "",
-            extend: ""
-        },
+
         propsal: {
+            title: title,
+            introduction: "",
+            extend: "-",
             action_delay: 5n
         },
     }
@@ -210,9 +206,9 @@ export async function createTokenAcceptProposal(params: createTokenAcceptProposa
     const functionId = '0x1::StakeToSBTPlugin::create_token_accept_proposal_entry'
     const tyArgs = [params.dao_type, params.token_type]
     const args = [
-        params.info.title,
-        params.info.introduction,
-        params.info.extend,
+        params.propsal.title,
+        params.propsal.introduction,
+        params.propsal.extend,
         params.propsal.action_delay,
     ]
     console.log("createMemberProposal tyArgs:", tyArgs)
@@ -233,34 +229,30 @@ export async function executeTokenAcceptProposal(types: Types, proposalId: strin
 }
 
 export interface createWeightProposalParams extends Types {
-    info: {
-        title: string,
-        introduction: string,
-        extend: string,
-    }
     sbt: {
         lock_time: uint64,
         weight: uint64,
     }
     propsal: {
+        title: string,
+        introduction: string,
+        extend: string,
         action_delay: uint64,
     }
 }
 
-export function newCreateWeightProposalParams(): createWeightProposalParams {
+export function newCreateWeightProposalParams(title: string): createWeightProposalParams {
     return {
         dao_type: "-",
         token_type: "-",
-        info: {
-            title: "",
-            introduction: "",
-            extend: "",
-        },
         sbt: {
             weight: 0n,
-            lock_time: 0n,
+            lock_time: 60n,
         },
         propsal: {
+            title: title,
+            introduction: "",
+            extend: "-",
             action_delay: 5n,
         }
     }
@@ -271,9 +263,9 @@ export async function createWeightProposal(params: createWeightProposalParams): 
 
     const tyArgs = [params.dao_type, params.token_type]
     const args = [
-        params.info.title,
-        params.info.introduction,
-        params.info.extend,
+        params.propsal.title,
+        params.propsal.introduction,
+        params.propsal.extend,
         params.sbt.lock_time,
         params.sbt.weight,
         params.propsal.action_delay,

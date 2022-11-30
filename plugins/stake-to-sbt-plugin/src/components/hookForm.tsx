@@ -83,11 +83,20 @@ const HookForm = (props) => {
 
     useEffect(() => {
         setItems([...parseItems(props.obj, "", props.rules)])
+        console.log("shuaxin")
     }, [props.obj])
 
     return (
         <Flex
             as='form'
+            onChange={
+                (v) => {
+                    if (props.onChange) {
+                        const {target} = v
+                        props.onChange(target)
+                    }
+                }
+            }
             onSubmit={handleSubmit(props.onSubmit)}
             direction='column'>
             {
@@ -103,7 +112,7 @@ const HookForm = (props) => {
                         ? <TextBox key={i.toString()} size='xs' mb={2} mt={2}>
                             {v.title}
                         </TextBox>
-                        : <FormControl key={i.toString()} id={v.name} mb={4}>
+                        : <FormControl key={v.name + v.defaultValue} id={v.name} mb={4}>
                             <InputGroup>
                                 <InputLeftAddon bg='transparent' w={props.startW ? props.startW : '20%'}>
                                     <TextBox size='sm'>

@@ -30,7 +30,7 @@ import SpamFilterListNotification from './spamFilterListNotification';
 import useCanInteract from '../hooks/useCanInteract';
 import { useRequest } from '../hooks/useRequest';
 
-const ProposalsList = ({ customTerms }) => {
+const ProposalsList = ({ refresh, customTerms }) => {
   const { injectedProvider, address } = useInjectedProvider();
 
   const { daoMember } = useDaoMember();
@@ -116,8 +116,16 @@ const ProposalsList = ({ customTerms }) => {
     );
   }, [filter, sort, proposals, daoMember, address]);
 
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    setProposals([]);
+    setPageProposals(null);
+    fetch();
+  }, [refresh]);
+
   const fetch = () => {
-    console.log('刷新');
     setLoading(true);
     listDaoProposals(injectedProvider, daoid)
       .then(proposals => {
@@ -203,7 +211,7 @@ const ProposalsList = ({ customTerms }) => {
       }
 
       {/* {isLoaded && isActive('SPAM_FILTER') && <SpamFilterListNotification />} */}
-      <Flex w='100%' align='center' justify='right'>
+      {/* <Flex w='100%' align='center' justify='right'>
         <Button
           onClick={() => {
             setProposals([]);
@@ -213,7 +221,7 @@ const ProposalsList = ({ customTerms }) => {
         >
           Refresh
         </Button>
-      </Flex>
+      </Flex> */}
 
       <Box mt={4}>
         {!loading &&
@@ -226,6 +234,14 @@ const ProposalsList = ({ customTerms }) => {
             />
           ))}
       </Box>
+
+      {!loading && paginatedProposals ? (
+        <TextBox margin='0 auto' textAlign='center'>
+          There is no proposal
+        </TextBox>
+      ) : (
+        <></>
+      )}
 
       {!loading ? (
         <Paginator

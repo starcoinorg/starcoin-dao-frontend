@@ -79,7 +79,6 @@ const DaoMetaForm = ({ metadata, next }) => {
 
     try {
       const nftData = await fileToBase64(nftImages[0]);
-      console.log('nftData', nftData);
       data.nftImage = nftData;
 
       data.tags = data.tags.split(',');
@@ -88,6 +87,8 @@ const DaoMetaForm = ({ metadata, next }) => {
       data.proposal.voting_period = data.proposal.voting_period * 1000 * 60;
       data.proposal.min_action_delay =
         data.proposal.min_action_delay * 1000 * 60;
+      data.proposal.min_proposal_deposit =
+        data.proposal.min_proposal_deposit * 100000000;
 
       const cfg = {
         ...data,
@@ -167,6 +168,7 @@ const DaoMetaForm = ({ metadata, next }) => {
               <Input
                 ref={register({ required: true })}
                 defaultValue={metadata.name}
+                autoComplete='off'
                 placeholder='Name your DAO...'
                 name='name'
               />
@@ -179,6 +181,7 @@ const DaoMetaForm = ({ metadata, next }) => {
             </TextBox>
             <Textarea
               ref={register({ required: true })}
+              autoComplete='off'
               defaultValue={metadata.description}
               placeholder='Describe your DAO...'
               name='description'
@@ -191,6 +194,7 @@ const DaoMetaForm = ({ metadata, next }) => {
             </TextBox>
             <Textarea
               ref={register}
+              autoComplete='off'
               defaultValue={metadata.longDescription}
               placeholder='More content (not currently displayed in the app, maybe soon)'
               name='longDescription'
@@ -243,8 +247,9 @@ const DaoMetaForm = ({ metadata, next }) => {
             </TextBox>
             <Textarea
               ref={register}
+              autoComplete='off'
               defaultValue={metadata.members}
-              placeholder='Invate Members, sprit ,'
+              placeholder='Address1,Address2'
               name='members'
             />
             <FormHelperText>Comma-separated list</FormHelperText>
@@ -256,6 +261,7 @@ const DaoMetaForm = ({ metadata, next }) => {
             </TextBox>
             <Input
               ref={register}
+              autoComplete='off'
               defaultValue={metadata.tags}
               placeholder='Ethereum, Clubs'
               name='tags'
@@ -355,7 +361,7 @@ const DaoMetaForm = ({ metadata, next }) => {
                     borderRadius='0'
                   />
                 </NumberInput>
-                <InputRightAddon children='Token' w='76px' margin='0 auto' />
+                <InputRightAddon children='STC' w='76px' margin='0 auto' />
               </InputGroup>
             </FormControl>
           </Stack>
@@ -363,7 +369,7 @@ const DaoMetaForm = ({ metadata, next }) => {
             Community Links
           </TextBox>
           <Stack spacing={2}>
-            <FormControl id='website' mb={4}>
+            {/* <FormControl id='website' mb={4}>
               <InputGroup>
                 <InputLeftAddon bg='transparent'>
                   <RiGlobeLine />
@@ -375,17 +381,18 @@ const DaoMetaForm = ({ metadata, next }) => {
                   name='links.website'
                 />
               </InputGroup>
-            </FormControl>
+            </FormControl> */}
 
-            <FormControl id='twitter' mb={4}>
+            <FormControl id='twitter'>
               <InputGroup>
                 <InputLeftAddon bg='transparent'>
                   <RiTwitterFill />
                 </InputLeftAddon>
                 <Input
                   ref={register}
+                  autoComplete='off'
                   defaultValue={metadata.links?.twitter}
-                  placeholder='@nowdaoit'
+                  placeholder='@STARTCOINUK'
                   name='links.twitter'
                 />
               </InputGroup>
@@ -398,8 +405,9 @@ const DaoMetaForm = ({ metadata, next }) => {
                 </InputLeftAddon>
                 <Input
                   ref={register}
+                  autoComplete='off'
                   defaultValue={metadata.links?.discord}
-                  placeholder='https://discord.gg/daohaus'
+                  placeholder='https://discord.gg/starcoin'
                   name='links.discord'
                 />
               </InputGroup>
@@ -412,6 +420,7 @@ const DaoMetaForm = ({ metadata, next }) => {
                 </InputLeftAddon>
                 <Input
                   ref={register}
+                  autoComplete='off'
                   defaultValue={metadata.links?.telegram}
                   placeholder='https://t.me/'
                   name='links.telegram'
@@ -419,7 +428,7 @@ const DaoMetaForm = ({ metadata, next }) => {
               </InputGroup>
             </FormControl>
 
-            <FormControl id='medium' mb={4}>
+            {/* <FormControl id='medium' mb={4}>
               <InputGroup>
                 <InputLeftAddon bg='transparent'>
                   <RiMediumFill />
@@ -431,9 +440,9 @@ const DaoMetaForm = ({ metadata, next }) => {
                   name='links.medium'
                 />
               </InputGroup>
-            </FormControl>
+            </FormControl> */}
 
-            <FormControl id='other' mb={4}>
+            {/* <FormControl id='other' mb={4}>
               <InputGroup>
                 <InputLeftAddon bg='transparent'>
                   <AiFillQuestionCircle />
@@ -445,7 +454,7 @@ const DaoMetaForm = ({ metadata, next }) => {
                   name='links.other'
                 />
               </InputGroup>
-            </FormControl>
+            </FormControl> */}
           </Stack>
           {loading ? (
             <Spinner size='sm' mx='auto' mt={10} />

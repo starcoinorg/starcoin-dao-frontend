@@ -65,16 +65,15 @@ const StakePage = () => {
 
     const fetchTypeCfg = async (type) => {
 
-        console.log("asidoahisdhasoihdio")
-        console.log(type)
         setFetchingTypeCfg(true)
 
         try {
-            const tokenStakeLimit = await queryTokenStakeLimit(dao.address, dao.daoType, type)
-            console.log(tokenStakeLimit)
-            setTokenTypeLimits(new Map(tokenTypeLimits).set(type, tokenStakeLimit))
+            const _tokenStakeLimit = await queryTokenStakeLimit(dao.address, dao.daoType, type)
+            setTokenTypeLimit(_tokenStakeLimit[0])
+            setTokenTypeLimits(new Map(tokenTypeLimits).set(type, _tokenStakeLimit))
 
             const tokenInfo = await queryTokenInfo(type)
+            console.log(tokenInfo)
             setTokenInfos(new Map().set(type, tokenInfo))
         } catch (e) {
             console.log(e)
