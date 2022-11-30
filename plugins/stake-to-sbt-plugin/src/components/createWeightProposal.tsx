@@ -23,6 +23,7 @@ const CreateWeightProposalWidget = (props) => {
     const onSubmit = async data => {
         data.sbt.lock_time = data.sbt.lock_time * 60
         data.propsal.action_delay = data.propsal.action_delay * 60 * 1000
+        data.propsal.extend = "{}"
         
         setLoading(true)
         createWeightProposal({
@@ -50,7 +51,7 @@ const CreateWeightProposalWidget = (props) => {
             direction='column'
         >
             <HookForm
-                obj={newCreateWeightProposalParams()}
+                obj={newCreateWeightProposalParams(`Apply new Token Weight in ${tokenType}`)}
                 loading={loading}
                 onSubmit={onSubmit}
                 startW='22%'

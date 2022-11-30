@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RiAddFill } from 'react-icons/ri';
 import { Box, Button, Flex } from '@chakra-ui/react';
 
@@ -11,6 +11,7 @@ import { useRequest } from '../hooks/useRequest';
 
 const Proposals = React.memo(({ proposals, customTerms }) => {
   const { setProposalSelector } = useOverlay();
+  const [refresh, setRefresh] = useState(0);
   const { canInteract } = useCanInteract({
     checklist: ['isConnected', 'isSameChain', 'spamFilterMemberOnlyOff'],
   });
@@ -19,13 +20,13 @@ const Proposals = React.memo(({ proposals, customTerms }) => {
     setProposalSelector(true);
   };
 
-  const ctaButton = canInteract && (
+  const ctaButton = (
     <Button
-      rightIcon={<RiAddFill />}
-      title={getTitle(customTerms, 'Proposal')}
-      onClick={openProposalSelector}
+      onClick={() => {
+        setRefresh(refresh + 1);
+      }}
     >
-      New {getTerm(customTerms, 'proposal')}
+      Refresh
     </Button>
   );
   return (
@@ -37,11 +38,15 @@ const Proposals = React.memo(({ proposals, customTerms }) => {
     >
       <Flex wrap='wrap'>
         <Box
-          w={['100%', null, null, '100%', '80%']}
+          w={['100%', null, null, '100%', '100%']}
           pr={[0, null, null, null, 6]}
           pb={6}
         >
-          <ProposalsList proposals={proposals} customTerms={customTerms} />
+          <ProposalsList
+            refresh={refresh}
+            proposals={proposals}
+            customTerms={customTerms}
+          />
         </Box>
       </Flex>
     </MainViewLayout>

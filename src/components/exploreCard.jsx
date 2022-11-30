@@ -21,7 +21,7 @@ const ExploreCard = ({ dao }) => {
     const loadDaoInfo = async () => {
       let _dao = {
         meta: {
-          tags: dao?.tags?.split(',') || '',
+          tags: dao?.tags?.split(',') || null,
           description: dao?.description || '',
           network: network,
           chainID: injectedChain?.chainId || '',
@@ -41,6 +41,8 @@ const ExploreCard = ({ dao }) => {
 
     loadDaoInfo();
   }, [dao]);
+
+  console.log(daoData);
 
   const handleTagSelect = tag => {
     if (!state.tags.includes(tag)) {
@@ -117,6 +119,7 @@ const ExploreCard = ({ dao }) => {
           WebkitLineClamp: 3,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
           maxWidth: '100%',
         }}
       >

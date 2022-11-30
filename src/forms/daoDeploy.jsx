@@ -19,18 +19,23 @@ const DaoDeploy = ({ blob, handleUpdate }) => {
   const onClick = async () => {
     setLoading(true);
 
-    const transactionHash = await deployContract(injectedProvider, blob);
+    try {
+      const transactionHash = await deployContract(injectedProvider, blob);
 
-    await polling(injectedProvider, transactionHash);
+      await polling(injectedProvider, transactionHash);
 
-    setLoading(false);
+      setLoading(false);
 
-    successToast({
-      title: 'Dao Summoned!',
-      description: `Your dao has been summoned. View the transaction here: ${transactionHash}`,
-    });
+      successToast({
+        title: 'Dao Summoned!',
+        description: `Your dao has been summoned. View the transaction here: ${transactionHash}`,
+      });
 
-    handleUpdate();
+      handleUpdate();
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+    }
   };
 
   return (

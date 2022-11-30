@@ -135,7 +135,6 @@ export const ExploreContextProvider = ({ children }) => {
   // }, []);
 
   useEffect(() => {
-    console.log(state);
     if (state.allDaos) {
       const exData = state.allDaos.get(state.pages.index);
 

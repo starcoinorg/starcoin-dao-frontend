@@ -38,7 +38,7 @@ const Register = () => {
         voting_period: 20,
         voting_quorum_rate: 5,
         min_action_delay: 5,
-        min_proposal_deposit: 100000000,
+        min_proposal_deposit: 1,
       });
 
       setNeedsNetworkChange(injectedChain.chain_id !== registerchain);
