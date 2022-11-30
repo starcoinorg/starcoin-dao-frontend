@@ -211,8 +211,6 @@ export async function createTokenAcceptProposal(params: createTokenAcceptProposa
         params.propsal.extend,
         params.propsal.action_delay,
     ]
-    console.log("createMemberProposal tyArgs:", tyArgs)
-    console.log("createMemberProposal args:", args)
 
     return await callContarctWithSigner(functionId, tyArgs, args)
 }
@@ -221,9 +219,6 @@ export async function executeTokenAcceptProposal(types: Types, proposalId: strin
     const functionId = buildFunctionId("execute_token_accept_proposal_entry")
     const tyArgs = [types.dao_type, types.token_type]
     const args = [proposalId]
-
-    console.log("executeMemberProposal tyArgs:", tyArgs);
-    console.log("executeMemberProposal args:", args);
 
     return await callContarctWithSigner(functionId, tyArgs, args);
 }
@@ -271,9 +266,6 @@ export async function createWeightProposal(params: createWeightProposalParams): 
         params.propsal.action_delay,
     ]
 
-    console.log("createMemberProposal tyArgs:", tyArgs)
-    console.log("createMemberProposal args:", args)
-
     return await callContarctWithSigner(functionId, tyArgs, args)
 }
 
@@ -282,18 +274,15 @@ export async function executeWidgthProposal(types: Types, proposalId: string): P
     const tyArgs = [types.dao_type, types.token_type]
     const args = [proposalId]
 
-    console.log("executeMemberProposal tyArgs:", tyArgs);
-    console.log("executeMemberProposal args:", args);
-
     return await callContarctWithSigner(functionId, tyArgs, args);
 }
 
 export async function callContarctWithSigner(functionId, tyArgs, args): Promise<string> {
     try {
 
-        console.log(`functionId: ${functionId}`)
-        console.log(`tyArgs: [${tyArgs}]`)
-        console.log(`args: ${args}`)
+        // console.log(`functionId: ${functionId}`)
+        // console.log(`tyArgs: [${tyArgs}]`)
+        // console.log(`args: ${args}`)
 
         const scriptFunction = await utils.tx.encodeScriptFunctionByResolve(
             functionId,
