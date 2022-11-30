@@ -83,7 +83,6 @@ const HomePage = () => {
             )
 
             setListData(stakeList)
-            console.log("设置")
         } catch (e) {
             console.log(e)
         }

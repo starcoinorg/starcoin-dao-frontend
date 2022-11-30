@@ -83,7 +83,6 @@ const HookForm = (props) => {
 
     useEffect(() => {
         setItems([...parseItems(props.obj, "", props.rules)])
-        console.log("shuaxin")
     }, [props.obj])
 
     return (

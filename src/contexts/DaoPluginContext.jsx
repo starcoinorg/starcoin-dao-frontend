@@ -47,7 +47,6 @@ export const DaoPluginProvider = ({ children }) => {
       return `https://ipfs.filebase.io/ipfs/${ipfs_cid}/`.toString();
     } else if (res.startsWith('inner-plugin://')) {
       const plugin_name = res.substring(15);
-      console.log(plugin_name);
       return `/plugins/${plugin_name}/`.toString();
     } else {
       return res.toString();
@@ -123,7 +122,6 @@ export const DaoPluginProvider = ({ children }) => {
 
     for (const i in daoPlugins) {
       const plugin_info = daoPlugins[i];
-      console.log('plugin_info:', plugin_info);
 
       if (
         plugin_info.js_entry_uri.startsWith('inner-plugin://') &&

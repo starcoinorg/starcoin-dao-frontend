@@ -73,7 +73,6 @@ const StakePage = () => {
             setTokenTypeLimits(new Map(tokenTypeLimits).set(type, _tokenStakeLimit))
 
             const tokenInfo = await queryTokenInfo(type)
-            console.log(tokenInfo)
             setTokenInfos(new Map().set(type, tokenInfo))
         } catch (e) {
             console.log(e)
@@ -93,8 +92,6 @@ const StakePage = () => {
     }
 
     const onSubmit = async data => {
-        console.log(tokenInfos)
-        console.log(tokenInfos.get(tokenType))
 
         setLoading(true)
         const params = {
@@ -121,9 +118,6 @@ const StakePage = () => {
     }
 
     const buildStakeCfgOptions = (): Array<string> => {
-        console.log("重新构建")
-        console.log(tokenType)
-        console.log(tokenTypeLimits)
         if (tokenTypeLimits.get(tokenType)) {
             return tokenTypeLimits.get(tokenType)?.map(v => {
                 return `Lock time: ${formatLockTime(v.lock_time)}, Weight: ${v.weight}`
