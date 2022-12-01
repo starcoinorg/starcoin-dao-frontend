@@ -46,7 +46,7 @@ const ProposalsList = ({ refresh, customTerms }) => {
   const [filter, setFilter] = useSessionStorage(`${daoid}-filter`, null);
   const [sort, setSort] = useSessionStorage(`${daoid}-sort`, null);
   const [proposals, setProposals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const prevMember = useRef('No Address');
   const searchMode = useRef(false);
@@ -117,15 +117,15 @@ const ProposalsList = ({ refresh, customTerms }) => {
   }, [filter, sort, proposals, daoMember, address]);
 
   useEffect(() => {
+    fetch();
+  }, [refresh]);
+
+  const fetch = () => {
     if (loading) {
       return;
     }
     setProposals([]);
     setPageProposals(null);
-    fetch();
-  }, [refresh]);
-
-  const fetch = () => {
     setLoading(true);
     listDaoProposals(injectedProvider, daoid)
       .then(proposals => {
@@ -235,7 +235,7 @@ const ProposalsList = ({ refresh, customTerms }) => {
           ))}
       </Box>
 
-      {!loading && paginatedProposals ? (
+      {!loading && !paginatedProposals ? (
         <TextBox margin='0 auto' textAlign='center'>
           There is no proposal
         </TextBox>

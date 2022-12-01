@@ -194,9 +194,9 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         isClosable: true,
       });
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 2000);
     } catch (err) {
       toast({
         title: 'Error',
@@ -299,7 +299,7 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         const newAccounts = await window.starcoin.request({
           method: 'stc_requestAccounts',
         });
-        window.location.reload();
+        // window.location.reload();
       } catch (error) {
         console.error(error);
       }

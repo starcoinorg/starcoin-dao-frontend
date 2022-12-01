@@ -35,7 +35,7 @@ const ProposalForChain = ({
 
   const handleRefreshDao = () => {
     // const skipVaults = true;
-    // refreshDao(skipVaults);
+    // refreshDao(false);
     window.location.reload();
   };
 
