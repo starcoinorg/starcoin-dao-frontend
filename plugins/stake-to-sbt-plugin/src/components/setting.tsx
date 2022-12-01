@@ -94,8 +94,6 @@ const SettingWeight = () => {
         }
     }
 
-    console.log(tokenStakeLimits)
-
     return (
         <Flex direction='row'>
             <Box

@@ -23,16 +23,16 @@ export async function getWeb3Provder() {
 export async function getRpcProvder() {
     const network = nodeUrlMap[window.starcoin.networkVersion]
 
-    console.log(network)
+    // console.log(network)
 
     return new providers.JsonRpcProvider(network);
 }
 
 export async function callContract(function_id: string, type_args: any[], args: any[]): Promise<any> {
 
-    console.log("call contract function_id: ", function_id, "----------start---------")
-    console.log("args: ", args)
-    console.log("type_args: ", type_args)
+    // console.log("call contract function_id: ", function_id, "----------start---------")
+    // console.log("args: ", args)
+    // console.log("type_args: ", type_args)
 
     const starcoinProvider = await getRpcProvder()
     const result = await starcoinProvider.callV2({
@@ -41,18 +41,18 @@ export async function callContract(function_id: string, type_args: any[], args: 
         args,
     })
 
-    console.log("result: ", result)
-    console.log("function_id: ", function_id, "-----------end----------")
+    // console.log("result: ", result)
+    // console.log("function_id: ", function_id, "-----------end----------")
 
     return result
 }
 
 export async function listResource(address: string, resource_types: Array<any>, pages?: any): Promise<any> {
 
-    console.log("list_resource ---------start----------")
-    console.log("address: ", address)
-    console.log("resource_types: ", resource_types)
-    console.log("pages", pages)
+    // console.log("list_resource ---------start----------")
+    // console.log("address: ", address)
+    // console.log("resource_types: ", resource_types)
+    // console.log("pages", pages)
 
     const result = await window.starcoin.request({
         method: 'state.list_resource',
@@ -66,8 +66,8 @@ export async function listResource(address: string, resource_types: Array<any>, 
         ]
     })
 
-    console.log("result: ", result)
-    console.log("list_resource ----------end-----------")
+    // console.log("result: ", result)
+    // console.log("list_resource ----------end-----------")
 
     return result
 }

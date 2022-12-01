@@ -42,8 +42,6 @@ const ExploreCard = ({ dao }) => {
     loadDaoInfo();
   }, [dao]);
 
-  console.log(daoData);
-
   const handleTagSelect = tag => {
     if (!state.tags.includes(tag)) {
       const tagUpdate = [...state.tags, tag];

@@ -255,8 +255,6 @@ const ProposalActionsForChain = ({
   }, [overview, address, proposal, injectedChain]);
 
   useEffect(() => {
-    console.log('daoProposals:', daoProposals);
-
     if (daoProposals) {
       const proposalsToProcess = daoProposals
         .filter(p => p.status === 'Agreed')

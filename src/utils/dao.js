@@ -114,8 +114,6 @@ export const getDaoQuantity = async provider => {
     },
   ]);
 
-  console.log(result);
-
   return (
     result.resources[Object.keys(result.resources)[0]].json.next_dao_id - 1
   );

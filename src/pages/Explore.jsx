@@ -19,7 +19,6 @@ const Explore = () => {
     }
   }, [theme, resetTheme]);
 
-  console.log(state);
   return (
     <Layout>
       <MainViewLayout header='Explore DAO'>
@@ -37,7 +36,6 @@ const Explore = () => {
               <Link
                 to='#'
                 onClick={() => {
-                  console.log('pre');
                   dispatch({ type: 'previousPage', payload: 0 });
                 }}
               >
@@ -50,7 +48,6 @@ const Explore = () => {
               <Link
                 to='#'
                 onClick={() => {
-                  console.log('pre');
                   dispatch({ type: 'nextPage', payload: 0 });
                 }}
               >
