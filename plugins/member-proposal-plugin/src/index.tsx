@@ -68,8 +68,8 @@ if (!window.__GARFISH__) {
     name: "StarcoinDAO",
 //    address: "0x00000000000000000000000000000001", 
 //    daoType: '0x00000000000000000000000000000001::StarcoinDAO::StarcoinDAO',
-      address: "0x65b7d97e6e9b3044d5b443f8194d6f5d",
-      daoType: '0x65b7d97e6e9b3044d5b443f8194d6f5d::ET5DAO::ET5DAO',
+      address: "0x341526413cd7d2c007e4973635060832",
+      daoType: '0x341526413cd7d2c007e4973635060832::TEST1DAO::TEST1DAO',
 
     registerApp: function(appInfo) {
       console.log("register App:", appInfo);
