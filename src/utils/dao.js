@@ -145,9 +145,9 @@ export const listDaos = async (provider, index, offset, _opts) => {
       provider,
       daoId,
       opts.withLogo,
-      // opts.withPlugins,
-      // opts.withConfig,
-      // opts.withExtInfo,
+      opts.withPlugins,
+      opts.withConfig,
+      opts.withExtInfo,
     );
     daos.push(dao);
   }
