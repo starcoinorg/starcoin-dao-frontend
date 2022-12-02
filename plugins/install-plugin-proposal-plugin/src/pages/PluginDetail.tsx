@@ -86,7 +86,7 @@ const PluginDetail = () => {
                         {tab('Versions')}
                     </TabList>
                     <TabPanels
-                        w={['100%', null, null, '100%', '80%']}
+                        w={['100%', null, null, '100%', '100%']}
                         pr={[0, null, null, null, 6]}
                         pb={6}>
                         <TabPanel>
