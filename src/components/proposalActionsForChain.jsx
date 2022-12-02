@@ -372,9 +372,9 @@ const ProposalActionsForChain = ({
         isClosable: true,
       });
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 2000);
     } catch (err) {
       toast({
         title: 'Error',
