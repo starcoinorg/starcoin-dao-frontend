@@ -8,7 +8,10 @@ import {
     InputLeftAddon,
     NumberInput,
     NumberInputField,
-    useToast, InputRightAddon, Select, Box, FormHelperText,
+    InputRightAddon,
+    Select,
+    Box,
+    FormHelperText,
 } from '@chakra-ui/react'
 
 import {useForm} from 'react-hook-form'
@@ -21,6 +24,7 @@ import {
     QueryWithdrawTokenResult
 } from "../utils/api"
 import {useSubAppContext} from '../contexts/SubAppContext'
+import {isValidateAddress} from "../utils/stcWalletSdk";
 
 const From = (props) => {
 
@@ -44,6 +48,13 @@ const From = (props) => {
                 </NumberInput> :
                 <Input ref={props.reg}
                        defaultValue={props.defaultValue}
+                       borderColor='white'
+                       color='white'
+                       onChange={v => {
+                           if (props.onChange) {
+                               props.onChange(v)
+                           }
+                       }}
                        placeholder={props.title + "..."}
                        autocomplete="off"
                        name={props.name}/>
@@ -58,12 +69,20 @@ const From = (props) => {
                     <></>
             }
         </InputGroup>
+
+        {
+            props.helper ?
+                <FormHelperText>
+                    props.helper
+                </FormHelperText>
+                :
+                <></>
+        }
     </FormControl>)
 }
 
 const HomePage = () => {
 
-    const toast = useToast()
     const {dao} = useSubAppContext()
     const [loading, setLoading] = useState(false)
     const {register, handleSubmit} = useForm()
@@ -77,6 +96,7 @@ const HomePage = () => {
     const [withdrawTokens, setWithdrawTokens] = useState<Array<QueryWithdrawTokenResult>>([])
     const [withdrawToken, setWithdrawToken] = useState<QueryWithdrawTokenResult>()
     const [tokenInfos, setTokenInfos] = useState<Map<string, QueryTokenInfoResult>>(new Map())
+    const [addressError, setAddressError] = useState(null)
 
     useEffect(() => {
         const fetch = async () => {
@@ -120,22 +140,13 @@ const HomePage = () => {
 
         setAction(data)
 
+        data.extend = "{}"
         data.action_delay = data.action_delay * 60 * 1000
 
         createProposal({...data, dao_type: dao.daoType}).then(v => {
-            toast({
-                title: 'Tips',
-                description: "create upgrade proposa success",
-                status: 'success',
-                duration: 3000,
-                position: 'top-right',
-                isClosable: true,
-            })
         }).catch(e => {
             console.log(e)
-        })
-
-        setLoading(false)
+        }).finally(() => setLoading(false))
     }
 
     return (
@@ -184,7 +195,7 @@ const HomePage = () => {
                     </InputGroup>
                     {
                         withdrawToken ? <FormHelperText
-                                margin='2px 0 0 70%'>
+                                mt='2'>
                                 Blance: {withdrawToken.balance / tokenInfos.get(withdrawToken.token)?.scaling_factor} </FormHelperText>
                             : <></>
                     }
@@ -194,10 +205,20 @@ const HomePage = () => {
                     reg={register({required: true})}
                     defaultValue={action.receiver}
                     title='Receiver'
+                    onChange={
+                        v => {
+                            if (!isValidateAddress(v)) {
+                                setAddressError('Invalid address')
+                            } else {
+                                setAddressError(null)
+                            }
+                        }
+                    }
+                    helper={addressError}
                     name='receiver'/>
 
                 <TextBox size='xs' mb={2} mt={2}>
-                    Info
+                    Proposal
                 </TextBox>
 
                 <From
@@ -211,16 +232,6 @@ const HomePage = () => {
                     defaultValue={action.introduction}
                     title='Introduction'
                     name='introduction'/>
-
-                <From
-                    reg={register({required: true})}
-                    defaultValue={action.extend}
-                    title='Extend'
-                    name='extend'/>
-
-                <TextBox size='xs' mb={2} mt={2}>
-                    Proposal
-                </TextBox>
 
                 <From
                     reg={register({required: true})}

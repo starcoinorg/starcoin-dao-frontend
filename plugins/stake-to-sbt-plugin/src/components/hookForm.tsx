@@ -136,10 +136,10 @@ const HookForm = (props) => {
                                         :
                                         <Input ref={register({required: true})}
                                                defaultValue={v.defaultValue}
+                                               borderColor='white'
+                                               color='white'
                                                autocomplete="off"
                                                placeholder={v.title + "..."}
-                                               onChange={(v) => {
-                                               }}
                                                isReadOnly={props.rules ? props.rules.get(v.name) : false}
                                                name={v.name}/>
                                 }
@@ -149,7 +149,7 @@ const HookForm = (props) => {
                                             <TextBox size='sm'>
                                                 {rightAddon}
                                             </TextBox>
-                                        </InputRightAddon> : <></>
+                                        </InputRightAddon> :<></>
                                 }
                             </InputGroup>
                             {

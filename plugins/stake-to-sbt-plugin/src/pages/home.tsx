@@ -9,14 +9,12 @@ import {
     Select,
     HStack,
     Spinner,
-    useToast,
 } from '@chakra-ui/react'
 import {MdAdd} from 'react-icons/md'
 import {GoSettings} from 'react-icons/go'
 import {useHistory} from 'react-router-dom'
 
 import {
-    Pages,
     queryStakeList,
     unstakeSBT,
     unstakeAllSBT,
@@ -32,12 +30,12 @@ import {useSubAppContext} from '../contexts/SubAppContext'
 const HomePage = () => {
     const {dao} = useSubAppContext()
 
-    const toast = useToast({
-        title: 'Tips',
-        duration: 3000,
-        position: 'top-right',
-        isClosable: true,
-    })
+//    const toast = useToast({
+//        title: 'Tips',
+//        duration: 3000,
+//        position: 'top-right',
+//        isClosable: true,
+//    })
 
     const history = useHistory()
 
@@ -121,16 +119,17 @@ const HomePage = () => {
     const unStake = async (id) => {
         try {
             const v = await unstakeSBT(nweUnstakeParams(dao.daoType, tokenType, id))
-            toast({
-                status: 'success',
-                description: `Unstake of id ${id} is success \n tx: ${v}`,
-            })
+//            toast({
+//                status: 'success',
+//                description: `Unstake of id ${id} is success \n tx: ${v}`,
+//            })
             await fetchData(tokenType)
         } catch (e) {
-            toast({
-                status: 'error',
-                description: `error ${e}`,
-            })
+            console.log(e)
+//            toast({
+//                status: 'error',
+//                description: `error ${e}`,
+//            })
         }
     }
 

@@ -14,20 +14,20 @@ const MyMemberInviteCard = ({offer, onAcceptOffer}) => {
              isExternal>
             <Stack spacing={4}>
                 <Flex as={HStack} spacing={2} align='center'>
-                    <Text>For:</Text>
-                    <Text variant='value'>{offer.for_user}</Text>
+                    <Text color='white'>For:</Text>
+                    <Text color='white' variant='value'>{offer.for_user}</Text>
                 </Flex>
                 <Flex as={HStack} spacing={2} align='center'>
-                    <Text>To Address:</Text>
-                    <Text variant='value'>{offer.to_address}</Text>
+                    <Text color='white' >To Address:</Text>
+                    <Text color='white' variant='value'>{offer.to_address}</Text>
                 </Flex>
                 <Flex as={HStack} spacing={2} align='center'>
-                    <Text>Init SBT:</Text>
-                    <Text variant='value'>{offer.init_sbt}</Text>
+                    <Text color='white' >Init SBT:</Text>
+                    <Text color='white' variant='value'>{offer.init_sbt}</Text>
                 </Flex>
                 <Flex as={HStack} spacing={2} align='center'>
-                    <Text>Invite Time:</Text>
-                    <Text variant='value'>{new Date(offer.time_lock * 1000).toLocaleString()}</Text>
+                    <Text color='white' >Invite Time:</Text>
+                    <Text color='white' variant='value'>{new Date(offer.time_lock * 1000).toLocaleString()}</Text>
                 </Flex>
                 {
                     address === offer.to_address ?
