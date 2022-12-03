@@ -3,7 +3,6 @@ import React, {
 } from 'react'
 import {
     Flex,
-    useToast
 } from '@chakra-ui/react'
 
 import HookForm from "./hookForm"
@@ -17,7 +16,6 @@ const CreateWeightProposalWidget = (props) => {
     const {daoType} = props.dao
     const {tokenType} = props
 
-    const toast = useToast()
     const [loading, setLoading] = useState(false)
 
     const onSubmit = async data => {
@@ -31,14 +29,7 @@ const CreateWeightProposalWidget = (props) => {
             dao_type: daoType,
             token_type: tokenType
         }).then((v) => {
-            toast({
-                title: 'Tips',
-                description: "create token accept proposa success",
-                status: 'success',
-                duration: 3000,
-                position: 'top-right',
-                isClosable: true,
-            })
+            
             setLoading(false)
         }).catch((v) => {
             console.log(v)
@@ -55,6 +46,7 @@ const CreateWeightProposalWidget = (props) => {
                 loading={loading}
                 onSubmit={onSubmit}
                 startW='22%'
+                rules={new Map().set("propsal.title", true)}
                 rightAddon={new Map().set("propsal.action_delay", "min").set("sbt.lock_time", "min")}
             />
         </Flex>

@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Flex, useToast} from '@chakra-ui/react'
+import {Flex} from '@chakra-ui/react'
 import HookForm from "./hookForm"
 import {
     newCreateTokenAcceptProposalParams,
@@ -7,12 +7,12 @@ import {
 } from '../utils/api'
 
 const CreateAcceptPropoalWidget = (props) => {
-    const toast = useToast({
-        title: 'Tips',
-        duration: 3000,
-        position: 'top-right',
-        isClosable: true,
-    });
+//    const toast = useToast({
+//        title: 'Tips',
+//        duration: 3000,
+//        position: 'top-right',
+//        isClosable: true,
+//    });
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState()
     const [tokenType, setTokenType] = useState()
@@ -40,17 +40,17 @@ const CreateAcceptPropoalWidget = (props) => {
             ...data,
             dao_type: props.dao.daoType,
         }).then((v) => {
-            toast({
-                description: `create token accept proposa success \n tx: ${v}`,
-                status: 'success',
-            })
+//            toast({
+//                description: `create token accept proposa success \n tx: ${v}`,
+//                status: 'success',
+//            })
             setLoading(false)
         }).catch((e: any) => {
             console.log(e)
-            toast({
-                description: `${e.toString()}`,
-                status: 'error',
-            })
+//            toast({
+//                description: `${e.toString()}`,
+//                status: 'error',
+//            })
             setLoading(false)
         })
     }
@@ -73,6 +73,7 @@ const CreateAcceptPropoalWidget = (props) => {
                 onSubmit={onSubmit}
                 formHelperText="asd"
                 startW='22%'
+                rules={new Map().set("propsal.title", true)}
                 helpers={errors
                 }
                 rightAddon={new Map().set("propsal.action_delay", "min")}

@@ -4,11 +4,12 @@ import {Box} from '@chakra-ui/react'
 import PageHeader from './pageHeader'
 
 const MainViewLayout = (props) => {
-    const {children, header} = props
+    const {children, header, headerEl} = props
     return (
         <>
             <PageHeader
                 header={header}
+                headerEl={headerEl}
             />
             <Box p={6}>{children}</Box>
         </>

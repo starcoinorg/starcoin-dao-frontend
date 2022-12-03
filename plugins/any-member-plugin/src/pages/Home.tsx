@@ -15,16 +15,23 @@ const HomePage = () => {
     const [ex, setEx] = useState(false)
 
     useEffect(() => {
+        fetch()
+    }, [])
+
+    const fetch = async () => {
         setLoading(true)
-        const fetch = async () => {
+
+        try {
             const s = await getMemberNFT(dao.daoType, window.starcoin.selectedAddress);
-            console.log(s)
             if (s) {
                 setEx(true)
             }
+        } catch (e) {
+            console.log(e)
         }
-        fetch().catch(e => console.log(e)).finally(() => setLoading(false))
-    }, [])
+
+        setLoading(false)
+    }
 
     const onSubmit = () => {
         join(dao.daoType, "", "").catch(e => {
@@ -35,6 +42,15 @@ const HomePage = () => {
     return (
         <MainViewLayout
             header='Any Member'
+            headerEl={<Button
+                size='md'
+                title='refresh'
+                onClick={() => {
+                    fetch()
+                }}
+            >
+                Refresh
+            </Button>}
         >
             <Center mt='100px' w='100%'>
                 {

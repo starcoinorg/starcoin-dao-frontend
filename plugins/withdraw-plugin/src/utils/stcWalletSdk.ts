@@ -26,10 +26,10 @@ export function isValidateAddress(address: string) {
 
 export async function listResource(address: string, resource_types: Array<any>, pages?: any): Promise<any> {
 
-    console.log("list_resource ---------start----------")
-    console.log("address: ", address)
-    console.log("resource_types: ", resource_types)
-    console.log("pages", pages)
+//    console.log("list_resource ---------start----------")
+//    console.log("address: ", address)
+//    console.log("resource_types: ", resource_types)
+//    console.log("pages", pages)
 
     const result = await window.starcoin.request({
         method: 'state.list_resource',
@@ -43,8 +43,8 @@ export async function listResource(address: string, resource_types: Array<any>, 
         ]
     })
 
-    console.log("result: ", result)
-    console.log("list_resource ----------end-----------")
+//    console.log("result: ", result)
+//    console.log("list_resource ----------end-----------")
 
     return result
 }

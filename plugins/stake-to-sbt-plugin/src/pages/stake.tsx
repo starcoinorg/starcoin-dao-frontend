@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {
     Box,
-    useToast,
     Select,
     FormControl,
     InputGroup,
@@ -28,12 +27,6 @@ import {formatLockTime} from "../utils/formt";
 const StakePage = () => {
 
     const {dao} = useSubAppContext()
-    const toast = useToast({
-        title: 'Tips',
-        duration: 3000,
-        position: 'top-right',
-        isClosable: true,
-    })
 
     const [loading, setLoading] = useState(false)
     // Todo loading?
@@ -101,6 +94,8 @@ const StakePage = () => {
 
     const onSubmit = async data => {
 
+        setLoading(true)
+
         if (!tokenTypeLimit) {
             return
         }
@@ -114,16 +109,16 @@ const StakePage = () => {
 
         try {
             const result = await stakeSBT(params)
-            toast({
-                description: `create upgrade proposa success\n tx: ${result}`,
-                status: 'success',
-            })
+//            toast({
+//                description: `create upgrade proposa success\n tx: ${result}`,
+//                status: 'success',
+//            })
         } catch (e) {
             console.log(e)
-            toast({
-                description: `create upgrade proposa error \n err: ${e}`,
-                status: 'error',
-            })
+//            toast({
+//                description: `create upgrade proposa error \n err: ${e}`,
+//                status: 'error',
+//            })
         }
         setLoading(false)
     }
@@ -175,6 +170,8 @@ const StakePage = () => {
                             onChange={onTokenTypeChange}
                             borderTopStartRadius='0'
                             borderBottomStartRadius='0'
+                            borderColor='white'
+                            color='white'
                         >
                             {
                                 tokenTypeOptions?.map((v, i) => (
@@ -196,6 +193,8 @@ const StakePage = () => {
                             onChange={onStakeCfgChange}
                             borderTopStartRadius='0'
                             borderBottomStartRadius='0'
+                            borderColor='white'
+                            color='white'
                         >
                             {
                                 buildStakeCfgOptions()?.map((v, i) => (
@@ -206,9 +205,9 @@ const StakePage = () => {
                         </Select>
                     </InputGroup>
                     {
-                        tokenTypeLimit ? <></>:<FormHelperText>
+                        tokenTypeLimit ? <></> : <FormHelperText>
                             There is no weight
-                </FormHelperText>
+                        </FormHelperText>
                     }
                 </FormControl>
 

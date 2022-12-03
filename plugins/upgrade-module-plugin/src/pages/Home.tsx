@@ -3,14 +3,21 @@ import {
     Flex,
     Button,
     FormControl,
-    Input, InputGroup, InputLeftAddon, NumberInput, NumberInputField, FormLabel, Switch, useToast, InputRightAddon,
+    Input,
+    InputGroup,
+    InputLeftAddon,
+    NumberInput,
+    NumberInputField,
+    FormLabel,
+    Switch,
+    InputRightAddon,
 } from '@chakra-ui/react';
 
 import {useForm} from 'react-hook-form';
 import MainViewLayout from '../components/mainViewLayout';
 import TextBox from '../components/TextBox';
 import {createUpgradeProposal, Action} from "../utils/memberPluginAPI";
-import { useSubAppContext } from '../contexts/SubAppContext';
+import {useSubAppContext} from '../contexts/SubAppContext';
 
 const From = (props) => {
 
@@ -28,23 +35,25 @@ const From = (props) => {
                         name={props.name}
                         borderTopStartRadius='0'
                         borderBottomStartRadius='0'
-                        borderTopEndRadius={props.right?0:5}
-                        borderBottomEndRadius={props.right?0:5}
+                        borderTopEndRadius={props.right ? 0 : 5}
+                        borderBottomEndRadius={props.right ? 0 : 5}
                     />
                 </NumberInput> :
                 <Input ref={props.reg}
                        defaultValue={props.defaultValue}
                        placeholder={props.title + "..."}
+                       borderColor='white'
+                       color='white'
                        name={props.name}/>
             }
             {
-                props.right ? 
-                <InputRightAddon>
-                <TextBox size='sm'>
-                                        {props.right}
-                                     </TextBox>
-                </InputRightAddon>:
-                <></>
+                props.right ?
+                    <InputRightAddon>
+                        <TextBox size='sm'>
+                            {props.right}
+                        </TextBox>
+                    </InputRightAddon> :
+                    <></>
             }
         </InputGroup>
     </FormControl>)
@@ -52,12 +61,11 @@ const From = (props) => {
 
 const HomePage = () => {
 
-    const toast = useToast();
     const {dao} = useSubAppContext()
     const [loading, setLoading] = useState(false);
     const {register, handleSubmit} = useForm();
     const [action, setAction] = useState<Action>({
-        dao_type:"-",
+        dao_type: "-",
         title: "",
         introduction: "",
         description: "",
@@ -74,20 +82,13 @@ const HomePage = () => {
 
         data.action_delay = data.action_delay * 60 * 1000
 
-        createUpgradeProposal({...data, dao_type:dao.daoType}).then(v=> {
-            toast({
-                title: 'Tips',
-                description: "create upgrade proposa success",
-                status: 'success',
-                duration: 3000,
-                position: 'top-right',
-                isClosable: true,
-            })
+        createUpgradeProposal({...data, dao_type: dao.daoType}).then(v => {
+
         }).catch(e => {
             console.log(e)
-        })
+        }).finally(() => setLoading(false))
 
-        setLoading(false);
+
     }
 
     return (
