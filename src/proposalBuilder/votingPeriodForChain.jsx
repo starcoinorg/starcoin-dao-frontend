@@ -421,11 +421,10 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
         isOpen={isOpen}
         isCentered
       >
-        <AlertDialogOverlay />
-        <AlertDialogContent>
-          <AlertDialogHeader color={'#000'}>Confirm Vote</AlertDialogHeader>
+        <AlertDialogContent background='#000'>
+          <AlertDialogHeader>Confirm Vote</AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody color={'#000'}>
+          <AlertDialogBody>
             You have <i>{accountPowerTotal}</i> voting rights（
             {daoData?.daoStrategies[0]?.votingPowerName}）, All votes can be
             cast at one time only, and cannot be modified after cast
@@ -436,19 +435,6 @@ const VotingPeriodForChain = ({ proposal, canInteract, isMember }) => {
               onClick={() => {
                 onClose();
                 setLoading(false);
-              }}
-              sx={{
-                border: '1px solid rgb(255, 150, 142)',
-                background: '#fff',
-                color: '#000',
-                _hover: {
-                  background: '#fff',
-                  color: '#000',
-                },
-                _focus: {
-                  background: '#fff',
-                  color: '#000',
-                },
               }}
             >
               Cancel

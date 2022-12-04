@@ -391,14 +391,13 @@ const VotingPeriod = ({ proposal, canInteract, isMember }) => {
         isOpen={isOpen}
         isCentered
       >
-        <AlertDialogOverlay />
-        <AlertDialogContent>
+        <AlertDialogContent background='#000'>
           <AlertDialogHeader color={'#000'}>Confirm Vote</AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody color={'#000'}>
             You have <i>{accountPowerTotal}</i> voting rights（
             {daoData?.daoStrategies[0]?.votingPowerName}）, All votes can be
-            cast at one time only, and cannot be modified after cast
+            cast at one time only, and cannot be modified after castaaa
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button
