@@ -24,7 +24,7 @@ import {
     QueryWithdrawTokenResult
 } from "../utils/api"
 import {useSubAppContext} from '../contexts/SubAppContext'
-import {isValidateAddress} from "../utils/stcWalletSdk";
+import {isValidateAddress} from "../utils/stcWalletSdk"
 
 const From = (props) => {
 
@@ -73,7 +73,7 @@ const From = (props) => {
         {
             props.helper ?
                 <FormHelperText>
-                    props.helper
+                    {props.helper}
                 </FormHelperText>
                 :
                 <></>
@@ -207,7 +207,7 @@ const HomePage = () => {
                     title='Receiver'
                     onChange={
                         v => {
-                            if (!isValidateAddress(v)) {
+                            if (!isValidateAddress(v.target.value)) {
                                 setAddressError('Invalid address')
                             } else {
                                 setAddressError(null)

@@ -235,7 +235,7 @@ const ProposalsList = ({ refresh, customTerms }) => {
           ))}
       </Box>
 
-      {!loading && !paginatedProposals ? (
+      {!loading && paginatedProposals?.length === 0 ? (
         <TextBox margin='0 auto' textAlign='center'>
           There is no proposal
         </TextBox>
